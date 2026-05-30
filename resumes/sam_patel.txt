@@ -1,0 +1,13 @@
+Sam Patel
+Java Backend Developer
+sam.patel@example.com
+
+SUMMARY
+Java/Spring Boot developer building enterprise REST APIs.
+
+SKILLS
+Java, Spring Boot, Maven, MySQL, Kafka
+
+EXPERIENCE
+- Backend Developer, FinServe (2018-2025): designed Spring Boot services.
+- Software Engineer, RetailX (2015-2018): maintained Java monolith.

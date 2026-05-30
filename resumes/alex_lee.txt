@@ -1,0 +1,13 @@
+Alex Lee
+Data Scientist
+alex.lee@example.com
+
+SUMMARY
+Data scientist using Python and PyTorch for NLP and forecasting.
+
+SKILLS
+Python, PyTorch, pandas, SQL, scikit-learn
+
+EXPERIENCE
+- Data Scientist, Insight AI (2021-2025): built demand-forecasting models.
+- ML Intern, Quant Co (2020): prototyped Python notebooks for backtesting.
