@@ -19,13 +19,17 @@ fs-tools/
 ├── llm_file_assistant.py   # M1 Part B: Anthropic tool-use loop + CLI
 ├── resume_rag.py           # M2 Part A: chunking + embeddings + ChromaDB
 ├── job_matcher.py          # M2 Part B: hybrid search, scoring, filtering
-├── rag_analysis.ipynb      # M2: executed experiments (accuracy, latency)
+├── llm_extractor.py        # NL: Claude-assisted extraction fallback (cached)
+├── reranker.py             # NL: cross-encoder rerank stage (opt-in)
+├── app.py                  # NL: Streamlit UI (streamlit run app.py)
+├── rag_analysis.ipynb      # executed experiments (accuracy, latency, ablations)
 ├── scripts/make_samples.py # generates the original 8 dummy resumes
-├── scripts/make_dataset.py # M2: 36 labelled resumes + 6 JDs + ground truth
-├── scripts/build_notebook.py # M2: builds + executes rag_analysis.ipynb
-├── resumes/                # 36 resumes (.txt/.pdf/.docx) [generated]
+├── scripts/make_dataset.py # 36 labelled resumes + 6 JDs (+ --hard corpus)
+├── scripts/build_notebook.py # builds + executes rag_analysis.ipynb
+├── resumes/                # 36 clean resumes (.txt/.pdf/.docx) [generated]
+├── resumes_hard/           # 40 hard-mode resumes, 3 difficulty tiers [generated]
 ├── job_descriptions/       # 6 job descriptions [generated]
-├── dataset/labels.json     # ground-truth labels [generated]
+├── dataset/                # labels.json + labels_hard.json ground truth [generated]
 ├── tests/                  # pytest suites (fs tools, RAG, matcher)
 ├── requirements.txt
 ├── .env.example
@@ -217,3 +221,80 @@ methodology, charts and the must-have-filtering demo are in the notebook.
 5. **2:40-3:30** — open `rag_analysis.ipynb`: metadata accuracy table,
    hybrid-vs-semantic bar chart, latency table, weight-sweep plot.
 6. **3:30-4:00** — wrap: architecture recap + limitations.
+
+---
+
+# Next level — Hard corpus, smarter extraction, reranking, UI
+
+Four upgrades on top of Milestone 2, with every claim below measured in the
+re-executed `rag_analysis.ipynb` (§8-§10).
+
+## Streamlit UI
+
+```powershell
+streamlit run app.py
+```
+
+Pick a corpus (clean 36 / hard 40), load or paste a JD, and match: ranked
+candidate cards with the 0-100 score, per-component breakdown bars
+(semantic / BM25 / rerank / skill coverage / experience fit), section-labelled
+evidence excerpts, reasoning, and a "Filtered out" panel showing exactly which
+must-have each excluded candidate failed. Sidebar extras: retrieval-mode
+toggle, semantic-weight slider, index rebuild (optionally Claude-assisted),
+and drag-and-drop upload of a new resume or JD — uploads are parsed, indexed
+and matchable immediately.
+
+## Hard-mode corpus (`scripts/make_dataset.py --hard`)
+
+40 additional labelled resumes in `resumes_hard/` across 3 difficulty tiers:
+tier 0 clean; tier 1 nonstandard headers ("Career History", "Toolbox") and
+month-level dates (`Jan 2020 - Mar 2023`, `03/2019 - present`); tier 2 no
+skills section at all (skills live only in prose), missing education lines,
+headerless lead-ins. `dataset/labels_hard.json` carries per-resume ground
+truth incl. per-skill tenure, derived strictly from what the rendered text
+shows — so accuracy numbers are fair.
+
+## Extraction v2 + Claude fallback
+
+Month-aware date parsing (month names, `MM/YYYY`, bare years, en-dashes,
+"to"), per-skill tenure via job-block attribution with interval merging, and
+an optional Anthropic pass (`RESUME_RAG_LLM=off|auto|always`, model override
+via `RESUME_RAG_LLM_MODEL`) that fills only low-confidence gaps — results are
+disk-cached in `.cache/llm_extract/` and every failure path falls back to the
+deterministic extractor (offline-safe; mocked in tests).
+
+## Cross-encoder reranking (opt-in)
+
+`ms-marco-MiniLM-L-6-v2` rescores the top retrieved chunks as (JD, chunk)
+pairs: `python job_matcher.py <jd> --rerank`, the UI's "Hybrid + rerank"
+mode, or `JobMatcher(rerank=True)`. Off by default — see the measurements.
+
+## Measured results (notebook §8-§10, this repo, CPU)
+
+| Metric | Clean (36) | Hard (40) |
+|---|---|---|
+| P@5 soft — semantic / hybrid / hybrid+rerank | 0.967 / 0.967 / 0.967 | 0.933 / 0.933 / 0.933 |
+| R@10 soft — semantic / hybrid / hybrid+rerank | 0.886 / 0.921 / 0.900 | 0.889 / 0.889 / 0.889 |
+| MRR / hit@1 (all modes) | 1.000 / 1.000 | 1.000 / 1.000 |
+| Extraction: name / years / education / skills recall (regex only) | 1.00 each | 1.00 each |
+| Per-skill tenure MAE | — | 0.13 yrs |
+| Rerank latency (median, on top of ~25 ms semantic) | — | ~1.1 s |
+
+**Honest findings:** role-separated corpora nearly saturate MiniLM ranking —
+the hard corpus only moves P@5 from 0.967 to 0.933, all three retrieval modes
+tie there, and the cross-encoder's ~1.1 s/query buys no measurable ranking
+gain on this data (its value is expected on genuinely noisy, overlapping
+real-world resumes; it stays opt-in for exactly that reason). The month-aware
+extractor recovers 100% of the hard-corpus metadata, so the Claude fallback
+correctly never fires (`llm_assisted: 0` in auto mode) — its trigger logic
+and gap-filling merge are unit-tested with mocked clients, and it exists for
+truly unstructured resumes the deterministic path can't parse, e.g. arbitrary
+uploads through the UI.
+
+## Demo video addendum (+45 s)
+
+7. **4:00-4:30** — `streamlit run app.py`: match the ML JD on the hard corpus,
+   point at breakdown bars + filtered-out reasons; drag in a new resume and
+   re-match to show it ranked.
+8. **4:30-4:45** — notebook §8 bar chart (clean vs hard) + the generated
+   takeaways cell: metrics computed live, no hand-written claims.
