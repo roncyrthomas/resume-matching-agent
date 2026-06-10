@@ -185,6 +185,8 @@ def _header_kind(line: str) -> Optional[str]:
     stripped = line.strip().rstrip(":").strip()
     if not stripped or len(stripped) > 40:
         return None
+    if stripped.startswith(("-", "*", "•")):
+        return None  # bullet list item — never a header, even if ALL CAPS
     known = _HEADER_LOOKUP.get(stripped.lower())
     if known:
         return known
