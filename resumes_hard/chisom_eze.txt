@@ -1,0 +1,27 @@
+Chisom Eze
+Java Backend Developer
+Amsterdam, Netherlands | chisom.eze@example.com | +1-555-1109
+
+Professional Summary
+Java Backend Developer with 4+ years of experience. Core skills include Java, Spring Boot, MySQL applied across production systems. Proven record of delivering results with cross-functional teams.
+
+Technical Skills
+Java, Spring Boot, MySQL, Kafka, REST APIs, Redis, Kubernetes, Microservices
+
+EMPLOYMENT HISTORY
+Software Engineer, Java, Streamline (2024 - Present)
+- Designed Kubernetes services processing 6M transactions daily.
+- Improved throughput 70% by introducing Kafka message streaming.
+
+Software Engineer, Java, Summit Robotics (2022 - 2024)
+- Modernised legacy modules into Spring Boot microservices on MySQL.
+- Improved throughput 40% by introducing Redis message streaming.
+
+Education
+Bachelor of Technology in Computer Science, Westlake University (2022)
+
+Projects
+Ledger Service: double-entry bookkeeping engine on Redis and Kafka.
+
+Certifications
+- Oracle Certified Professional: Java SE

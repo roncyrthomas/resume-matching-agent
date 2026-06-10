@@ -1,0 +1,21 @@
+Zoe Lambert
+Senior Mobile Engineer | Toronto, Canada | zoe.lambert@example.com | +1-555-1128
+
+SUMMARY
+Senior Mobile Engineer with 8+ years of experience. Core skills include Kotlin, Android, REST APIs applied across production systems. Proven record of delivering results with cross-functional teams.
+
+EXPERIENCE
+Senior Mobile Engineer, FinServe (Aug 2025 - present)
+- Cut app startup time 25% by profiling Flutter initialisation.
+- Shipped Kotlin apps with 400k+ installs and 4.7-star ratings.
+
+Android Developer, Helio Health (Aug 2021 - Aug 2025)
+- Led migration from Git to Android, reducing crash rate 30%.
+- Cut app startup time 25% by profiling REST APIs initialisation.
+
+iOS Developer, Bright Apps (Aug 2018 - Aug 2021)
+- Led migration from Flutter to Git, reducing crash rate 40%.
+- Cut app startup time 40% by profiling Firebase initialisation.
+
+PROJECTS
+Fitness Tracker: GraphQL app with Kotlin cloud sync.

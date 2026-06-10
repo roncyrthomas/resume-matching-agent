@@ -1,0 +1,24 @@
+Svetlana Ivanova
+Staff Mobile Engineer | Berlin, Germany | svetlana.ivanova@example.com | +1-555-1130
+
+Staff Mobile Engineer with 10+ years of experience. Core skills include Kotlin, Android, REST APIs applied across production systems. Proven record of delivering results with cross-functional teams.
+
+EXPERIENCE
+Staff Mobile Engineer, Nimbus Pay (2023 - Present)
+- Built offline-first sync with Firebase and Kotlin.
+- Cut app startup time 40% by profiling REST APIs initialisation.
+
+Mobile Engineer, Orchid Media (2021 - 2023)
+- Shipped REST APIs apps with 100k+ installs and 4.7-star ratings.
+- Led migration from Kotlin to REST APIs, reducing crash rate 60%.
+
+iOS Developer, Bright Apps (2020 - 2021)
+- Built offline-first sync with Kotlin and React Native.
+- Cut app startup time 60% by profiling Git initialisation.
+
+Mobile Engineer, BlueRiver Systems (2016 - 2020)
+- Built offline-first sync with Firebase and Git.
+- Led migration from Git to Firebase, reducing crash rate 20%.
+
+PROJECTS
+Fitness Tracker: Git app with React Native cloud sync.

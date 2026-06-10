@@ -1,0 +1,32 @@
+Tariq Saleem
+Staff Full Stack Developer
+Seattle, WA | tariq.saleem@example.com | +1-555-1118
+
+My Background
+Staff Full Stack Developer with 11+ years of experience. Core skills include Python, React, TypeScript applied across production systems. Proven record of delivering results with cross-functional teams.
+
+Toolbox
+Python, React, TypeScript, PostgreSQL, Docker, GraphQL, Node.js, Redis
+
+Where I've Worked
+Staff Product Engineer, Summit Robotics (2022 - Present)
+- Owned the TypeScript stack from schema design to Node.js UI.
+- Reduced page load 30% with Node.js caching and query tuning.
+
+Full Stack Developer, Clearpath Energy (2021 - 2022)
+- Built REST and GraphQL APIs in Docker consumed by GraphQL clients.
+- Delivered TypeScript + PostgreSQL features end to end for 40k users.
+
+Full-Stack Engineer, Vertex Logistics (2018 - 2021)
+- Built REST and GraphQL APIs in Python consumed by TypeScript clients.
+- Reduced page load 35% with Redis caching and query tuning.
+
+Full-Stack Engineer, Bright Apps (2015 - 2018)
+- Owned the React stack from schema design to Docker UI.
+- Delivered PostgreSQL + Python features end to end for 30k users.
+
+Studies
+B.S. in Software Engineering, Global Tech University (2015)
+
+Projects
+Marketplace MVP: Python backend with a TypeScript storefront.

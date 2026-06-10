@@ -1,0 +1,33 @@
+Pooja Iyer
+Staff Applied Scientist
+Remote (US) | pooja.iyer@example.com | +1-555-1103
+
+Professional Summary
+Staff Applied Scientist with 12+ years of experience. Core skills include Python, PyTorch, scikit-learn applied across production systems. Proven record of delivering results with cross-functional teams.
+
+Technical Skills
+Python, PyTorch, scikit-learn, pandas, SQL, Machine Learning, Airflow, Docker
+
+Work Experience
+Staff Machine Learning Engineer, Insight AI (2024 - Present)
+- Reduced model training time 35% by optimising SQL workflows.
+- Shipped an A/B-tested recommendation system using SQL and pandas.
+
+Applied Scientist, Mosaic Travel (2021 - 2024)
+- Shipped an A/B-tested recommendation system using PyTorch and Python.
+- Reduced model training time 40% by optimising pandas workflows.
+
+Applied Scientist, Craft Studio (2017 - 2021)
+- Shipped an A/B-tested recommendation system using Python and pandas.
+- Reduced model training time 70% by optimising SQL workflows.
+
+Data Scientist, AppWorks (2014 - 2017)
+- Built and deployed scikit-learn models improving prediction accuracy by 35%.
+- Shipped an A/B-tested recommendation system using pandas and PyTorch.
+
+Education
+Master of Science in Data Science, Tech Institute of Engineering (2013)
+
+Projects
+Churn Predictor: end-to-end Python pipeline with automated retraining.
+Resume Screener: NLP classifier built with pandas and scikit-learn.

@@ -1,0 +1,28 @@
+Rafael Reyes
+Data Scientist
+Singapore | rafael.reyes@example.com | +1-555-1100
+
+Professional Summary
+Data Scientist with 6+ years of experience. Core skills include Python, PyTorch, scikit-learn applied across production systems. Proven record of delivering results with cross-functional teams.
+
+Technical Skills
+Python, PyTorch, scikit-learn, pandas, SQL, Machine Learning, Computer Vision, TensorFlow, Deep Learning
+
+EXPERIENCE
+Data Scientist, Acme Cloud (Mar 2023 - Present)
+- Built and deployed scikit-learn models improving prediction accuracy by 60%.
+- Led feature engineering with Computer Vision and Machine Learning across 5 data sources.
+
+Applied Scientist, Bright Apps (Mar 2020 - Mar 2023)
+- Productionised Machine Learning pipelines serving 3M inferences per day.
+- Shipped an A/B-tested recommendation system using pandas and TensorFlow.
+
+Education
+B.Sc. in Computer Science, Lakeside State University (2020)
+
+Projects
+Resume Screener: NLP classifier built with TensorFlow and PyTorch.
+Churn Predictor: end-to-end scikit-learn pipeline with automated retraining.
+
+Certifications
+- AWS Certified Machine Learning - Specialty

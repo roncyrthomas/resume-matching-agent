@@ -1,0 +1,20 @@
+Petra Blum
+Security Engineer | Amsterdam, Netherlands | petra.blum@example.com | +1-555-1134
+
+SUMMARY
+Security Engineer with 4+ years of experience. Core skills include Penetration Testing, OWASP, Burp Suite applied across production systems. Proven record of delivering results with cross-functional teams.
+
+EMPLOYMENT HISTORY
+Security Engineer, Vertex Logistics (10/2025 - present)
+- Ran 10+ penetration tests; remediated all critical findings.
+- Embedded Docker checks into CI, blocking vulnerable releases.
+
+Security Engineer, Orchid Media (10/2022 - 10/2025)
+- Embedded Threat Modeling checks into CI, blocking vulnerable releases.
+- Ran 80+ penetration tests; remediated all critical findings.
+
+PROJECTS
+AppSec Pipeline: automated Linux scanning with AWS triage.
+
+CERTIFICATIONS
+- CISSP

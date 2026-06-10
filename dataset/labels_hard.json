@@ -1,0 +1,1268 @@
+{
+  "seed": 4242,
+  "today_year": 2026,
+  "resumes": {
+    "rafael_reyes.txt": {
+      "name": "Rafael Reyes",
+      "role": "ml",
+      "title": "Data Scientist",
+      "total_years": 6,
+      "education_level": "bachelor",
+      "skills": [
+        "Computer Vision",
+        "Deep Learning",
+        "Machine Learning",
+        "PyTorch",
+        "Python",
+        "SQL",
+        "TensorFlow",
+        "pandas",
+        "scikit-learn"
+      ],
+      "format": ".txt",
+      "tier": 0,
+      "date_style": "monthname",
+      "skill_years": {
+        "Computer Vision": 3.2,
+        "Deep Learning": 6.2,
+        "Machine Learning": 6.2,
+        "PyTorch": 6.2,
+        "Python": 6.2,
+        "SQL": 6.2,
+        "TensorFlow": 3.0,
+        "pandas": 3.0,
+        "scikit-learn": 3.2
+      }
+    },
+    "amara_diallo.pdf": {
+      "name": "Amara Diallo",
+      "role": "ml",
+      "title": "Senior Machine Learning Engineer",
+      "total_years": 9,
+      "education_level": "master",
+      "skills": [
+        "AWS",
+        "MLOps",
+        "Machine Learning",
+        "NLP",
+        "PyTorch",
+        "Python",
+        "SQL",
+        "pandas",
+        "scikit-learn"
+      ],
+      "format": ".pdf",
+      "tier": 0,
+      "date_style": "slash",
+      "skill_years": {
+        "AWS": 3.0,
+        "MLOps": 6.0,
+        "Machine Learning": 3.0,
+        "NLP": 3.2,
+        "PyTorch": 3.0,
+        "Python": 3.0,
+        "SQL": 9.2,
+        "pandas": 9.2,
+        "scikit-learn": 3.2
+      }
+    },
+    "sven_lindqvist.docx": {
+      "name": "Sven Lindqvist",
+      "role": "ml",
+      "title": "Data Scientist",
+      "total_years": 4,
+      "education_level": "phd",
+      "skills": [
+        "Airflow",
+        "Deep Learning",
+        "MLOps",
+        "Machine Learning",
+        "PyTorch",
+        "Python",
+        "SQL",
+        "pandas",
+        "scikit-learn"
+      ],
+      "format": ".docx",
+      "tier": 0,
+      "date_style": "year",
+      "skill_years": {
+        "Airflow": 4.3,
+        "Deep Learning": 4.3,
+        "MLOps": 4.3,
+        "Machine Learning": 3.0,
+        "PyTorch": 4.3,
+        "Python": 1.0,
+        "SQL": 4.0,
+        "pandas": 4.0,
+        "scikit-learn": 4.3
+      }
+    },
+    "pooja_iyer.txt": {
+      "name": "Pooja Iyer",
+      "role": "ml",
+      "title": "Staff Applied Scientist",
+      "total_years": 11,
+      "education_level": "master",
+      "skills": [
+        "Airflow",
+        "Docker",
+        "Machine Learning",
+        "PyTorch",
+        "Python",
+        "SQL",
+        "pandas",
+        "scikit-learn"
+      ],
+      "format": ".txt",
+      "tier": 0,
+      "date_style": "year",
+      "skill_years": {
+        "Airflow": 11.5,
+        "Docker": 11.5,
+        "Machine Learning": 2.0,
+        "PyTorch": 6.0,
+        "Python": 7.0,
+        "SQL": 6.0,
+        "pandas": 12.0,
+        "scikit-learn": 3.0
+      }
+    },
+    "brendan_walsh.pdf": {
+      "name": "Brendan Walsh",
+      "role": "backend_python",
+      "title": "Backend Engineer",
+      "total_years": 5,
+      "education_level": "master",
+      "skills": [
+        "Docker",
+        "FastAPI",
+        "Microservices",
+        "MongoDB",
+        "PostgreSQL",
+        "Python",
+        "REST APIs",
+        "Redis"
+      ],
+      "format": ".pdf",
+      "tier": 0,
+      "date_style": "slash",
+      "skill_years": {
+        "Docker": 3.1,
+        "FastAPI": 2.0,
+        "Microservices": 5.1,
+        "MongoDB": 2.0,
+        "PostgreSQL": 5.1,
+        "Python": 5.1,
+        "REST APIs": 2.0,
+        "Redis": 5.1
+      }
+    },
+    "yara_osei.docx": {
+      "name": "Yara Osei",
+      "role": "backend_python",
+      "title": "Senior Backend Engineer",
+      "total_years": 7,
+      "education_level": "bachelor",
+      "skills": [
+        "AWS",
+        "Django",
+        "Docker",
+        "FastAPI",
+        "Flask",
+        "PostgreSQL",
+        "Python",
+        "REST APIs"
+      ],
+      "format": ".docx",
+      "tier": 0,
+      "date_style": "monthname",
+      "skill_years": {
+        "AWS": 5.7,
+        "Django": 5.7,
+        "Docker": 7.7,
+        "FastAPI": 1.7,
+        "Flask": 2.0,
+        "PostgreSQL": 2.0,
+        "Python": 5.7,
+        "REST APIs": 7.7
+      }
+    },
+    "nikolaj_berg.txt": {
+      "name": "Nikolaj Berg",
+      "role": "backend_python",
+      "title": "Software Engineer, Backend",
+      "total_years": 2,
+      "education_level": "bachelor",
+      "skills": [
+        "Docker",
+        "FastAPI",
+        "Flask",
+        "Microservices",
+        "MongoDB",
+        "PostgreSQL",
+        "Python",
+        "REST APIs"
+      ],
+      "format": ".txt",
+      "tier": 0,
+      "date_style": "monthname",
+      "skill_years": {
+        "Docker": 2.5,
+        "FastAPI": 2.5,
+        "Flask": 2.5,
+        "Microservices": 2.5,
+        "MongoDB": 2.5,
+        "PostgreSQL": 2.5,
+        "Python": 2.5,
+        "REST APIs": 2.5
+      }
+    },
+    "lena_fischer.pdf": {
+      "name": "Lena Fischer",
+      "role": "backend_python",
+      "title": "Staff Backend Engineer",
+      "total_years": 11,
+      "education_level": "bachelor",
+      "skills": [
+        "Docker",
+        "FastAPI",
+        "Flask",
+        "Kafka",
+        "Microservices",
+        "PostgreSQL",
+        "Python",
+        "REST APIs",
+        "Redis"
+      ],
+      "format": ".pdf",
+      "tier": 0,
+      "date_style": "slash",
+      "skill_years": {
+        "Docker": 11.3,
+        "FastAPI": 1.3,
+        "Flask": 5.0,
+        "Kafka": 11.3,
+        "Microservices": 11.3,
+        "PostgreSQL": 11.3,
+        "Python": 11.3,
+        "REST APIs": 8.0,
+        "Redis": 5.0
+      }
+    },
+    "tatsuya_honda.docx": {
+      "name": "Tatsuya Honda",
+      "role": "backend_java",
+      "title": "Senior Java Backend Developer",
+      "total_years": 7,
+      "education_level": "bachelor",
+      "skills": [
+        "Java",
+        "Kafka",
+        "MySQL",
+        "PostgreSQL",
+        "REST APIs",
+        "Redis",
+        "Spring Boot"
+      ],
+      "format": ".docx",
+      "tier": 0,
+      "date_style": "monthname",
+      "skill_years": {
+        "Java": 7.4,
+        "Kafka": 7.4,
+        "MySQL": 3.4,
+        "PostgreSQL": 7.4,
+        "REST APIs": 7.4,
+        "Redis": 6.4,
+        "Spring Boot": 1.0
+      }
+    },
+    "chisom_eze.txt": {
+      "name": "Chisom Eze",
+      "role": "backend_java",
+      "title": "Java Backend Developer",
+      "total_years": 4,
+      "education_level": "bachelor",
+      "skills": [
+        "Java",
+        "Kafka",
+        "Kubernetes",
+        "Microservices",
+        "MySQL",
+        "REST APIs",
+        "Redis",
+        "Spring Boot"
+      ],
+      "format": ".txt",
+      "tier": 0,
+      "date_style": "year",
+      "skill_years": {
+        "Java": 4.0,
+        "Kafka": 2.0,
+        "Kubernetes": 2.0,
+        "Microservices": 2.0,
+        "MySQL": 2.0,
+        "REST APIs": 4.0,
+        "Redis": 2.0,
+        "Spring Boot": 2.0
+      }
+    },
+    "pawel_kowalski.pdf": {
+      "name": "Pawel Kowalski",
+      "role": "backend_java",
+      "title": "Senior Java Engineer",
+      "total_years": 10,
+      "education_level": "master",
+      "skills": [
+        "Java",
+        "Kafka",
+        "Microservices",
+        "MySQL",
+        "REST APIs",
+        "Redis",
+        "Spring Boot"
+      ],
+      "format": ".pdf",
+      "tier": 0,
+      "date_style": "year",
+      "skill_years": {
+        "Java": 10.0,
+        "Kafka": 10.1,
+        "Microservices": 7.0,
+        "MySQL": 10.1,
+        "REST APIs": 6.0,
+        "Redis": 1.0,
+        "Spring Boot": 7.0
+      }
+    },
+    "ingrid_haugen.txt": {
+      "name": "Ingrid Haugen",
+      "role": "backend_java",
+      "title": "Junior Software Engineer, Java",
+      "total_years": 2,
+      "education_level": "master",
+      "skills": [
+        "Java",
+        "Kafka",
+        "Maven",
+        "MySQL",
+        "PostgreSQL",
+        "REST APIs",
+        "Spring Boot"
+      ],
+      "format": ".txt",
+      "tier": 0,
+      "date_style": "year",
+      "skill_years": {
+        "Java": 2.0,
+        "Kafka": 2.4,
+        "Maven": 2.4,
+        "MySQL": 2.4,
+        "PostgreSQL": 2.0,
+        "REST APIs": 2.0,
+        "Spring Boot": 2.4
+      }
+    },
+    "mateus_carvalho.txt": {
+      "name": "Mateus Carvalho",
+      "role": "frontend",
+      "title": "UI Engineer",
+      "total_years": 5,
+      "education_level": "bachelor",
+      "skills": [
+        "CSS",
+        "Cypress",
+        "GraphQL",
+        "HTML",
+        "JavaScript",
+        "React",
+        "Tailwind CSS",
+        "TypeScript"
+      ],
+      "format": ".txt",
+      "tier": 0,
+      "date_style": "year",
+      "skill_years": {
+        "CSS": 5.7,
+        "Cypress": 4.0,
+        "GraphQL": 5.7,
+        "HTML": 2.0,
+        "JavaScript": 5.7,
+        "React": 4.0,
+        "Tailwind CSS": 5.7,
+        "TypeScript": 2.0
+      }
+    },
+    "soraya_mansouri.pdf": {
+      "name": "Soraya Mansouri",
+      "role": "frontend",
+      "title": "Frontend Developer",
+      "total_years": 2,
+      "education_level": "bachelor",
+      "skills": [
+        "CSS",
+        "Cypress",
+        "GraphQL",
+        "HTML",
+        "JavaScript",
+        "React",
+        "Tailwind CSS",
+        "TypeScript"
+      ],
+      "format": ".pdf",
+      "tier": 0,
+      "date_style": "year",
+      "skill_years": {
+        "CSS": 2.9,
+        "Cypress": 2.9,
+        "GraphQL": 2.9,
+        "HTML": 2.9,
+        "JavaScript": 2.9,
+        "React": 3.0,
+        "Tailwind CSS": 2.9,
+        "TypeScript": 2.9
+      }
+    },
+    "kwame_asante.docx": {
+      "name": "Kwame Asante",
+      "role": "frontend",
+      "title": "Senior Frontend Engineer",
+      "total_years": 9,
+      "education_level": "bachelor",
+      "skills": [
+        "CSS",
+        "GraphQL",
+        "HTML",
+        "JavaScript",
+        "React",
+        "Redux",
+        "TypeScript"
+      ],
+      "format": ".docx",
+      "tier": 1,
+      "date_style": "year",
+      "skill_years": {
+        "CSS": 2.0,
+        "GraphQL": 9.3,
+        "HTML": 7.0,
+        "JavaScript": 9.3,
+        "React": 7.0,
+        "Redux": 4.0,
+        "TypeScript": 5.0
+      }
+    },
+    "hana_novotna.txt": {
+      "name": "Hana Novotna",
+      "role": "frontend",
+      "title": "Frontend Developer",
+      "total_years": 4,
+      "education_level": "master",
+      "skills": [
+        "CSS",
+        "HTML",
+        "JavaScript",
+        "Next.js",
+        "React",
+        "Redux",
+        "TypeScript",
+        "Vue.js"
+      ],
+      "format": ".txt",
+      "tier": 1,
+      "date_style": "year",
+      "skill_years": {
+        "CSS": 4.7,
+        "HTML": 3.0,
+        "JavaScript": 4.7,
+        "Next.js": 4.7,
+        "React": 4.7,
+        "Redux": 5.0,
+        "TypeScript": 2.0,
+        "Vue.js": 5.0
+      }
+    },
+    "dmitri_volkov.pdf": {
+      "name": "Dmitri Volkov",
+      "role": "fullstack",
+      "title": "Senior Full-Stack Engineer",
+      "total_years": 8,
+      "education_level": "bachelor",
+      "skills": [
+        "Django",
+        "Docker",
+        "GraphQL",
+        "PostgreSQL",
+        "Python",
+        "React",
+        "TypeScript"
+      ],
+      "format": ".pdf",
+      "tier": 1,
+      "date_style": "slash",
+      "skill_years": {
+        "Django": 8.3,
+        "Docker": 3.0,
+        "GraphQL": 7.3,
+        "PostgreSQL": 8.3,
+        "Python": 3.0,
+        "React": 5.3,
+        "TypeScript": 4.0
+      }
+    },
+    "amelia_hunt.docx": {
+      "name": "Amelia Hunt",
+      "role": "fullstack",
+      "title": "Product Engineer",
+      "total_years": 4,
+      "education_level": "master",
+      "skills": [
+        "Django",
+        "Docker",
+        "Next.js",
+        "PostgreSQL",
+        "Python",
+        "React",
+        "TypeScript"
+      ],
+      "format": ".docx",
+      "tier": 1,
+      "date_style": "monthname",
+      "skill_years": {
+        "Django": 4.3,
+        "Docker": 2.0,
+        "Next.js": 2.0,
+        "PostgreSQL": 2.3,
+        "Python": 2.0,
+        "React": 2.3,
+        "TypeScript": 4.3
+      }
+    },
+    "tariq_saleem.txt": {
+      "name": "Tariq Saleem",
+      "role": "fullstack",
+      "title": "Staff Full Stack Developer",
+      "total_years": 11,
+      "education_level": "bachelor",
+      "skills": [
+        "Docker",
+        "GraphQL",
+        "Node.js",
+        "PostgreSQL",
+        "Python",
+        "React",
+        "Redis",
+        "TypeScript"
+      ],
+      "format": ".txt",
+      "tier": 1,
+      "date_style": "year",
+      "skill_years": {
+        "Docker": 4.0,
+        "GraphQL": 4.0,
+        "Node.js": 4.0,
+        "PostgreSQL": 4.0,
+        "Python": 6.0,
+        "React": 3.0,
+        "Redis": 3.0,
+        "TypeScript": 8.0
+      }
+    },
+    "nora_eriksen.pdf": {
+      "name": "Nora Eriksen",
+      "role": "fullstack",
+      "title": "Full-Stack Engineer",
+      "total_years": 3,
+      "education_level": "bachelor",
+      "skills": [
+        "Django",
+        "Docker",
+        "PostgreSQL",
+        "Python",
+        "React",
+        "Redis",
+        "TypeScript"
+      ],
+      "format": ".pdf",
+      "tier": 1,
+      "date_style": "year",
+      "skill_years": {
+        "Django": 3.0,
+        "Docker": 3.3,
+        "PostgreSQL": 3.0,
+        "Python": 3.3,
+        "React": 3.0,
+        "Redis": 3.0,
+        "TypeScript": 3.3
+      }
+    },
+    "jun_park.docx": {
+      "name": "Jun Park",
+      "role": "devops",
+      "title": "Senior DevOps Engineer",
+      "total_years": 6,
+      "education_level": "bachelor",
+      "skills": [
+        "AWS",
+        "CI/CD",
+        "Docker",
+        "GCP",
+        "Grafana",
+        "Helm",
+        "Kubernetes",
+        "Linux",
+        "Python",
+        "Terraform"
+      ],
+      "format": ".docx",
+      "tier": 1,
+      "date_style": "monthname",
+      "skill_years": {
+        "AWS": 3.0,
+        "CI/CD": 6.5,
+        "Docker": 2.5,
+        "GCP": 3.5,
+        "Grafana": 3.0,
+        "Helm": 6.5,
+        "Kubernetes": 6.5,
+        "Linux": 6.5,
+        "Python": 6.5,
+        "Terraform": 1.0
+      }
+    },
+    "fatou_fall.txt": {
+      "name": "Fatou Fall",
+      "role": "devops",
+      "title": "Platform Engineer",
+      "total_years": 5,
+      "education_level": "phd",
+      "skills": [
+        "AWS",
+        "Bash",
+        "CI/CD",
+        "Docker",
+        "GCP",
+        "Kubernetes",
+        "Linux",
+        "Prometheus",
+        "Python",
+        "Terraform"
+      ],
+      "format": ".txt",
+      "tier": 1,
+      "date_style": "monthname",
+      "skill_years": {
+        "AWS": 2.0,
+        "Bash": 5.1,
+        "CI/CD": 5.1,
+        "Docker": 5.1,
+        "GCP": 5.1,
+        "Kubernetes": 3.1,
+        "Linux": 5.1,
+        "Prometheus": 5.1,
+        "Python": 5.1,
+        "Terraform": 5.1
+      }
+    },
+    "anders_christensen.pdf": {
+      "name": "Anders Christensen",
+      "role": "devops",
+      "title": "Staff Site Reliability Engineer",
+      "total_years": 12,
+      "education_level": "master",
+      "skills": [
+        "AWS",
+        "Bash",
+        "CI/CD",
+        "Docker",
+        "Grafana",
+        "Kubernetes",
+        "Linux",
+        "Prometheus",
+        "Python",
+        "Terraform"
+      ],
+      "format": ".pdf",
+      "tier": 1,
+      "date_style": "year",
+      "skill_years": {
+        "AWS": 12.8,
+        "Bash": 7.0,
+        "CI/CD": 2.0,
+        "Docker": 12.8,
+        "Grafana": 12.8,
+        "Kubernetes": 4.0,
+        "Linux": 9.0,
+        "Prometheus": 12.8,
+        "Python": 9.0,
+        "Terraform": 12.8
+      }
+    },
+    "priti_nair.txt": {
+      "name": "Priti Nair",
+      "role": "data_engineer",
+      "title": "Big Data Engineer",
+      "total_years": 6,
+      "education_level": "master",
+      "skills": [
+        "AWS",
+        "Airflow",
+        "Data Warehousing",
+        "ETL",
+        "PostgreSQL",
+        "Python",
+        "SQL",
+        "Spark",
+        "dbt"
+      ],
+      "format": ".txt",
+      "tier": 1,
+      "date_style": "year",
+      "skill_years": {
+        "AWS": 6.2,
+        "Airflow": 4.0,
+        "Data Warehousing": 4.0,
+        "ETL": 4.0,
+        "PostgreSQL": 6.0,
+        "Python": 6.2,
+        "SQL": 6.0,
+        "Spark": 2.0,
+        "dbt": 6.2
+      }
+    },
+    "tobias_braun.txt": {
+      "name": "Tobias Braun",
+      "role": "data_engineer",
+      "title": "Senior Data Engineer",
+      "total_years": 9,
+      "education_level": "master",
+      "skills": [
+        "Airflow",
+        "ETL",
+        "Kafka",
+        "PostgreSQL",
+        "Python",
+        "SQL",
+        "Snowflake",
+        "Spark",
+        "dbt"
+      ],
+      "format": ".txt",
+      "tier": 1,
+      "date_style": "slash",
+      "skill_years": {
+        "Airflow": 2.0,
+        "ETL": 9.1,
+        "Kafka": 3.0,
+        "PostgreSQL": 9.1,
+        "Python": 2.0,
+        "SQL": 9.1,
+        "Snowflake": 4.1,
+        "Spark": 4.1,
+        "dbt": 9.1
+      }
+    },
+    "adaeze_obi.pdf": {
+      "name": "Adaeze Obi",
+      "role": "data_engineer",
+      "title": "Big Data Engineer",
+      "total_years": 4,
+      "education_level": "bachelor",
+      "skills": [
+        "Airflow",
+        "ETL",
+        "Kafka",
+        "PostgreSQL",
+        "Python",
+        "SQL",
+        "Spark"
+      ],
+      "format": ".pdf",
+      "tier": 1,
+      "date_style": "monthname",
+      "skill_years": {
+        "Airflow": 2.0,
+        "ETL": 4.1,
+        "Kafka": 2.1,
+        "PostgreSQL": 4.1,
+        "Python": 2.1,
+        "SQL": 4.1,
+        "Spark": 4.1
+      }
+    },
+    "enrique_vega.docx": {
+      "name": "Enrique Vega",
+      "role": "data_engineer",
+      "title": "Staff Data Engineer",
+      "total_years": 13,
+      "education_level": "bachelor",
+      "skills": [
+        "AWS",
+        "Airflow",
+        "Data Warehousing",
+        "ETL",
+        "PostgreSQL",
+        "Python",
+        "SQL",
+        "Spark"
+      ],
+      "format": ".docx",
+      "tier": 1,
+      "date_style": "year",
+      "skill_years": {
+        "AWS": 13.9,
+        "Airflow": 9.0,
+        "Data Warehousing": 5.0,
+        "ETL": 9.0,
+        "PostgreSQL": 1.0,
+        "Python": 4.0,
+        "SQL": 9.0,
+        "Spark": 13.9
+      }
+    },
+    "haruto_yamamoto.txt": {
+      "name": "Haruto Yamamoto",
+      "role": "mobile",
+      "title": "iOS Developer",
+      "total_years": 4,
+      "education_level": "master",
+      "skills": [
+        "Android",
+        "Flutter",
+        "Git",
+        "GraphQL",
+        "Kotlin",
+        "REST APIs"
+      ],
+      "format": ".txt",
+      "tier": 1,
+      "date_style": "monthname",
+      "skill_years": {
+        "Android": 4.9,
+        "Flutter": 2.9,
+        "Git": 2.0,
+        "GraphQL": 2.0,
+        "Kotlin": 4.9,
+        "REST APIs": 2.9
+      }
+    },
+    "zoe_lambert.txt": {
+      "name": "Zoe Lambert",
+      "role": "mobile",
+      "title": "Senior Mobile Engineer",
+      "total_years": 7,
+      "education_level": "unknown",
+      "skills": [
+        "Android",
+        "Firebase",
+        "Flutter",
+        "Git",
+        "GraphQL",
+        "Kotlin",
+        "REST APIs",
+        "iOS"
+      ],
+      "format": ".txt",
+      "tier": 2,
+      "date_style": "monthname",
+      "skill_years": {
+        "Android": 4.0,
+        "Firebase": 3.0,
+        "Flutter": 3.8,
+        "Git": 7.0,
+        "GraphQL": 7.8,
+        "Kotlin": 0.8,
+        "REST APIs": 4.0,
+        "iOS": 3.0
+      }
+    },
+    "olumide_adeyemi.txt": {
+      "name": "Olumide Adeyemi",
+      "role": "mobile",
+      "title": "Mobile Engineer",
+      "total_years": 2,
+      "education_level": "unknown",
+      "skills": [
+        "Android",
+        "Flutter",
+        "Git",
+        "Kotlin",
+        "REST APIs",
+        "React Native",
+        "Swift",
+        "iOS"
+      ],
+      "format": ".txt",
+      "tier": 2,
+      "date_style": "year",
+      "skill_years": {
+        "Android": 2.9,
+        "Flutter": 2.9,
+        "Git": 3.0,
+        "Kotlin": 3.0,
+        "REST APIs": 2.9,
+        "React Native": 3.0,
+        "Swift": 2.9,
+        "iOS": 3.0
+      }
+    },
+    "svetlana_ivanova.txt": {
+      "name": "Svetlana Ivanova",
+      "role": "mobile",
+      "title": "Staff Mobile Engineer",
+      "total_years": 10,
+      "education_level": "unknown",
+      "skills": [
+        "Android",
+        "Firebase",
+        "Git",
+        "Kotlin",
+        "REST APIs",
+        "React Native"
+      ],
+      "format": ".txt",
+      "tier": 2,
+      "date_style": "year",
+      "skill_years": {
+        "Android": 10.2,
+        "Firebase": 7.0,
+        "Git": 5.0,
+        "Kotlin": 6.0,
+        "REST APIs": 5.0,
+        "React Native": 1.0
+      }
+    },
+    "cormac_byrne.txt": {
+      "name": "Cormac Byrne",
+      "role": "qa",
+      "title": "QA Automation Engineer",
+      "total_years": 6,
+      "education_level": "unknown",
+      "skills": [
+        "CI/CD",
+        "Docker",
+        "JUnit",
+        "Java",
+        "Playwright",
+        "Python",
+        "REST APIs",
+        "Selenium",
+        "pytest"
+      ],
+      "format": ".txt",
+      "tier": 2,
+      "date_style": "year",
+      "skill_years": {
+        "CI/CD": 2.0,
+        "Docker": 6.4,
+        "JUnit": 6.4,
+        "Java": 4.0,
+        "Playwright": 6.0,
+        "Python": 6.4,
+        "REST APIs": 6.4,
+        "Selenium": 4.0,
+        "pytest": 6.4
+      }
+    },
+    "meifen_zhong.pdf": {
+      "name": "Meifen Zhong",
+      "role": "qa",
+      "title": "Senior Software Engineer in Test",
+      "total_years": 8,
+      "education_level": "unknown",
+      "skills": [
+        "CI/CD",
+        "Cypress",
+        "Java",
+        "Python",
+        "REST APIs",
+        "Selenium",
+        "pytest"
+      ],
+      "format": ".pdf",
+      "tier": 2,
+      "date_style": "monthname",
+      "skill_years": {
+        "CI/CD": 5.0,
+        "Cypress": 6.8,
+        "Java": 2.0,
+        "Python": 1.8,
+        "REST APIs": 8.8,
+        "Selenium": 1.8,
+        "pytest": 5.0
+      }
+    },
+    "ibrahim_traore.txt": {
+      "name": "Ibrahim Traore",
+      "role": "security",
+      "title": "Senior Application Security Engineer",
+      "total_years": 6,
+      "education_level": "phd",
+      "skills": [
+        "AWS",
+        "Burp Suite",
+        "Docker",
+        "Linux",
+        "OWASP",
+        "Penetration Testing",
+        "Python",
+        "SIEM",
+        "Threat Modeling"
+      ],
+      "format": ".txt",
+      "tier": 2,
+      "date_style": "year",
+      "skill_years": {
+        "AWS": 3.0,
+        "Burp Suite": 6.7,
+        "Docker": 6.7,
+        "Linux": 3.0,
+        "OWASP": 6.7,
+        "Penetration Testing": 6.7,
+        "Python": 1.0,
+        "SIEM": 3.0,
+        "Threat Modeling": 6.7
+      }
+    },
+    "petra_blum.txt": {
+      "name": "Petra Blum",
+      "role": "security",
+      "title": "Security Engineer",
+      "total_years": 3,
+      "education_level": "unknown",
+      "skills": [
+        "AWS",
+        "Burp Suite",
+        "Docker",
+        "Linux",
+        "OWASP",
+        "Penetration Testing",
+        "Python",
+        "SIEM",
+        "Threat Modeling"
+      ],
+      "format": ".txt",
+      "tier": 2,
+      "date_style": "slash",
+      "skill_years": {
+        "AWS": 3.7,
+        "Burp Suite": 3.7,
+        "Docker": 0.7,
+        "Linux": 3.7,
+        "OWASP": 3.7,
+        "Penetration Testing": 3.7,
+        "Python": 3.7,
+        "SIEM": 3.7,
+        "Threat Modeling": 3.0
+      }
+    },
+    "yusuf_hassan.txt": {
+      "name": "Yusuf Hassan",
+      "role": "backend_python",
+      "title": "Senior Backend Engineer",
+      "total_years": 7,
+      "education_level": "bachelor",
+      "skills": [
+        "AWS",
+        "Docker",
+        "FastAPI",
+        "Microservices",
+        "PostgreSQL",
+        "Python",
+        "REST APIs"
+      ],
+      "format": ".txt",
+      "tier": 2,
+      "date_style": "year",
+      "skill_years": {
+        "AWS": 1.0,
+        "Docker": 6.0,
+        "FastAPI": 3.0,
+        "Microservices": 7.0,
+        "PostgreSQL": 7.2,
+        "Python": 3.0,
+        "REST APIs": 1.0
+      }
+    },
+    "clara_stone.txt": {
+      "name": "Clara Stone",
+      "role": "frontend",
+      "title": "Junior UI Engineer",
+      "total_years": 2,
+      "education_level": "unknown",
+      "skills": [
+        "CSS",
+        "Cypress",
+        "HTML",
+        "JavaScript",
+        "Next.js",
+        "React",
+        "Redux",
+        "Tailwind CSS",
+        "TypeScript"
+      ],
+      "format": ".txt",
+      "tier": 2,
+      "date_style": "year",
+      "skill_years": {
+        "CSS": 2.3,
+        "Cypress": 2.3,
+        "HTML": 2.0,
+        "JavaScript": 2.0,
+        "Next.js": 2.3,
+        "React": 2.3,
+        "Redux": 2.3,
+        "Tailwind CSS": 2.3,
+        "TypeScript": 2.3
+      }
+    },
+    "rajan_pillai.pdf": {
+      "name": "Rajan Pillai",
+      "role": "fullstack",
+      "title": "Product Engineer",
+      "total_years": 5,
+      "education_level": "unknown",
+      "skills": [
+        "Django",
+        "Docker",
+        "GraphQL",
+        "Node.js",
+        "PostgreSQL",
+        "Python",
+        "React",
+        "Redis",
+        "TypeScript"
+      ],
+      "format": ".pdf",
+      "tier": 2,
+      "date_style": "slash",
+      "skill_years": {
+        "Django": 2.0,
+        "Docker": 5.8,
+        "GraphQL": 5.8,
+        "Node.js": 5.8,
+        "PostgreSQL": 5.8,
+        "Python": 5.8,
+        "React": 5.8,
+        "Redis": 2.0,
+        "TypeScript": 3.8
+      }
+    },
+    "veronika_horvath.docx": {
+      "name": "Veronika Horvath",
+      "role": "ml",
+      "title": "Senior Data Scientist",
+      "total_years": 8,
+      "education_level": "unknown",
+      "skills": [
+        "Airflow",
+        "Machine Learning",
+        "PyTorch",
+        "Python",
+        "SQL",
+        "Spark",
+        "pandas",
+        "scikit-learn"
+      ],
+      "format": ".docx",
+      "tier": 2,
+      "date_style": "monthname",
+      "skill_years": {
+        "Airflow": 3.4,
+        "Machine Learning": 2.0,
+        "PyTorch": 2.0,
+        "Python": 3.4,
+        "SQL": 5.0,
+        "Spark": 3.4,
+        "pandas": 6.4,
+        "scikit-learn": 2.0
+      }
+    },
+    "kweku_mensah.txt": {
+      "name": "Kweku Mensah",
+      "role": "data_engineer",
+      "title": "Analytics Engineer",
+      "total_years": 5,
+      "education_level": "unknown",
+      "skills": [
+        "AWS",
+        "Airflow",
+        "Data Warehousing",
+        "ETL",
+        "PostgreSQL",
+        "Python",
+        "SQL",
+        "Spark"
+      ],
+      "format": ".txt",
+      "tier": 2,
+      "date_style": "year",
+      "skill_years": {
+        "AWS": 5.2,
+        "Airflow": 5.2,
+        "Data Warehousing": 5.2,
+        "ETL": 5.0,
+        "PostgreSQL": 5.0,
+        "Python": 1.0,
+        "SQL": 5.0,
+        "Spark": 5.2
+      }
+    }
+  },
+  "job_descriptions": {
+    "senior_ml_engineer.txt": {
+      "title": "Senior Machine Learning Engineer",
+      "primary_roles": [
+        "ml"
+      ],
+      "adjacent_roles": [
+        "data_engineer"
+      ]
+    },
+    "backend_python_engineer.txt": {
+      "title": "Backend Engineer (Python)",
+      "primary_roles": [
+        "backend_python"
+      ],
+      "adjacent_roles": [
+        "fullstack"
+      ]
+    },
+    "frontend_react_engineer.txt": {
+      "title": "Frontend Engineer (React)",
+      "primary_roles": [
+        "frontend"
+      ],
+      "adjacent_roles": [
+        "fullstack"
+      ]
+    },
+    "devops_platform_engineer.txt": {
+      "title": "DevOps / Platform Engineer",
+      "primary_roles": [
+        "devops"
+      ],
+      "adjacent_roles": []
+    },
+    "data_platform_engineer.txt": {
+      "title": "Data Engineer",
+      "primary_roles": [
+        "data_engineer"
+      ],
+      "adjacent_roles": [
+        "ml",
+        "backend_python"
+      ]
+    },
+    "fullstack_product_engineer.txt": {
+      "title": "Full-Stack Product Engineer",
+      "primary_roles": [
+        "fullstack"
+      ],
+      "adjacent_roles": [
+        "frontend",
+        "backend_python"
+      ]
+    }
+  }
+}

@@ -1,0 +1,16 @@
+Cormac Byrne
+QA Automation Engineer | Bengaluru, India | cormac.byrne@example.com | +1-555-1131
+
+QA Automation Engineer with 6+ years of experience. Core skills include Selenium, Python, pytest applied across production systems. Proven record of delivering results with cross-functional teams.
+
+EXPERIENCE
+QA Automation Engineer, Acme Cloud (2022 - present)
+- Cut flaky tests 20% by stabilising Playwright fixtures.
+- Automated API contract tests with Selenium and Java.
+
+Software Engineer in Test, WebStart (2020 - 2022)
+- Cut flaky tests 50% by stabilising CI/CD fixtures.
+- Built a Playwright regression suite covering 700+ scenarios.
+
+Projects
+Test Harness: parallel JUnit runner integrated into pytest.

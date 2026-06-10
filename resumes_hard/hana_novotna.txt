@@ -1,0 +1,24 @@
+Hana Novotna
+Frontend Developer
+Pune, India | hana.novotna@example.com | +1-555-1115
+
+My Background
+Frontend Developer with 5+ years of experience. Core skills include JavaScript, TypeScript, React applied across production systems. Proven record of delivering results with cross-functional teams.
+
+Toolbox
+JavaScript, TypeScript, React, CSS, HTML, Redux, Vue.js, Next.js
+
+Where I've Worked
+Frontend Developer, Bright Apps (2023 - Present)
+- Built a HTML design system used across 6 product teams.
+- Migrated a legacy UI to Redux with Vue.js, cutting bundle size 30%.
+
+UI Engineer, DataWorks (2021 - 2023)
+- Built a Vue.js design system used across 8 product teams.
+- Migrated a legacy UI to TypeScript with Redux, cutting bundle size 40%.
+
+Studies
+M.S. in Software Engineering, Global Tech University (2020)
+
+Projects
+Dashboard Kit: reusable HTML charting components with Next.js.

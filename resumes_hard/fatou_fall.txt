@@ -1,0 +1,24 @@
+Fatou Fall
+Platform Engineer
+Berlin, Germany | fatou.fall@example.com | +1-555-1121
+
+My Background
+Platform Engineer with 5+ years of experience. Core skills include Kubernetes, Terraform, AWS applied across production systems. Proven record of delivering results with cross-functional teams.
+
+Toolbox
+Kubernetes, Terraform, AWS, Docker, CI/CD, Linux, GCP, Prometheus, Python, Bash
+
+Where I've Worked
+DevOps Engineer, Craft Studio (May 2023 - Present)
+- Ran 90+ Kubernetes clusters with GitOps-driven deployments.
+- Cut deployment lead time 60% by rebuilding Linux pipelines.
+
+Site Reliability Engineer, RetailX (May 2021 - May 2023)
+- Built AWS observability dashboards reducing MTTR 70%.
+- Cut deployment lead time 30% by rebuilding Linux pipelines.
+
+Studies
+Ph.D. in Computer Science, National Institute of Technology (2021)
+
+KEY PROJECTS
+Self-Service Platform: CI/CD modules enabling one-click environments.

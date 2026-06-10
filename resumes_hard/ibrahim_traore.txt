@@ -1,0 +1,28 @@
+Ibrahim Traore
+Senior Application Security Engineer | Singapore | ibrahim.traore@example.com | +1-555-1133
+
+Professional Summary
+Senior Application Security Engineer with 7+ years of experience. Core skills include Penetration Testing, OWASP, Burp Suite applied across production systems. Proven record of delivering results with cross-functional teams.
+
+EMPLOYMENT HISTORY
+Senior Application Security Engineer, Northwind Analytics (2023 - Present)
+- Cut mean time to detect 60% by tuning AWS alerting.
+- Embedded SIEM checks into CI, blocking vulnerable releases.
+
+Security Engineer, Loop (2020 - 2023)
+- Ran 30+ penetration tests; remediated all critical findings.
+- Cut mean time to detect 70% by tuning Linux alerting.
+
+Security Engineer, Streamline (2019 - 2020)
+- Ran 70+ penetration tests; remediated all critical findings.
+- Cut mean time to detect 60% by tuning Python alerting.
+
+Education
+Ph.D. in Computer Science, Northfield College (2019)
+
+Projects
+AppSec Pipeline: automated Threat Modeling scanning with Docker triage.
+
+Certifications
+- OSCP
+- CISSP

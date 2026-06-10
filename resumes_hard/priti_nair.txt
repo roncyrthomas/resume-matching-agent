@@ -1,0 +1,24 @@
+Priti Nair
+Big Data Engineer
+Bengaluru, India | priti.nair@example.com | +1-555-1123
+
+What I Bring
+Big Data Engineer with 6+ years of experience. Core skills include Python, SQL, Spark applied across production systems. Proven record of delivering results with cross-functional teams.
+
+Toolbox
+Python, SQL, Spark, Airflow, ETL, PostgreSQL, AWS, dbt, Data Warehousing
+
+Career History
+Data Engineer, Quant Co (2022 - Current)
+- Migrated batch ETL to streaming with Airflow and PostgreSQL.
+- Built Data Warehousing pipelines moving 8TB per day into the warehouse.
+
+Analytics Engineer, Craft Studio (2020 - 2022)
+- Cut pipeline failures 70% with Spark data-quality checks.
+- Modelled analytics tables in PostgreSQL powering 60+ dashboards.
+
+Studies
+Master of Science in Computer Science, Tech Institute of Engineering (2019)
+
+Projects
+CDC Pipeline: change-data-capture into Spark using PostgreSQL.

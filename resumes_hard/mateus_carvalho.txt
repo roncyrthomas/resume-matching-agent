@@ -1,0 +1,24 @@
+Mateus Carvalho
+UI Engineer
+Singapore | mateus.carvalho@example.com | +1-555-1112
+
+SUMMARY
+UI Engineer with 6+ years of experience. Core skills include JavaScript, TypeScript, React applied across production systems. Proven record of delivering results with cross-functional teams.
+
+SKILLS
+JavaScript, TypeScript, React, CSS, HTML, Cypress, Tailwind CSS, GraphQL
+
+EMPLOYMENT HISTORY
+Frontend Developer, Streamline (2022 - Present)
+- Migrated a legacy UI to React with Cypress, cutting bundle size 20%.
+- Improved Core Web Vitals 30% by optimising React rendering.
+
+Frontend Developer, RetailX (2020 - 2022)
+- Migrated a legacy UI to TypeScript with HTML, cutting bundle size 70%.
+- Improved Core Web Vitals 60% by optimising TypeScript rendering.
+
+EDUCATION
+Bachelor of Technology in Software Engineering, Riverside University (2019)
+
+PROJECTS
+Dashboard Kit: reusable JavaScript charting components with Tailwind CSS.

@@ -1,0 +1,20 @@
+Ingrid Haugen
+Junior Software Engineer, Java
+Singapore | ingrid.haugen@example.com | +1-555-1111
+
+PROFILE
+Junior Software Engineer, Java with 2+ years of experience. Core skills include Java, Spring Boot, MySQL applied across production systems. Proven record of delivering results with cross-functional teams.
+
+CORE COMPETENCIES
+Java, Spring Boot, MySQL, Kafka, REST APIs, Maven, PostgreSQL
+
+EMPLOYMENT HISTORY
+Junior Java Backend Developer, Mosaic Travel (2024 - Current)
+- Modernised legacy modules into Java microservices on PostgreSQL.
+- Improved throughput 35% by introducing REST APIs message streaming.
+
+EDUCATION & TRAINING
+M.S. in Information Systems, Tech Institute of Engineering (2023)
+
+KEY PROJECTS
+Ledger Service: double-entry bookkeeping engine on REST APIs and PostgreSQL.

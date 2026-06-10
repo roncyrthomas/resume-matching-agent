@@ -1,0 +1,24 @@
+Haruto Yamamoto
+iOS Developer
+Pune, India | haruto.yamamoto@example.com | +1-555-1127
+
+What I Bring
+iOS Developer with 5+ years of experience. Core skills include Kotlin, Android, REST APIs applied across production systems. Proven record of delivering results with cross-functional teams.
+
+Toolbox
+Kotlin, Android, REST APIs, Git, GraphQL, Flutter
+
+Career History
+iOS Developer, Nimbus Pay (Jul 2023 - Present)
+- Led migration from REST APIs to Flutter, reducing crash rate 25%.
+- Cut app startup time 25% by profiling Android initialisation.
+
+iOS Developer, FinServe (Jul 2021 - Jul 2023)
+- Led migration from Git to GraphQL, reducing crash rate 35%.
+- Cut app startup time 60% by profiling Android initialisation.
+
+Studies
+M.Tech in Software Engineering, Lakeside State University (2021)
+
+Projects
+Fitness Tracker: Kotlin app with Git cloud sync.

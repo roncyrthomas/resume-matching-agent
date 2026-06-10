@@ -1,0 +1,26 @@
+Yusuf Hassan
+Senior Backend Engineer | Berlin, Germany | yusuf.hassan@example.com | +1-555-1135
+
+Senior Backend Engineer with 7+ years of experience. Core skills include Python, FastAPI, PostgreSQL applied across production systems. Proven record of delivering results with cross-functional teams.
+
+EXPERIENCE
+Senior Python Developer, FinServe (2023 - Current)
+- Migrated a monolith to Docker microservices with zero-downtime releases.
+- Designed Docker microservices handling 5M requests per day.
+
+Software Engineer, Backend, Helio Health (2020 - 2023)
+- Owned CI/CD pipelines deploying Docker services 8x per week.
+- Designed FastAPI microservices handling 6M requests per day.
+
+Software Engineer, Backend, Craft Studio (2019 - 2020)
+- Designed REST APIs microservices handling 3M requests per day.
+- Migrated a monolith to AWS microservices with zero-downtime releases.
+
+EDUCATION & TRAINING
+Bachelor of Technology in Computer Science, Northfield College (2019)
+
+KEY PROJECTS
+Rate Limiter: distributed limiter using Docker and PostgreSQL.
+
+LICENSES & CERTIFICATIONS
+- AWS Certified Developer - Associate

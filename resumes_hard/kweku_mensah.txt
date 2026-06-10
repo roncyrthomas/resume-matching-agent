@@ -1,0 +1,19 @@
+Kweku Mensah
+Analytics Engineer | Amsterdam, Netherlands | kweku.mensah@example.com | +1-555-1139
+
+Analytics Engineer with 5+ years of experience. Core skills include Python, SQL, Spark applied across production systems. Proven record of delivering results with cross-functional teams.
+
+EXPERIENCE
+Data Engineer, FinServe (2022 - Present)
+- Cut pipeline failures 40% with ETL data-quality checks.
+- Built PostgreSQL pipelines moving 1TB per day into the warehouse.
+
+Big Data Engineer, Northwind Analytics (2021 - 2022)
+- Cut pipeline failures 60% with PostgreSQL data-quality checks.
+- Migrated batch ETL to streaming with Python and SQL.
+
+KEY PROJECTS
+CDC Pipeline: change-data-capture into Data Warehousing using ETL.
+
+LICENSES & CERTIFICATIONS
+- Google Cloud Professional Data Engineer

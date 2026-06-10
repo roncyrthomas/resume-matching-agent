@@ -1,0 +1,20 @@
+Nikolaj Berg
+Software Engineer, Backend
+London, UK | nikolaj.berg@example.com | +1-555-1106
+
+Professional Summary
+Software Engineer, Backend with 3+ years of experience. Core skills include Python, FastAPI, PostgreSQL applied across production systems. Proven record of delivering results with cross-functional teams.
+
+Technical Skills
+Python, FastAPI, PostgreSQL, Docker, REST APIs, Flask, MongoDB, Microservices
+
+EXPERIENCE
+Software Engineer, Backend, Streamline (Dec 2023 - Present)
+- Owned CI/CD pipelines deploying Python services 1x per week.
+- Designed Python microservices handling 4M requests per day.
+
+Education
+Bachelor of Technology in Software Engineering, Northfield College (2022)
+
+Projects
+Billing API: idempotent payment service in MongoDB backed by Microservices.

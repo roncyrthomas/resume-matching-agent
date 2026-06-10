@@ -1,0 +1,13 @@
+Clara Stone
+Junior UI Engineer | Singapore | clara.stone@example.com | +1-555-1136
+
+PROFILE
+Junior UI Engineer with 2+ years of experience. Core skills include JavaScript, TypeScript, React applied across production systems. Proven record of delivering results with cross-functional teams.
+
+Work Experience
+Junior UI Engineer, AppWorks (2024 - Present)
+- Improved Core Web Vitals 30% by optimising HTML rendering.
+- Built a JavaScript design system used across 9 product teams.
+
+KEY PROJECTS
+Dashboard Kit: reusable React charting components with Redux.
