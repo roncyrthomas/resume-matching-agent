@@ -27,3 +27,6 @@ ipykernel>=6.29
 
 # Testing
 pytest==8.3.3
+
+# Next-level — UI
+streamlit>=1.40
