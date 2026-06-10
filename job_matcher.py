@@ -45,7 +45,7 @@ from resume_rag import ChunkHit, ResumeRAG, extract_skills
 # --- Scoring weights ---------------------------------------------------------------
 
 TOP_K = 10                 # assignment default
-CHUNK_POOL = 60            # chunks fetched semantically before aggregation
+CHUNK_POOL = 60            # semantic pool; candidates with no chunk in this top-N are not ranked
 SEMANTIC_WEIGHT = 0.65     # semantic share inside the retrieval signal (vs BM25)
 W_RETRIEVAL = 0.45
 W_SKILLS = 0.35
@@ -55,6 +55,10 @@ EXCERPT_CHARS = 260
 
 _EDU_RANK = {"unknown": 0, "bachelor": 1, "master": 2, "phd": 3}
 _YEARS_RE = re.compile(r"\b(\d{1,2})\s*\+?\s*years?\b", re.IGNORECASE)
+_EXPERIENCE_CUE = re.compile(
+    r"\b(experience|experienced|professional|industry|required|needed|minimum|at least)\b",
+    re.IGNORECASE,
+)
 _DEGREE_RE = re.compile(r"\b(ph\.?d|doctorate|master|bachelor)('?s)?\b", re.IGNORECASE)
 _TOKEN_RE = re.compile(r"[a-z0-9+#./-]+")
 
@@ -121,8 +125,9 @@ def _parse_requirement_line(line: str) -> Optional[MustHave]:
                             years=years, any_of=True)
         return MustHave(kind="total_years", raw=clean, years=years)
     if degree_match:
-        return MustHave(kind="education", raw=clean,
-                        level=degree_match.group(1).lower().replace(".", "").replace("phd", "phd"))
+        raw_level = degree_match.group(1).lower().replace(".", "")
+        level = "phd" if raw_level in ("phd", "doctorate") else raw_level
+        return MustHave(kind="education", raw=clean, level=level)
     if line_skills:
         return MustHave(kind="skills", raw=clean, skills=line_skills,
                         any_of=" or " in clean.lower())
@@ -156,12 +161,17 @@ def parse_job_description(text: str) -> JobDescription:
     )
     if not must_haves:
         # No Requirements section (e.g. an inline one-liner JD). Fall back to
-        # high-precision patterns anywhere in the text: years and degree
-        # demands are unambiguous must-haves; bare skill mentions are not.
-        candidates = (_parse_requirement_line(ln) for ln in text.splitlines())
+        # high-precision patterns anywhere in the text: degree demands, and
+        # years that read as experience demands ("4+ years required") — but
+        # not incidental years ("a 10+ years old company") or bare skills.
+        parsed = (_parse_requirement_line(ln) for ln in text.splitlines())
         must_haves = tuple(
-            mh for mh in candidates
-            if mh and mh.kind in ("skill_years", "total_years", "education")
+            mh for mh in parsed
+            if mh and (
+                mh.kind == "education"
+                or (mh.kind in ("skill_years", "total_years")
+                    and _EXPERIENCE_CUE.search(mh.raw))
+            )
         )
     required_skills = tuple(sorted({s for mh in must_haves for s in mh.skills}))
     nice_to_have = tuple(extract_skills("\n".join(nice_lines)))
@@ -238,7 +248,11 @@ class _CandidateSignals:
 
 
 class JobMatcher:
-    """Hybrid (semantic + BM25 keyword) matcher over the resume RAG index."""
+    """Hybrid (semantic + BM25 keyword) matcher over the resume RAG index.
+
+    The BM25 index and candidate profiles are cached on first use; create a
+    fresh JobMatcher if the underlying ChromaDB collection is rebuilt.
+    """
 
     def __init__(self, rag: Optional[ResumeRAG] = None,
                  semantic_weight: float = SEMANTIC_WEIGHT) -> None:
@@ -253,9 +267,10 @@ class JobMatcher:
 
     # -- keyword side ---------------------------------------------------------
 
-    def _ensure_keyword_index(self) -> None:
+    def _ensure_keyword_index(self) -> bool:
+        """Build the BM25 index once; return True only when built on this call."""
         if self._bm25 is not None:
-            return
+            return False
         from rank_bm25 import BM25Okapi
 
         start = time.perf_counter()
@@ -267,6 +282,7 @@ class JobMatcher:
         self._bm25 = BM25Okapi([_tokenize(c.text) for c in self._chunks])
         self._profiles = self.rag.candidate_profiles()
         self.keyword_index_ms = round((time.perf_counter() - start) * 1000, 1)
+        return True
 
     def _bm25_by_candidate(self, jd_text: str) -> Dict[str, float]:
         """Best normalised BM25 chunk score per resume file."""
@@ -386,7 +402,7 @@ class JobMatcher:
             raise ValueError("k must be positive")
         total_start = time.perf_counter()
         jd = parse_job_description(jd_text)
-        self._ensure_keyword_index()
+        built_keyword_index = self._ensure_keyword_index()
 
         sem_start = time.perf_counter()
         signals = self._semantic_by_candidate(jd.text, pool=CHUNK_POOL)
@@ -442,7 +458,7 @@ class JobMatcher:
             "latency_ms": {
                 "semantic_search": semantic_ms,
                 "keyword_search": keyword_ms,
-                "keyword_index_build": self.keyword_index_ms,
+                "keyword_index_build": self.keyword_index_ms if built_keyword_index else 0.0,
                 "total": total_ms,
             },
         }
