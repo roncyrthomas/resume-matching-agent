@@ -2,13 +2,13 @@ Fatou Fall
 Platform Engineer
 Berlin, Germany | fatou.fall@example.com | +1-555-1121
 
-My Background
+What I Bring
 Platform Engineer with 5+ years of experience. Core skills include Kubernetes, Terraform, AWS applied across production systems. Proven record of delivering results with cross-functional teams.
 
 Toolbox
 Kubernetes, Terraform, AWS, Docker, CI/CD, Linux, GCP, Prometheus, Python, Bash
 
-Where I've Worked
+Career History
 DevOps Engineer, Craft Studio (May 2023 - Present)
 - Ran 90+ Kubernetes clusters with GitOps-driven deployments.
 - Cut deployment lead time 60% by rebuilding Linux pipelines.

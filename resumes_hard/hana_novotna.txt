@@ -2,13 +2,13 @@ Hana Novotna
 Frontend Developer
 Pune, India | hana.novotna@example.com | +1-555-1115
 
-What I Bring
+My Background
 Frontend Developer with 5+ years of experience. Core skills include JavaScript, TypeScript, React applied across production systems. Proven record of delivering results with cross-functional teams.
 
 Toolbox
 JavaScript, TypeScript, React, CSS, HTML, Redux, Vue.js, Next.js
 
-Career History
+Where I've Worked
 Frontend Developer, Bright Apps (2023 - Present)
 - Built a HTML design system used across 6 product teams.
 - Migrated a legacy UI to Redux with Vue.js, cutting bundle size 30%.

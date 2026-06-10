@@ -29,8 +29,9 @@ from __future__ import annotations
 
 import argparse
 import json
+import zlib
 import random
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from pathlib import Path
 from typing import Dict, List, Optional, Sequence, Tuple
 
@@ -515,10 +516,9 @@ def _skill_years_map(
         for job in jobs:
             text = (job.title + " " + " ".join(job.bullets)).lower()
             if skill_lower in text:
-                if date_style == "year":
-                    span = (job.end_year - job.start_year) * 12
-                else:
-                    span = (job.end_year - job.start_year) * 12 + (job.end_month - job.start_month)
+                # year-style jobs have their months pre-snapped to rendered
+                # semantics in _make_hard_resume, so one formula serves all.
+                span = (job.end_year - job.start_year) * 12 + (job.end_month - job.start_month)
                 matched_months += max(span, 0)
         if matched_months == 0:
             # skill lives in summary/skills line — assign full career span
@@ -538,8 +538,12 @@ def _fmt_date(year: int, month: int, date_style: str, present_token: str, is_pre
 
 
 def _rng_choice_from_list(choices: List[str], key: str) -> str:
-    """Deterministic choice based on a string key (no rng needed)."""
-    return choices[hash(key) % len(choices)]
+    """Deterministic choice based on a string key (no rng needed).
+
+    crc32, not hash(): str hashing is salted per process and would silently
+    break dataset reproducibility between runs.
+    """
+    return choices[zlib.crc32(key.encode("utf-8")) % len(choices)]
 
 
 def _make_hard_resume(idx: int, spec: Tuple[str, str, str, int], rng: random.Random) -> HardResume:
@@ -577,6 +581,14 @@ def _make_hard_resume(idx: int, spec: Tuple[str, str, str, int], rng: random.Ran
         education_line = ""
 
     jobs = _make_hard_jobs(rng, role, skills, years)
+    if date_style == "year":
+        # Year-only rendering hides months, so labels must use what the text
+        # actually shows: starts snap to January, finished jobs to December,
+        # and Present jobs to the TODAY anchor. Ground truth stays recoverable.
+        jobs = tuple(
+            replace(j, start_month=1, end_month=TODAY_MONTH if j.is_present else 12)
+            for j in jobs
+        )
     career_months = _total_months(jobs)
 
     projects = tuple(

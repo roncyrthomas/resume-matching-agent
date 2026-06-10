@@ -87,22 +87,22 @@
       "tier": 0,
       "date_style": "year",
       "skill_years": {
-        "Airflow": 4.3,
-        "Deep Learning": 4.3,
-        "MLOps": 4.3,
-        "Machine Learning": 3.0,
-        "PyTorch": 4.3,
-        "Python": 1.0,
-        "SQL": 4.0,
-        "pandas": 4.0,
-        "scikit-learn": 4.3
+        "Airflow": 4.4,
+        "Deep Learning": 4.4,
+        "MLOps": 4.4,
+        "Machine Learning": 3.9,
+        "PyTorch": 4.4,
+        "Python": 1.4,
+        "SQL": 5.3,
+        "pandas": 5.3,
+        "scikit-learn": 4.4
       }
     },
     "pooja_iyer.txt": {
       "name": "Pooja Iyer",
       "role": "ml",
       "title": "Staff Applied Scientist",
-      "total_years": 11,
+      "total_years": 12,
       "education_level": "master",
       "skills": [
         "Airflow",
@@ -118,14 +118,14 @@
       "tier": 0,
       "date_style": "year",
       "skill_years": {
-        "Airflow": 11.5,
-        "Docker": 11.5,
-        "Machine Learning": 2.0,
-        "PyTorch": 6.0,
-        "Python": 7.0,
-        "SQL": 6.0,
-        "pandas": 12.0,
-        "scikit-learn": 3.0
+        "Airflow": 12.4,
+        "Docker": 12.4,
+        "Machine Learning": 2.4,
+        "PyTorch": 7.8,
+        "Python": 8.8,
+        "SQL": 7.3,
+        "pandas": 15.2,
+        "scikit-learn": 3.9
       }
     },
     "brendan_walsh.pdf": {
@@ -298,14 +298,14 @@
       "tier": 0,
       "date_style": "year",
       "skill_years": {
-        "Java": 4.0,
-        "Kafka": 2.0,
-        "Kubernetes": 2.0,
-        "Microservices": 2.0,
-        "MySQL": 2.0,
-        "REST APIs": 4.0,
-        "Redis": 2.0,
-        "Spring Boot": 2.0
+        "Java": 5.3,
+        "Kafka": 2.4,
+        "Kubernetes": 2.4,
+        "Microservices": 2.9,
+        "MySQL": 2.9,
+        "REST APIs": 4.4,
+        "Redis": 2.9,
+        "Spring Boot": 2.9
       }
     },
     "pawel_kowalski.pdf": {
@@ -327,13 +327,13 @@
       "tier": 0,
       "date_style": "year",
       "skill_years": {
-        "Java": 10.0,
-        "Kafka": 10.1,
-        "Microservices": 7.0,
-        "MySQL": 10.1,
-        "REST APIs": 6.0,
-        "Redis": 1.0,
-        "Spring Boot": 7.0
+        "Java": 13.2,
+        "Kafka": 10.4,
+        "Microservices": 9.2,
+        "MySQL": 10.4,
+        "REST APIs": 8.2,
+        "Redis": 1.9,
+        "Spring Boot": 9.2
       }
     },
     "ingrid_haugen.txt": {
@@ -355,12 +355,12 @@
       "tier": 0,
       "date_style": "year",
       "skill_years": {
-        "Java": 2.0,
+        "Java": 2.4,
         "Kafka": 2.4,
         "Maven": 2.4,
         "MySQL": 2.4,
-        "PostgreSQL": 2.0,
-        "REST APIs": 2.0,
+        "PostgreSQL": 2.4,
+        "REST APIs": 2.4,
         "Spring Boot": 2.4
       }
     },
@@ -368,7 +368,7 @@
       "name": "Mateus Carvalho",
       "role": "frontend",
       "title": "UI Engineer",
-      "total_years": 5,
+      "total_years": 6,
       "education_level": "bachelor",
       "skills": [
         "CSS",
@@ -384,21 +384,21 @@
       "tier": 0,
       "date_style": "year",
       "skill_years": {
-        "CSS": 5.7,
-        "Cypress": 4.0,
-        "GraphQL": 5.7,
-        "HTML": 2.0,
-        "JavaScript": 5.7,
-        "React": 4.0,
-        "Tailwind CSS": 5.7,
-        "TypeScript": 2.0
+        "CSS": 6.4,
+        "Cypress": 4.4,
+        "GraphQL": 6.4,
+        "HTML": 2.9,
+        "JavaScript": 6.4,
+        "React": 4.4,
+        "Tailwind CSS": 6.4,
+        "TypeScript": 2.9
       }
     },
     "soraya_mansouri.pdf": {
       "name": "Soraya Mansouri",
       "role": "frontend",
       "title": "Frontend Developer",
-      "total_years": 2,
+      "total_years": 3,
       "education_level": "bachelor",
       "skills": [
         "CSS",
@@ -414,14 +414,14 @@
       "tier": 0,
       "date_style": "year",
       "skill_years": {
-        "CSS": 2.9,
-        "Cypress": 2.9,
-        "GraphQL": 2.9,
-        "HTML": 2.9,
-        "JavaScript": 2.9,
-        "React": 3.0,
-        "Tailwind CSS": 2.9,
-        "TypeScript": 2.9
+        "CSS": 3.4,
+        "Cypress": 3.4,
+        "GraphQL": 3.4,
+        "HTML": 3.4,
+        "JavaScript": 3.4,
+        "React": 3.4,
+        "Tailwind CSS": 3.4,
+        "TypeScript": 3.4
       }
     },
     "kwame_asante.docx": {
@@ -443,20 +443,20 @@
       "tier": 1,
       "date_style": "year",
       "skill_years": {
-        "CSS": 2.0,
-        "GraphQL": 9.3,
-        "HTML": 7.0,
-        "JavaScript": 9.3,
-        "React": 7.0,
-        "Redux": 4.0,
-        "TypeScript": 5.0
+        "CSS": 2.9,
+        "GraphQL": 9.4,
+        "HTML": 8.3,
+        "JavaScript": 9.4,
+        "React": 8.3,
+        "Redux": 5.8,
+        "TypeScript": 5.4
       }
     },
     "hana_novotna.txt": {
       "name": "Hana Novotna",
       "role": "frontend",
       "title": "Frontend Developer",
-      "total_years": 4,
+      "total_years": 5,
       "education_level": "master",
       "skills": [
         "CSS",
@@ -472,14 +472,14 @@
       "tier": 1,
       "date_style": "year",
       "skill_years": {
-        "CSS": 4.7,
-        "HTML": 3.0,
-        "JavaScript": 4.7,
-        "Next.js": 4.7,
-        "React": 4.7,
-        "Redux": 5.0,
-        "TypeScript": 2.0,
-        "Vue.js": 5.0
+        "CSS": 5.4,
+        "HTML": 3.4,
+        "JavaScript": 5.4,
+        "Next.js": 5.4,
+        "React": 5.4,
+        "Redux": 6.3,
+        "TypeScript": 2.9,
+        "Vue.js": 6.3
       }
     },
     "dmitri_volkov.pdf": {
@@ -558,14 +558,14 @@
       "tier": 1,
       "date_style": "year",
       "skill_years": {
-        "Docker": 4.0,
-        "GraphQL": 4.0,
-        "Node.js": 4.0,
-        "PostgreSQL": 4.0,
-        "Python": 6.0,
-        "React": 3.0,
-        "Redis": 3.0,
-        "TypeScript": 8.0
+        "Docker": 5.8,
+        "GraphQL": 5.8,
+        "Node.js": 4.4,
+        "PostgreSQL": 5.8,
+        "Python": 7.8,
+        "React": 3.9,
+        "Redis": 3.9,
+        "TypeScript": 10.2
       }
     },
     "nora_eriksen.pdf": {
@@ -587,13 +587,13 @@
       "tier": 1,
       "date_style": "year",
       "skill_years": {
-        "Django": 3.0,
-        "Docker": 3.3,
-        "PostgreSQL": 3.0,
-        "Python": 3.3,
-        "React": 3.0,
-        "Redis": 3.0,
-        "TypeScript": 3.3
+        "Django": 3.4,
+        "Docker": 3.4,
+        "PostgreSQL": 3.4,
+        "Python": 3.4,
+        "React": 3.4,
+        "Redis": 3.4,
+        "TypeScript": 3.4
       }
     },
     "jun_park.docx": {
@@ -668,7 +668,7 @@
       "name": "Anders Christensen",
       "role": "devops",
       "title": "Staff Site Reliability Engineer",
-      "total_years": 12,
+      "total_years": 13,
       "education_level": "master",
       "skills": [
         "AWS",
@@ -686,16 +686,16 @@
       "tier": 1,
       "date_style": "year",
       "skill_years": {
-        "AWS": 12.8,
-        "Bash": 7.0,
-        "CI/CD": 2.0,
-        "Docker": 12.8,
-        "Grafana": 12.8,
-        "Kubernetes": 4.0,
-        "Linux": 9.0,
-        "Prometheus": 12.8,
-        "Python": 9.0,
-        "Terraform": 12.8
+        "AWS": 13.4,
+        "Bash": 7.4,
+        "CI/CD": 2.9,
+        "Docker": 13.4,
+        "Grafana": 13.4,
+        "Kubernetes": 5.8,
+        "Linux": 10.3,
+        "Prometheus": 13.4,
+        "Python": 10.3,
+        "Terraform": 13.4
       }
     },
     "priti_nair.txt": {
@@ -719,15 +719,15 @@
       "tier": 1,
       "date_style": "year",
       "skill_years": {
-        "AWS": 6.2,
-        "Airflow": 4.0,
-        "Data Warehousing": 4.0,
-        "ETL": 4.0,
-        "PostgreSQL": 6.0,
-        "Python": 6.2,
-        "SQL": 6.0,
-        "Spark": 2.0,
-        "dbt": 6.2
+        "AWS": 6.4,
+        "Airflow": 4.4,
+        "Data Warehousing": 4.4,
+        "ETL": 4.4,
+        "PostgreSQL": 7.3,
+        "Python": 6.4,
+        "SQL": 7.3,
+        "Spark": 2.9,
+        "dbt": 6.4
       }
     },
     "tobias_braun.txt": {
@@ -794,7 +794,7 @@
       "name": "Enrique Vega",
       "role": "data_engineer",
       "title": "Staff Data Engineer",
-      "total_years": 13,
+      "total_years": 14,
       "education_level": "bachelor",
       "skills": [
         "AWS",
@@ -810,14 +810,14 @@
       "tier": 1,
       "date_style": "year",
       "skill_years": {
-        "AWS": 13.9,
-        "Airflow": 9.0,
-        "Data Warehousing": 5.0,
-        "ETL": 9.0,
-        "PostgreSQL": 1.0,
-        "Python": 4.0,
-        "SQL": 9.0,
-        "Spark": 13.9
+        "AWS": 14.4,
+        "Airflow": 10.8,
+        "Data Warehousing": 5.9,
+        "ETL": 11.2,
+        "PostgreSQL": 1.4,
+        "Python": 4.9,
+        "SQL": 11.2,
+        "Spark": 14.4
       }
     },
     "haruto_yamamoto.txt": {
@@ -880,7 +880,7 @@
       "name": "Olumide Adeyemi",
       "role": "mobile",
       "title": "Mobile Engineer",
-      "total_years": 2,
+      "total_years": 3,
       "education_level": "unknown",
       "skills": [
         "Android",
@@ -896,14 +896,14 @@
       "tier": 2,
       "date_style": "year",
       "skill_years": {
-        "Android": 2.9,
-        "Flutter": 2.9,
-        "Git": 3.0,
-        "Kotlin": 3.0,
-        "REST APIs": 2.9,
-        "React Native": 3.0,
-        "Swift": 2.9,
-        "iOS": 3.0
+        "Android": 3.4,
+        "Flutter": 3.4,
+        "Git": 3.4,
+        "Kotlin": 3.4,
+        "REST APIs": 3.4,
+        "React Native": 3.4,
+        "Swift": 3.4,
+        "iOS": 3.4
       }
     },
     "svetlana_ivanova.txt": {
@@ -924,12 +924,12 @@
       "tier": 2,
       "date_style": "year",
       "skill_years": {
-        "Android": 10.2,
-        "Firebase": 7.0,
-        "Git": 5.0,
-        "Kotlin": 6.0,
-        "REST APIs": 5.0,
-        "React Native": 1.0
+        "Android": 10.4,
+        "Firebase": 8.3,
+        "Git": 6.8,
+        "Kotlin": 8.2,
+        "REST APIs": 6.3,
+        "React Native": 1.9
       }
     },
     "cormac_byrne.txt": {
@@ -953,14 +953,14 @@
       "tier": 2,
       "date_style": "year",
       "skill_years": {
-        "CI/CD": 2.0,
+        "CI/CD": 2.9,
         "Docker": 6.4,
         "JUnit": 6.4,
-        "Java": 4.0,
-        "Playwright": 6.0,
+        "Java": 4.4,
+        "Playwright": 7.3,
         "Python": 6.4,
         "REST APIs": 6.4,
-        "Selenium": 4.0,
+        "Selenium": 4.4,
         "pytest": 6.4
       }
     },
@@ -996,7 +996,7 @@
       "name": "Ibrahim Traore",
       "role": "security",
       "title": "Senior Application Security Engineer",
-      "total_years": 6,
+      "total_years": 7,
       "education_level": "phd",
       "skills": [
         "AWS",
@@ -1013,15 +1013,15 @@
       "tier": 2,
       "date_style": "year",
       "skill_years": {
-        "AWS": 3.0,
-        "Burp Suite": 6.7,
-        "Docker": 6.7,
-        "Linux": 3.0,
-        "OWASP": 6.7,
-        "Penetration Testing": 6.7,
-        "Python": 1.0,
-        "SIEM": 3.0,
-        "Threat Modeling": 6.7
+        "AWS": 3.4,
+        "Burp Suite": 7.4,
+        "Docker": 7.4,
+        "Linux": 3.9,
+        "OWASP": 7.4,
+        "Penetration Testing": 7.4,
+        "Python": 1.9,
+        "SIEM": 3.4,
+        "Threat Modeling": 7.4
       }
     },
     "petra_blum.txt": {
@@ -1075,13 +1075,13 @@
       "tier": 2,
       "date_style": "year",
       "skill_years": {
-        "AWS": 1.0,
-        "Docker": 6.0,
-        "FastAPI": 3.0,
-        "Microservices": 7.0,
-        "PostgreSQL": 7.2,
-        "Python": 3.0,
-        "REST APIs": 1.0
+        "AWS": 1.9,
+        "Docker": 7.3,
+        "FastAPI": 3.9,
+        "Microservices": 9.2,
+        "PostgreSQL": 7.4,
+        "Python": 3.4,
+        "REST APIs": 1.9
       }
     },
     "clara_stone.txt": {
@@ -1105,15 +1105,15 @@
       "tier": 2,
       "date_style": "year",
       "skill_years": {
-        "CSS": 2.3,
-        "Cypress": 2.3,
-        "HTML": 2.0,
-        "JavaScript": 2.0,
-        "Next.js": 2.3,
-        "React": 2.3,
-        "Redux": 2.3,
-        "Tailwind CSS": 2.3,
-        "TypeScript": 2.3
+        "CSS": 2.4,
+        "Cypress": 2.4,
+        "HTML": 2.4,
+        "JavaScript": 2.4,
+        "Next.js": 2.4,
+        "React": 2.4,
+        "Redux": 2.4,
+        "Tailwind CSS": 2.4,
+        "TypeScript": 2.4
       }
     },
     "rajan_pillai.pdf": {
@@ -1198,14 +1198,14 @@
       "tier": 2,
       "date_style": "year",
       "skill_years": {
-        "AWS": 5.2,
-        "Airflow": 5.2,
-        "Data Warehousing": 5.2,
-        "ETL": 5.0,
-        "PostgreSQL": 5.0,
-        "Python": 1.0,
-        "SQL": 5.0,
-        "Spark": 5.2
+        "AWS": 5.4,
+        "Airflow": 5.4,
+        "Data Warehousing": 5.4,
+        "ETL": 6.3,
+        "PostgreSQL": 6.3,
+        "Python": 1.9,
+        "SQL": 6.3,
+        "Spark": 5.4
       }
     }
   },

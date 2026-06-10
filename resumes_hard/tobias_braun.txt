@@ -2,13 +2,13 @@ Tobias Braun
 Senior Data Engineer
 Bengaluru, India | tobias.braun@example.com | +1-555-1124
 
-My Background
+What I Bring
 Senior Data Engineer with 9+ years of experience. Core skills include Python, SQL, Spark applied across production systems. Proven record of delivering results with cross-functional teams.
 
 Toolbox
 Python, SQL, Spark, Airflow, ETL, Snowflake, dbt, Kafka, PostgreSQL
 
-Where I've Worked
+Career History
 Senior Analytics Engineer, Mosaic Travel (05/2022 - Present)
 - Cut pipeline failures 60% with Spark data-quality checks.
 - Built Snowflake pipelines moving 5TB per day into the warehouse.

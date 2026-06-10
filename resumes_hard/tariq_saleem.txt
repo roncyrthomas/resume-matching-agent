@@ -2,13 +2,13 @@ Tariq Saleem
 Staff Full Stack Developer
 Seattle, WA | tariq.saleem@example.com | +1-555-1118
 
-What I Bring
+My Background
 Staff Full Stack Developer with 11+ years of experience. Core skills include Python, React, TypeScript applied across production systems. Proven record of delivering results with cross-functional teams.
 
 Toolbox
 Python, React, TypeScript, PostgreSQL, Docker, GraphQL, Node.js, Redis
 
-Career History
+Where I've Worked
 Staff Product Engineer, Summit Robotics (2022 - Present)
 - Owned the TypeScript stack from schema design to Node.js UI.
 - Reduced page load 30% with Node.js caching and query tuning.

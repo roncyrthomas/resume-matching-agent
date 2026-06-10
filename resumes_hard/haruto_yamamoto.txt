@@ -2,13 +2,13 @@ Haruto Yamamoto
 iOS Developer
 Pune, India | haruto.yamamoto@example.com | +1-555-1127
 
-What I Bring
+My Background
 iOS Developer with 5+ years of experience. Core skills include Kotlin, Android, REST APIs applied across production systems. Proven record of delivering results with cross-functional teams.
 
 Toolbox
 Kotlin, Android, REST APIs, Git, GraphQL, Flutter
 
-Career History
+Where I've Worked
 iOS Developer, Nimbus Pay (Jul 2023 - Present)
 - Led migration from REST APIs to Flutter, reducing crash rate 25%.
 - Cut app startup time 25% by profiling Android initialisation.
