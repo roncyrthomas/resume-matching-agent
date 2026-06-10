@@ -203,9 +203,17 @@ def check_must_haves(profile: Dict[str, object],
     failures: List[str] = []
     for mh in must_haves:
         if mh.kind == "skill_years":
+            sy = profile.get("skill_years") or {}
             has_skill = any(s in skills for s in mh.skills)
             if not has_skill:
                 failures.append(f"missing required skill {' / '.join(mh.skills)} ({mh.raw})")
+            elif isinstance(sy, dict) and sy:
+                # Use per-skill tenure when available
+                best = max((float(sy.get(s, 0.0)) for s in mh.skills), default=0.0)
+                if best < mh.years:
+                    failures.append(
+                        f"has {best:.1f} yrs of {'/'.join(mh.skills)}, needs {mh.years}+ ({mh.raw})"
+                    )
             elif years < mh.years:
                 failures.append(f"has {years} years, needs {mh.years}+ ({mh.raw})")
         elif mh.kind == "total_years":

@@ -27,6 +27,7 @@ CLI smoke tests (run from the project root):
 from __future__ import annotations
 
 import argparse
+import json
 import os
 import re
 import time
@@ -156,11 +157,15 @@ def extract_skills(text: str) -> List[str]:
 # --- Section splitting ------------------------------------------------------------
 
 SECTION_ALIASES: Dict[str, Tuple[str, ...]] = {
-    "summary": ("summary", "professional summary", "profile", "about", "about me", "objective"),
-    "skills": ("skills", "technical skills", "core competencies", "key skills", "technologies", "tech stack"),
+    "summary": ("summary", "professional summary", "profile", "about", "about me", "objective",
+                "what i bring", "my background"),
+    "skills": ("skills", "technical skills", "core competencies", "key skills", "technologies", "tech stack",
+               "toolbox"),
     "experience": ("experience", "work experience", "professional experience",
-                   "employment history", "work history", "employment"),
-    "education": ("education", "education & training", "academic background", "qualifications"),
+                   "employment history", "work history", "employment",
+                   "career history", "where i've worked"),
+    "education": ("education", "education & training", "academic background", "qualifications",
+                  "studies"),
     "projects": ("projects", "key projects", "personal projects", "selected projects"),
     "certifications": ("certifications", "licenses & certifications", "licenses and certifications", "certificates"),
     "contact": ("contact", "contact information"),
@@ -286,11 +291,103 @@ def chunk_section(section: ResumeSection, max_chars: int = MAX_CHUNK_CHARS,
 
 # --- Metadata extraction --------------------------------------------------------------
 
+# Keep _YEAR_RANGE for any external code that may reference it.
 _YEAR_RANGE = re.compile(
     r"\b(19|20)(\d{2})\s*(?:-|–|to)\s*(?:((?:19|20)\d{2})|present|current|now)\b",
     re.IGNORECASE,
 )
 _STATED_YEARS = re.compile(r"\b(\d{1,2})\s*\+?\s*years?\b", re.IGNORECASE)
+
+# --- Month-aware date engine ---------------------------------------------------
+
+_MONTHS: Dict[str, int] = {m: i + 1 for i, m in enumerate(
+    ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"])}
+
+_DATE_TOKEN = (
+    r"(?:[A-Za-z]{3,9}\.?\s+(?:19|20)\d{2}"   # month-name YYYY
+    r"|\d{1,2}/(?:19|20)\d{2}"                  # MM/YYYY
+    r"|(?:19|20)\d{2}"                           # bare YYYY
+    r"|present|current|now)"                     # open-ended
+)
+_DATE_RANGE_V2 = re.compile(
+    rf"({_DATE_TOKEN})\s*(?:-|–|—|to)\s*({_DATE_TOKEN})",
+    re.IGNORECASE,
+)
+
+
+def _parse_date_token(token: str, *, is_end: bool,
+                      today: Tuple[int, int]) -> Optional[Tuple[int, int]]:
+    """Parse a single date token into (year, month).
+
+    Rules:
+    - present/current/now → today
+    - MM/YYYY → that month (reject if month > 12)
+    - Xxx YYYY → month from _MONTHS (only if first-3-letters are a valid month name)
+    - bare YYYY → month 1 (start) or 12 (end)
+    Returns None if the token cannot be parsed or is invalid.
+    """
+    t = token.strip()
+    tl = t.lower().rstrip(".")
+
+    # present / current / now
+    if tl in ("present", "current", "now"):
+        return today
+
+    # MM/YYYY
+    slash_m = re.match(r"^(\d{1,2})/((?:19|20)\d{2})$", t)
+    if slash_m:
+        month = int(slash_m.group(1))
+        year = int(slash_m.group(2))
+        if month < 1 or month > 12:
+            return None
+        return (year, month)
+
+    # month-name YYYY  e.g. "Jan 2020" or "January 2020"
+    month_name_m = re.match(r"^([A-Za-z]{3,9})\.?\s+((?:19|20)\d{2})$", t)
+    if month_name_m:
+        prefix = month_name_m.group(1)[:3].lower()
+        year = int(month_name_m.group(2))
+        if prefix not in _MONTHS:
+            return None  # "Acme 2020" and similar company-name tokens
+        return (year, _MONTHS[prefix])
+
+    # bare YYYY
+    year_m = re.match(r"^((?:19|20)\d{2})$", t)
+    if year_m:
+        year = int(year_m.group(1))
+        return (year, 12 if is_end else 1)
+
+    return None
+
+
+def extract_date_ranges(
+    text: str,
+    today: Optional[Tuple[int, int]] = None,
+) -> List[Tuple[Tuple[int, int], Tuple[int, int]]]:
+    """Extract all (start, end) month-precise date ranges from *text*.
+
+    Each element is ((start_year, start_month), (end_year, end_month)).
+    Only ranges where start <= end and span <= 50 years are returned.
+    """
+    if today is None:
+        lt = time.localtime()
+        today = (lt.tm_year, lt.tm_mon)
+
+    ranges: List[Tuple[Tuple[int, int], Tuple[int, int]]] = []
+    for m in _DATE_RANGE_V2.finditer(text):
+        start = _parse_date_token(m.group(1), is_end=False, today=today)
+        end = _parse_date_token(m.group(2), is_end=True, today=today)
+        if start is None or end is None:
+            continue
+        # Validate: start <= end and span <= 50 years
+        start_months = start[0] * 12 + start[1]
+        end_months = end[0] * 12 + end[1]
+        if end_months < start_months:
+            continue
+        if (end_months - start_months) > 50 * 12:
+            continue
+        ranges.append((start, end))
+    return ranges
 
 _EDUCATION_LEVELS: Tuple[Tuple[str, Tuple[str, ...]], ...] = (
     ("phd", ("ph.d", "phd", "doctorate", "doctor of")),
@@ -311,6 +408,7 @@ class ResumeMetadata:
     experience_years: int
     education_level: str   # "phd" | "master" | "bachelor" | "unknown"
     education: str
+    skill_years: Tuple[Tuple[str, float], ...] = ()  # per-skill tenure (canonical, years)
 
 
 def _extract_name(sections: Sequence[ResumeSection], fallback: str) -> Tuple[str, str]:
@@ -330,23 +428,141 @@ def _extract_name(sections: Sequence[ResumeSection], fallback: str) -> Tuple[str
 
 def _extract_experience_years(sections: Sequence[ResumeSection], full_text: str, *,
                               today_year: Optional[int] = None) -> int:
-    """Years of experience: span of dated job ranges, else stated "N+ years"."""
-    today = today_year or time.localtime().tm_year
-    exp_text = "\n".join(s.text for s in sections if s.kind == "experience") or full_text
+    """Years of experience: span of dated job ranges (month-aware), else stated 'N+ years'.
 
-    starts: List[int] = []
-    ends: List[int] = []
-    for match in _YEAR_RANGE.finditer(exp_text):
-        starts.append(int(match.group(1) + match.group(2)))
-        ends.append(int(match.group(3)) if match.group(3) else today)
-    if starts:
-        span = max(ends) - min(starts)
-        if 0 <= span <= 50:
-            return span
+    today_year maps to (today_year, 6) — a mid-year pin that preserves exact
+    expectations for year-only ranges (e.g. 2018→Present with today_year=2026
+    gives 101 months → 8 years).
+    """
+    today_yr = today_year or time.localtime().tm_year
+    today: Tuple[int, int] = (today_yr, 6)
+
+    exp_text = "\n".join(s.text for s in sections if s.kind == "experience") or full_text
+    ranges = extract_date_ranges(exp_text, today=today)
+
+    if ranges:
+        min_start = min(r[0][0] * 12 + r[0][1] for r in ranges)
+        max_end = max(r[1][0] * 12 + r[1][1] for r in ranges)
+        months = max_end - min_start
+        return max(0, months // 12)
 
     stated = [int(m.group(1)) for m in _STATED_YEARS.finditer(full_text)]
     plausible = [y for y in stated if y <= 50]
     return max(plausible) if plausible else 0
+
+
+def _merge_intervals(
+    intervals: List[Tuple[Tuple[int, int], Tuple[int, int]]],
+) -> List[Tuple[Tuple[int, int], Tuple[int, int]]]:
+    """Sort and merge overlapping/adjacent month-precise intervals."""
+    if not intervals:
+        return []
+    sorted_ivs = sorted(intervals, key=lambda iv: (iv[0][0] * 12 + iv[0][1]))
+    merged: List[Tuple[Tuple[int, int], Tuple[int, int]]] = [sorted_ivs[0]]
+    for start, end in sorted_ivs[1:]:
+        prev_start, prev_end = merged[-1]
+        ps = prev_start[0] * 12 + prev_start[1]
+        pe = prev_end[0] * 12 + prev_end[1]
+        s = start[0] * 12 + start[1]
+        e = end[0] * 12 + end[1]
+        if s <= pe + 1:  # overlapping or adjacent
+            new_end = end if e > pe else prev_end
+            merged[-1] = (prev_start, new_end)
+        else:
+            merged.append((start, end))
+    return merged
+
+
+def extract_skill_years(
+    sections: Sequence[ResumeSection],
+    today: Optional[Tuple[int, int]] = None,
+) -> Dict[str, float]:
+    """Compute per-skill tenure (years) from experience sections.
+
+    Algorithm:
+    1. Split experience section text into job blocks: a new block starts at any
+       line matching _DATE_RANGE_V2; bullets below belong to that block.
+    2. Per block: extract skills + intervals; accumulate per-skill intervals.
+    3. Per skill: merge overlapping/adjacent intervals → sum months → round to 1dp.
+    4. Skills found in the whole resume but not in any job block get the full
+       career span (matches dataset labelling: skills not tied to a job block
+       are treated as spanning the whole career).
+    """
+    if today is None:
+        lt = time.localtime()
+        today = (lt.tm_year, lt.tm_mon)
+
+    exp_text = "\n".join(s.text for s in sections if s.kind == "experience")
+    full_text = "\n".join(s.text for s in sections)
+
+    # Split exp_text into job blocks keyed on their header line
+    blocks: List[Tuple[str, List[str]]] = []  # (header_line, body_lines)
+    current_header = ""
+    current_body: List[str] = []
+
+    for line in exp_text.splitlines():
+        if _DATE_RANGE_V2.search(line):
+            # flush previous block
+            if current_header or current_body:
+                blocks.append((current_header, current_body))
+            current_header = line
+            current_body = []
+        else:
+            current_body.append(line)
+    if current_header or current_body:
+        blocks.append((current_header, current_body))
+
+    # Accumulate per-skill intervals from blocks
+    skill_intervals: Dict[str, List[Tuple[Tuple[int, int], Tuple[int, int]]]] = {}
+    skills_in_blocks: set = set()
+
+    for header_line, body_lines in blocks:
+        block_text = header_line + "\n" + "\n".join(body_lines)
+        block_skills = extract_skills(block_text)
+        block_ranges = extract_date_ranges(header_line, today=today)
+        if not block_ranges:
+            # no date range in header — check full block text
+            block_ranges = extract_date_ranges(block_text, today=today)
+        for skill in block_skills:
+            skills_in_blocks.add(skill)
+            skill_intervals.setdefault(skill, []).extend(block_ranges)
+
+    # Compute career span for skills present globally but not in any block
+    all_resume_skills = set(extract_skills(full_text))
+    career_ranges = extract_date_ranges(exp_text, today=today)
+    if career_ranges:
+        career_min = min(r[0][0] * 12 + r[0][1] for r in career_ranges)
+        career_max = max(r[1][0] * 12 + r[1][1] for r in career_ranges)
+        career_start = divmod(career_min, 12)  # (year, month)  -- actually need real tuple
+        # Rebuild as proper (year, month) tuples
+        start_y, start_m = career_min // 12, career_min % 12
+        if start_m == 0:
+            start_y -= 1
+            start_m = 12
+        end_y, end_m = career_max // 12, career_max % 12
+        if end_m == 0:
+            end_y -= 1
+            end_m = 12
+        career_span = [((start_y, start_m), (end_y, end_m))]
+    else:
+        career_span = []
+
+    # Skills in resume but not in any block → assign full career span
+    for skill in all_resume_skills:
+        if skill not in skills_in_blocks:
+            skill_intervals.setdefault(skill, []).extend(career_span)
+
+    # Merge intervals and compute years
+    result: Dict[str, float] = {}
+    for skill, intervals in skill_intervals.items():
+        merged = _merge_intervals(intervals)
+        total_months = sum(
+            (e[0] * 12 + e[1]) - (s[0] * 12 + s[1])
+            for s, e in merged
+        )
+        result[skill] = round(total_months / 12, 1)
+
+    return result
 
 
 def _extract_education(sections: Sequence[ResumeSection], full_text: str) -> Tuple[str, str]:
@@ -370,6 +586,9 @@ def extract_metadata(text: str, *, fallback_name: str = "unknown",
     sections = split_into_sections(text)
     name, title = _extract_name(sections, fallback_name)
     level, detail = _extract_education(sections, text)
+    today_yr = today_year or time.localtime().tm_year
+    today: Tuple[int, int] = (today_yr, 6)
+    sy = extract_skill_years(sections, today=today)
     return ResumeMetadata(
         name=name,
         title=title,
@@ -377,6 +596,7 @@ def extract_metadata(text: str, *, fallback_name: str = "unknown",
         experience_years=_extract_experience_years(sections, text, today_year=today_year),
         education_level=level,
         education=detail,
+        skill_years=tuple(sorted(sy.items())),
     )
 
 
@@ -460,6 +680,7 @@ class IndexStats:
     total_seconds: float
     embedder: str
     failures: Tuple[str, ...] = field(default_factory=tuple)
+    llm_assisted: int = 0
 
 
 class ResumeRAG:
@@ -519,6 +740,7 @@ class ResumeRAG:
                             "exp_years": int(meta.experience_years),
                             "education_level": meta.education_level,
                             "education": meta.education,
+                            "skill_years": json.dumps(dict(meta.skill_years)),
                         },
                     )
                 )
@@ -538,6 +760,8 @@ class ResumeRAG:
         failures: List[str] = []
         all_chunks: List[ResumeChunk] = []
         files_ok = 0
+        llm_assisted = 0
+        llm_mode = os.environ.get("RESUME_RAG_LLM", "off").lower()
 
         for info in self._resume_files():
             result = fs_tools.read_file(str(info["path"]))
@@ -549,7 +773,23 @@ class ResumeRAG:
             except ValueError:
                 rel_path = str(info["path"])
             content = str(result["content"])
-            meta = extract_metadata(content, fallback_name=Path(rel_path).stem)
+            stem = Path(rel_path).stem
+            meta = extract_metadata(content, fallback_name=stem)
+
+            # Lazy LLM fallback
+            if llm_mode != "off":
+                try:
+                    import llm_extractor  # noqa: PLC0415
+                    sections = split_into_sections(content)
+                    use_llm = (llm_mode == "always") or llm_extractor.should_use_llm(meta, sections)
+                    if use_llm:
+                        llm_result = llm_extractor.extract_with_llm(content)
+                        if llm_result is not None:
+                            meta = llm_extractor.merge_metadata(meta, llm_result)
+                            llm_assisted += 1
+                except Exception:  # noqa: BLE001
+                    pass  # silently keep regex metadata on any failure
+
             all_chunks.extend(self._chunks_for_file(rel_path, content, meta))
             files_ok += 1
 
@@ -574,6 +814,7 @@ class ResumeRAG:
             total_seconds=round(time.perf_counter() - start, 3),
             embedder=self._embedder.name,
             failures=tuple(failures),
+            llm_assisted=llm_assisted,
         )
 
     # -- querying ------------------------------------------------------------
@@ -645,17 +886,24 @@ class ResumeRAG:
         profiles: Dict[str, Dict[str, object]] = {}
         for chunk in self.all_chunks():
             meta = chunk.metadata
-            profiles.setdefault(
-                str(meta.get("file", "")),
-                {
-                    "candidate": meta.get("candidate", ""),
-                    "title": meta.get("title", ""),
-                    "skills": [s for s in str(meta.get("skills", "")).split(", ") if s],
-                    "exp_years": int(meta.get("exp_years", 0) or 0),
-                    "education_level": meta.get("education_level", "unknown"),
-                    "education": meta.get("education", ""),
-                },
-            )
+            file_key = str(meta.get("file", ""))
+            if file_key in profiles:
+                continue
+            # Parse skill_years from JSON stored in chunk metadata
+            raw_sy = meta.get("skill_years", "{}")
+            try:
+                sy_dict: Dict[str, float] = json.loads(str(raw_sy)) if raw_sy else {}
+            except (json.JSONDecodeError, TypeError):
+                sy_dict = {}
+            profiles[file_key] = {
+                "candidate": meta.get("candidate", ""),
+                "title": meta.get("title", ""),
+                "skills": [s for s in str(meta.get("skills", "")).split(", ") if s],
+                "exp_years": int(meta.get("exp_years", 0) or 0),
+                "education_level": meta.get("education_level", "unknown"),
+                "education": meta.get("education", ""),
+                "skill_years": sy_dict,
+            }
         return profiles
 
 
@@ -670,7 +918,12 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     parser.add_argument("--query", help="run a semantic query against the index")
     parser.add_argument("-k", type=int, default=5, help="top-k chunks for --query")
     parser.add_argument("--stats", action="store_true", help="print index stats")
+    parser.add_argument("--llm", choices=["off", "auto", "always"], default=None,
+                        help="LLM extraction mode (sets RESUME_RAG_LLM env var)")
     args = parser.parse_args(argv)
+
+    if args.llm is not None:
+        os.environ["RESUME_RAG_LLM"] = args.llm
 
     rag = ResumeRAG(resumes_dir=args.resumes, persist_dir=args.persist)
 
