@@ -1,13 +1,35 @@
 Sam Patel
-Java Backend Developer
-sam.patel@example.com
+Staff Software Engineer, Java
+Bengaluru, India | sam.patel@example.com | +1-555-0104
 
-SUMMARY
-Java/Spring Boot developer building enterprise REST APIs.
+PROFILE
+Staff Software Engineer, Java with 10+ years of experience specialising in Java, Spring Boot, MySQL. Track record of delivering reliable, measurable results in production systems.
 
-SKILLS
-Java, Spring Boot, Maven, MySQL, Kafka
+CORE COMPETENCIES
+Java, Spring Boot, MySQL, Kafka, REST APIs, AWS, Docker
 
-EXPERIENCE
-- Backend Developer, FinServe (2018-2025): designed Spring Boot services.
-- Software Engineer, RetailX (2015-2018): maintained Java monolith.
+EDUCATION & TRAINING
+Bachelor of Technology in Computer Science, Tech Institute of Engineering (2016)
+
+EMPLOYMENT HISTORY
+Staff Java Backend Developer, Streamline (2024 - Present)
+- Designed Docker services processing 7M transactions daily.
+- Hardened REST APIs APIs with circuit breakers and structured retries.
+
+Senior Java Engineer, Northwind Analytics (2023 - 2024)
+- Hardened Java APIs with circuit breakers and structured retries.
+- Designed Java services processing 2M transactions daily.
+
+Senior Java Engineer, Craft Studio (2022 - 2023)
+- Modernised legacy modules into Spring Boot microservices on MySQL.
+- Designed REST APIs services processing 9M transactions daily.
+
+Software Engineer, Java, Quant Co (2016 - 2022)
+- Designed Kafka services processing 7M transactions daily.
+- Modernised legacy modules into Docker microservices on Kafka.
+
+KEY PROJECTS
+Ledger Service: double-entry bookkeeping engine on MySQL and Spring Boot.
+
+LICENSES & CERTIFICATIONS
+- Oracle Certified Professional: Java SE

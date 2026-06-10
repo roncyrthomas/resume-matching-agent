@@ -1,0 +1,28 @@
+Priya Sharma
+Senior Data Scientist
+Pune, India | priya.sharma@example.com | +1-555-0108
+
+SUMMARY
+Senior Data Scientist with 7+ years of experience specialising in Python, PyTorch, scikit-learn. Track record of delivering reliable, measurable results in production systems.
+
+SKILLS
+Python, PyTorch, scikit-learn, pandas, SQL, Machine Learning, Computer Vision, MLOps, AWS, Airflow
+
+EXPERIENCE
+Senior Machine Learning Engineer, Craft Studio (2025 - Present)
+- Reduced model training time 60% by optimising MLOps workflows.
+- Built and deployed MLOps models improving prediction accuracy by 30%.
+
+Data Scientist, Streamline (2024 - 2025)
+- Shipped an A/B-tested recommendation system using PyTorch and pandas.
+- Led feature engineering with pandas and scikit-learn across 1 data sources.
+
+Applied Scientist, RetailX (2019 - 2024)
+- Shipped an A/B-tested recommendation system using MLOps and Airflow.
+- Led feature engineering with AWS and MLOps across 3 data sources.
+
+PROJECTS
+Churn Predictor: end-to-end Computer Vision pipeline with automated retraining.
+
+EDUCATION
+M.Tech in Computer Science, Northfield College (2018)

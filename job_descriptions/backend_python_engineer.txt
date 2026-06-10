@@ -1,0 +1,20 @@
+Job Title: Backend Engineer (Python)
+
+About the role:
+Vertex Logistics needs a Backend Engineer to scale the order-routing platform
+that moves freight across three continents.
+
+Responsibilities:
+- Build and operate Python microservices with high availability targets.
+- Design relational schemas and keep query performance predictable.
+- Own services from design through deployment and on-call.
+
+Requirements:
+- 4+ years of professional Python experience.
+- Production experience with FastAPI or Django.
+- Solid PostgreSQL skills including indexing and query tuning.
+- Hands-on experience with Docker and REST APIs.
+
+Nice to have:
+- Kafka or other event-streaming experience.
+- Exposure to Kubernetes and AWS.

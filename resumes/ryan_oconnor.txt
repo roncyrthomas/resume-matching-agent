@@ -1,0 +1,30 @@
+Ryan OConnor
+UI Engineer
+Remote (US) | ryan.oconnor@example.com | +1-555-0117
+
+Professional Summary
+UI Engineer with 6+ years of experience specialising in JavaScript, TypeScript, React. Track record of delivering reliable, measurable results in production systems.
+
+Technical Skills
+- JavaScript
+- TypeScript
+- React
+- CSS
+- HTML
+- Vue.js
+- Cypress
+
+Education
+Bachelor of Technology in Software Engineering, Westlake University (2020)
+
+Work Experience
+Frontend Engineer, Craft Studio (2022 - Present)
+- Improved Core Web Vitals 70% by optimising HTML rendering.
+- Shipped accessible JavaScript components meeting WCAG 2.1 AA.
+
+Frontend Engineer, HostPro (2020 - 2022)
+- Shipped accessible CSS components meeting WCAG 2.1 AA.
+- Migrated a legacy UI to Vue.js with Cypress, cutting bundle size 70%.
+
+Projects
+Dashboard Kit: reusable Cypress charting components with Vue.js.

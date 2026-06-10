@@ -1,13 +1,28 @@
 Olivia Brown
-Product Designer
-olivia.brown@example.com
+Senior UX Designer
+Berlin, Germany | olivia.brown@example.com | +1-555-0106
 
 SUMMARY
-Product designer bridging UX research and visual design.
+Senior UX Designer with 9+ years of experience specialising in Figma, User Research, Prototyping. Track record of delivering reliable, measurable results in production systems.
 
 SKILLS
-Figma, User Research, Prototyping, Design Systems
+Figma, User Research, Prototyping, Design Systems, CSS, HTML
 
 EXPERIENCE
-- Lead Designer, Craft Studio (2019-2025): owned end-to-end design.
-- UX Designer, AppWorks (2016-2019): ran usability studies.
+Senior Product Designer, DataWorks (2019 - Present)
+- Ran 50+ usability studies shaping the product roadmap.
+- Built a HTML design system adopted by 7 squads.
+
+Product Designer, Helio Health (2018 - 2019)
+- Improved onboarding conversion 30% through Prototyping prototypes.
+- Ran 30+ usability studies shaping the product roadmap.
+
+UX Designer, Insight AI (2017 - 2018)
+- Improved onboarding conversion 40% through Design Systems prototypes.
+- Ran 60+ usability studies shaping the product roadmap.
+
+PROJECTS
+Design Tokens: cross-platform theming built in User Research.
+
+EDUCATION
+B.Sc. in Human-Computer Interaction, Global Tech University (2017)

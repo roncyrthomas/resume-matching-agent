@@ -1,13 +1,28 @@
 Alex Lee
-Data Scientist
-alex.lee@example.com
+Machine Learning Engineer
+Toronto, Canada | alex.lee@example.com | +1-555-0102
 
-SUMMARY
-Data scientist using Python and PyTorch for NLP and forecasting.
+PROFILE
+Machine Learning Engineer with 5+ years of experience specialising in Python, PyTorch, scikit-learn. Track record of delivering reliable, measurable results in production systems.
 
-SKILLS
-Python, PyTorch, pandas, SQL, scikit-learn
+CORE COMPETENCIES
+Python, PyTorch, scikit-learn, pandas, SQL, Machine Learning, Deep Learning, TensorFlow, Airflow, Docker
 
-EXPERIENCE
-- Data Scientist, Insight AI (2021-2025): built demand-forecasting models.
-- ML Intern, Quant Co (2020): prototyped Python notebooks for backtesting.
+EDUCATION & TRAINING
+Master of Science in Statistics, Westlake University (2021)
+
+EMPLOYMENT HISTORY
+Applied Scientist, AppWorks (2024 - Present)
+- Led feature engineering with Python and PyTorch across 6 data sources.
+- Reduced model training time 25% by optimising pandas workflows.
+
+Machine Learning Engineer, Quant Co (2021 - 2024)
+- Led feature engineering with Airflow and PyTorch across 5 data sources.
+- Productionised scikit-learn pipelines serving 3M inferences per day.
+
+KEY PROJECTS
+Resume Screener: NLP classifier built with PyTorch and Airflow.
+
+LICENSES & CERTIFICATIONS
+- TensorFlow Developer Certificate
+- AWS Certified Machine Learning - Specialty

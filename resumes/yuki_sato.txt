@@ -1,0 +1,24 @@
+Yuki Sato
+QA Automation Engineer
+London, UK | yuki.sato@example.com | +1-555-0132
+
+PROFILE
+QA Automation Engineer with 6+ years of experience specialising in Selenium, Python, pytest. Track record of delivering reliable, measurable results in production systems.
+
+CORE COMPETENCIES
+Selenium, Python, pytest, CI/CD, REST APIs, JUnit, Docker, Playwright, Cypress
+
+EDUCATION & TRAINING
+B.Sc. in Computer Science, Westlake University (2019)
+
+EMPLOYMENT HISTORY
+QA Automation Engineer, WebStart (2021 - Present)
+- Cut flaky tests 25% by stabilising Cypress fixtures.
+- Built a Python regression suite covering 500+ scenarios.
+
+Software Engineer in Test, Craft Studio (2020 - 2021)
+- Cut flaky tests 50% by stabilising pytest fixtures.
+- Automated API contract tests with Cypress and REST APIs.
+
+KEY PROJECTS
+Test Harness: parallel pytest runner integrated into Playwright.

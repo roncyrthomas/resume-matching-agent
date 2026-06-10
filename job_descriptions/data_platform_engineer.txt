@@ -1,0 +1,20 @@
+Job Title: Data Engineer
+
+About the role:
+Northwind Analytics is hiring a Data Engineer to build the pipelines behind our
+customer-facing analytics product.
+
+Responsibilities:
+- Build and operate batch and streaming pipelines into the warehouse.
+- Model analytics tables consumed by dashboards and ML teams.
+- Enforce data-quality checks and lineage across sources.
+
+Requirements:
+- 3+ years of professional data engineering experience.
+- Strong Python and SQL skills.
+- Production experience with Spark and Airflow.
+- Experience designing and operating production ETL pipelines.
+
+Nice to have:
+- Snowflake, dbt or Kafka experience.
+- Exposure to machine learning feature pipelines.

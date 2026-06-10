@@ -1,0 +1,28 @@
+Jack Murphy
+Senior iOS Developer
+Singapore | jack.murphy@example.com | +1-555-0129
+
+SUMMARY
+Senior iOS Developer with 7+ years of experience specialising in Kotlin, Android, REST APIs. Track record of delivering reliable, measurable results in production systems.
+
+SKILLS
+Kotlin, Android, REST APIs, Git, React Native, Swift
+
+EXPERIENCE
+Senior Mobile Engineer, Nimbus Pay (2025 - Present)
+- Cut app startup time 70% by profiling Android initialisation.
+- Built offline-first sync with REST APIs and React Native.
+
+iOS Developer, Clearpath Energy (2024 - 2025)
+- Cut app startup time 70% by profiling Git initialisation.
+- Led migration from REST APIs to Git, reducing crash rate 60%.
+
+Mobile Engineer, Quant Co (2019 - 2024)
+- Led migration from REST APIs to Git, reducing crash rate 70%.
+- Shipped React Native apps with 800k+ installs and 4.7-star ratings.
+
+PROJECTS
+Fitness Tracker: Android app with REST APIs cloud sync.
+
+EDUCATION
+M.Tech in Computer Science, Westlake University (2019)

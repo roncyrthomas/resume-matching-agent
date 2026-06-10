@@ -1,0 +1,33 @@
+Ethan Walker
+Python Developer
+Seattle, WA | ethan.walker@example.com | +1-555-0111
+
+Professional Summary
+Python Developer with 4+ years of experience specialising in Python, FastAPI, PostgreSQL. Track record of delivering reliable, measurable results in production systems.
+
+Technical Skills
+- Python
+- FastAPI
+- PostgreSQL
+- Docker
+- REST APIs
+- Kafka
+- CI/CD
+- Microservices
+- Redis
+
+Education
+B.S. in Computer Science, Northfield College (2022)
+
+Work Experience
+Software Engineer, Backend, Vertex Logistics (2025 - Present)
+- Owned CI/CD pipelines deploying FastAPI services 1x per week.
+- Built event-driven workflows with Microservices and FastAPI.
+
+Software Engineer, Backend, RetailX (2022 - 2025)
+- Owned CI/CD pipelines deploying Docker services 4x per week.
+- Migrated a monolith to REST APIs microservices with zero-downtime releases.
+
+Projects
+Billing API: idempotent payment service in PostgreSQL backed by REST APIs.
+Rate Limiter: distributed limiter using Microservices and CI/CD.

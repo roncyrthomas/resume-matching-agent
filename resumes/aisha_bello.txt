@@ -1,0 +1,35 @@
+Aisha Bello
+Application Security Engineer
+Toronto, Canada | aisha.bello@example.com | +1-555-0135
+
+Professional Summary
+Application Security Engineer with 5+ years of experience specialising in Penetration Testing, OWASP, Burp Suite. Track record of delivering reliable, measurable results in production systems.
+
+Technical Skills
+- Penetration Testing
+- OWASP
+- Burp Suite
+- Linux
+- Python
+- AWS
+- Docker
+- SIEM
+- Threat Modeling
+
+Work Experience
+Security Engineer, Craft Studio (2024 - Present)
+- Cut mean time to detect 50% by tuning SIEM alerting.
+- Embedded Burp Suite checks into CI, blocking vulnerable releases.
+
+Security Engineer, Vertex Logistics (2021 - 2024)
+- Cut mean time to detect 60% by tuning Python alerting.
+- Embedded Python checks into CI, blocking vulnerable releases.
+
+Projects
+AppSec Pipeline: automated AWS scanning with OWASP triage.
+
+Education
+M.S. in Cybersecurity, Tech Institute of Engineering (2021)
+
+Certifications
+- OSCP

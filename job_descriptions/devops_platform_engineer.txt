@@ -1,0 +1,20 @@
+Job Title: DevOps / Platform Engineer
+
+About the role:
+Clearpath Energy runs workloads on Kubernetes across AWS and GCP and is hiring
+a Platform Engineer to make deployments boring.
+
+Responsibilities:
+- Own Terraform modules and the GitOps deployment pipeline.
+- Operate and upgrade multi-region Kubernetes clusters.
+- Build observability with Prometheus and Grafana, and lead incident reviews.
+
+Requirements:
+- 4+ years of experience operating Kubernetes in production.
+- Strong Terraform and infrastructure-as-code skills.
+- Experience with AWS, Docker and CI/CD pipelines.
+- Comfortable scripting in Python or Bash on Linux.
+
+Nice to have:
+- Certified Kubernetes Administrator (CKA).
+- Helm and Ansible experience.

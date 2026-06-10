@@ -1,0 +1,20 @@
+Job Title: Senior Machine Learning Engineer
+
+About the role:
+Nimbus Pay is hiring a Senior Machine Learning Engineer to own fraud-detection
+models end to end, from feature pipelines to monitored production deployments.
+
+Responsibilities:
+- Design, train and deploy machine learning models for transaction fraud scoring.
+- Build feature pipelines and automated retraining workflows.
+- Partner with data engineers to productionise models behind low-latency APIs.
+
+Requirements:
+- 5+ years of professional Python experience.
+- 3+ years building production machine learning models with PyTorch or TensorFlow.
+- Strong grounding in scikit-learn, pandas and SQL.
+- Bachelor's degree in Computer Science or a related field.
+
+Nice to have:
+- Experience with MLOps tooling, Airflow and AWS.
+- Publications or open-source contributions in NLP or Computer Vision.

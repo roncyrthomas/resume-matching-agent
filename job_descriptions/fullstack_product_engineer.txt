@@ -1,0 +1,19 @@
+Job Title: Full-Stack Product Engineer
+
+About the role:
+Mosaic Travel is a small product team shipping weekly. We need a Full-Stack
+Engineer who can take features from database schema to polished UI.
+
+Responsibilities:
+- Build features across a Python backend and a React + TypeScript frontend.
+- Design PostgreSQL schemas and keep APIs fast.
+- Collaborate directly with design and customers.
+
+Requirements:
+- 3+ years of professional full-stack experience.
+- Strong Python and React skills.
+- Experience with TypeScript, PostgreSQL and Docker.
+
+Nice to have:
+- FastAPI, Next.js or GraphQL experience.
+- Experience in early-stage product teams.

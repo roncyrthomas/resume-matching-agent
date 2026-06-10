@@ -1,0 +1,19 @@
+Job Title: Frontend Engineer (React)
+
+About the role:
+Orchid Media is rebuilding its creator dashboard and needs a Frontend Engineer
+who sweats interaction details and performance budgets.
+
+Responsibilities:
+- Ship React features with TypeScript across the creator-facing dashboard.
+- Evolve our design system and component library.
+- Keep Core Web Vitals green on every release.
+
+Requirements:
+- 3+ years of professional React experience.
+- Strong TypeScript and modern JavaScript fundamentals.
+- Deep knowledge of CSS and HTML semantics.
+
+Nice to have:
+- Next.js, GraphQL or Tailwind CSS experience.
+- Familiarity with Cypress end-to-end testing.

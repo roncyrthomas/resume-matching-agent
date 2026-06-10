@@ -3,6 +3,11 @@
 
 # Generated assistant output
 summaries/
+results/
+
+# Vector store + model caches
+.chroma/
+.cache/
 
 # Python
 __pycache__/
