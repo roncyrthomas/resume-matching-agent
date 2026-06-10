@@ -1,9 +1,9 @@
 Ava Thompson
-Software Engineer, Java
-Amsterdam, Netherlands | ava.thompson@example.com | +1-555-0114
+Senior Java Engineer
+London, UK | ava.thompson@example.com | +1-555-0114
 
 Professional Summary
-Software Engineer, Java with 5+ years of experience specialising in Java, Spring Boot, MySQL. Track record of delivering reliable, measurable results in production systems.
+Senior Java Engineer with 5+ years of experience specialising in Java, Spring Boot, MySQL. Track record of delivering reliable, measurable results in production systems.
 
 Technical Skills
 - Java
@@ -11,24 +11,23 @@ Technical Skills
 - MySQL
 - Kafka
 - REST APIs
-- PostgreSQL
-- Redis
-- AWS
+- Docker
+- Kubernetes
 
 Work Experience
-Java Backend Developer, Orchid Media (2022 - Present)
-- Improved throughput 70% by introducing REST APIs message streaming.
-- Modernised legacy modules into REST APIs microservices on PostgreSQL.
+Java Backend Developer, Helio Health (2022 - Present)
+- Designed Kubernetes services processing 1M transactions daily.
+- Hardened Kafka APIs with circuit breakers and structured retries.
 
-Senior Java Engineer, FinServe (2021 - 2022)
-- Improved throughput 30% by introducing Spring Boot message streaming.
-- Modernised legacy modules into REST APIs microservices on Redis.
+Software Engineer, Java, BlueRiver Systems (2021 - 2022)
+- Modernised legacy modules into REST APIs microservices on Java.
+- Designed REST APIs services processing 1M transactions daily.
 
 Projects
-Ledger Service: double-entry bookkeeping engine on Spring Boot and REST APIs.
+Ledger Service: double-entry bookkeeping engine on Docker and Kafka.
 
 Education
-B.Sc. in Information Systems, Northfield College (2020)
+Master of Science in Information Systems, Tech Institute of Engineering (2020)
 
 Certifications
 - Oracle Certified Professional: Java SE

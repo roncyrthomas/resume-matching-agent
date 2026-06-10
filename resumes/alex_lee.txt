@@ -1,28 +1,24 @@
 Alex Lee
-Machine Learning Engineer
-Toronto, Canada | alex.lee@example.com | +1-555-0102
+Data Scientist
+Pune, India | alex.lee@example.com | +1-555-0102
 
 PROFILE
-Machine Learning Engineer with 5+ years of experience specialising in Python, PyTorch, scikit-learn. Track record of delivering reliable, measurable results in production systems.
+Data Scientist with 5+ years of experience specialising in Python, PyTorch, scikit-learn. Track record of delivering reliable, measurable results in production systems.
 
 CORE COMPETENCIES
-Python, PyTorch, scikit-learn, pandas, SQL, Machine Learning, Deep Learning, TensorFlow, Airflow, Docker
-
-EDUCATION & TRAINING
-Master of Science in Statistics, Westlake University (2021)
+Python, PyTorch, scikit-learn, pandas, SQL, Machine Learning, Spark, Deep Learning, Docker, Airflow
 
 EMPLOYMENT HISTORY
-Applied Scientist, AppWorks (2024 - Present)
-- Led feature engineering with Python and PyTorch across 6 data sources.
-- Reduced model training time 25% by optimising pandas workflows.
+Machine Learning Engineer, RetailX (2024 - Present)
+- Led feature engineering with pandas and Python across 4 data sources.
+- Shipped an A/B-tested recommendation system using PyTorch and Deep Learning.
 
-Machine Learning Engineer, Quant Co (2021 - 2024)
-- Led feature engineering with Airflow and PyTorch across 5 data sources.
-- Productionised scikit-learn pipelines serving 3M inferences per day.
+Applied Scientist, Orchid Media (2021 - 2024)
+- Shipped an A/B-tested recommendation system using scikit-learn and Machine Learning.
+- Productionised Airflow pipelines serving 8M inferences per day.
 
 KEY PROJECTS
-Resume Screener: NLP classifier built with PyTorch and Airflow.
+Resume Screener: NLP classifier built with Docker and scikit-learn.
 
-LICENSES & CERTIFICATIONS
-- TensorFlow Developer Certificate
-- AWS Certified Machine Learning - Specialty
+EDUCATION & TRAINING
+B.S. in Data Science, Lakeside State University (2021)

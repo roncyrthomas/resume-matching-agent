@@ -1,28 +1,34 @@
 Olivia Brown
-Senior UX Designer
-Berlin, Germany | olivia.brown@example.com | +1-555-0106
+Senior Product Designer
+Pune, India | olivia.brown@example.com | +1-555-0106
 
-SUMMARY
-Senior UX Designer with 9+ years of experience specialising in Figma, User Research, Prototyping. Track record of delivering reliable, measurable results in production systems.
+Professional Summary
+Senior Product Designer with 9+ years of experience specialising in Figma, User Research, Prototyping. Track record of delivering reliable, measurable results in production systems.
 
-SKILLS
-Figma, User Research, Prototyping, Design Systems, CSS, HTML
+Technical Skills
+- Figma
+- User Research
+- Prototyping
+- Design Systems
+- Accessibility
+- HTML
+- CSS
 
-EXPERIENCE
-Senior Product Designer, DataWorks (2019 - Present)
-- Ran 50+ usability studies shaping the product roadmap.
-- Built a HTML design system adopted by 7 squads.
+Work Experience
+Senior Product Designer, Mosaic Travel (2022 - Present)
+- Built a Prototyping design system adopted by 4 squads.
+- Improved onboarding conversion 50% through HTML prototypes.
 
-Product Designer, Helio Health (2018 - 2019)
-- Improved onboarding conversion 30% through Prototyping prototypes.
-- Ran 30+ usability studies shaping the product roadmap.
+Product Designer, Nimbus Pay (2020 - 2022)
+- Built a CSS design system adopted by 2 squads.
+- Ran 80+ usability studies shaping the product roadmap.
 
-UX Designer, Insight AI (2017 - 2018)
-- Improved onboarding conversion 40% through Design Systems prototypes.
-- Ran 60+ usability studies shaping the product roadmap.
+Product Designer, Craft Studio (2017 - 2020)
+- Ran 70+ usability studies shaping the product roadmap.
+- Improved onboarding conversion 60% through User Research prototypes.
 
-PROJECTS
-Design Tokens: cross-platform theming built in User Research.
+Projects
+Design Tokens: cross-platform theming built in CSS.
 
-EDUCATION
-B.Sc. in Human-Computer Interaction, Global Tech University (2017)
+Education
+B.S. in Human-Computer Interaction, Westlake University (2017)

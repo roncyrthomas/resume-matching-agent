@@ -1,28 +1,34 @@
 Jack Murphy
-Senior iOS Developer
-Singapore | jack.murphy@example.com | +1-555-0129
+Senior Android Developer
+Seattle, WA | jack.murphy@example.com | +1-555-0129
 
-SUMMARY
-Senior iOS Developer with 7+ years of experience specialising in Kotlin, Android, REST APIs. Track record of delivering reliable, measurable results in production systems.
+Professional Summary
+Senior Android Developer with 7+ years of experience specialising in Kotlin, Android, REST APIs. Track record of delivering reliable, measurable results in production systems.
 
-SKILLS
-Kotlin, Android, REST APIs, Git, React Native, Swift
+Technical Skills
+- Kotlin
+- Android
+- REST APIs
+- Git
+- Flutter
+- Firebase
+- iOS
 
-EXPERIENCE
-Senior Mobile Engineer, Nimbus Pay (2025 - Present)
-- Cut app startup time 70% by profiling Android initialisation.
-- Built offline-first sync with REST APIs and React Native.
+Work Experience
+Senior Android Developer, WebStart (2024 - Present)
+- Cut app startup time 60% by profiling Flutter initialisation.
+- Shipped Kotlin apps with 400k+ installs and 4.7-star ratings.
 
-iOS Developer, Clearpath Energy (2024 - 2025)
-- Cut app startup time 70% by profiling Git initialisation.
-- Led migration from REST APIs to Git, reducing crash rate 60%.
+Android Developer, HostPro (2021 - 2024)
+- Led migration from Android to iOS, reducing crash rate 70%.
+- Built offline-first sync with Flutter and Kotlin.
 
-Mobile Engineer, Quant Co (2019 - 2024)
-- Led migration from REST APIs to Git, reducing crash rate 70%.
-- Shipped React Native apps with 800k+ installs and 4.7-star ratings.
+Mobile Engineer, Loop (2019 - 2021)
+- Built offline-first sync with Kotlin and REST APIs.
+- Shipped iOS apps with 300k+ installs and 4.7-star ratings.
 
-PROJECTS
-Fitness Tracker: Android app with REST APIs cloud sync.
+Projects
+Fitness Tracker: Android app with Git cloud sync.
 
-EDUCATION
-M.Tech in Computer Science, Westlake University (2019)
+Education
+Bachelor of Technology in Computer Science, Westlake University (2019)

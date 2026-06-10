@@ -1,9 +1,9 @@
 Ethan Walker
-Python Developer
-Seattle, WA | ethan.walker@example.com | +1-555-0111
+Software Engineer, Backend
+London, UK | ethan.walker@example.com | +1-555-0111
 
 Professional Summary
-Python Developer with 4+ years of experience specialising in Python, FastAPI, PostgreSQL. Track record of delivering reliable, measurable results in production systems.
+Software Engineer, Backend with 4+ years of experience specialising in Python, FastAPI, PostgreSQL. Track record of delivering reliable, measurable results in production systems.
 
 Technical Skills
 - Python
@@ -11,23 +11,24 @@ Technical Skills
 - PostgreSQL
 - Docker
 - REST APIs
-- Kafka
-- CI/CD
-- Microservices
-- Redis
+- AWS
+- Flask
 
 Education
-B.S. in Computer Science, Northfield College (2022)
+M.Tech in Software Engineering, Global Tech University (2021)
 
 Work Experience
-Software Engineer, Backend, Vertex Logistics (2025 - Present)
-- Owned CI/CD pipelines deploying FastAPI services 1x per week.
-- Built event-driven workflows with Microservices and FastAPI.
+Software Engineer, Backend, Craft Studio (2024 - Present)
+- Migrated a monolith to Docker microservices with zero-downtime releases.
+- Owned CI/CD pipelines deploying Flask services 2x per week.
 
-Software Engineer, Backend, RetailX (2022 - 2025)
-- Owned CI/CD pipelines deploying Docker services 4x per week.
-- Migrated a monolith to REST APIs microservices with zero-downtime releases.
+Python Developer, Acme Cloud (2022 - 2024)
+- Designed PostgreSQL microservices handling 8M requests per day.
+- Owned CI/CD pipelines deploying Docker services 9x per week.
 
 Projects
-Billing API: idempotent payment service in PostgreSQL backed by REST APIs.
-Rate Limiter: distributed limiter using Microservices and CI/CD.
+Billing API: idempotent payment service in REST APIs backed by Flask.
+Rate Limiter: distributed limiter using Python and Docker.
+
+Certifications
+- AWS Certified Developer - Associate

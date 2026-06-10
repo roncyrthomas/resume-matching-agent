@@ -342,6 +342,9 @@ class Resume:
     total_years: int
 
 
+_SENIORITY_WORDS = ("Junior", "Senior", "Staff", "Lead", "Principal")
+
+
 def _seniority(years: int) -> str:
     if years >= 10:
         return "Staff"
@@ -352,6 +355,13 @@ def _seniority(years: int) -> str:
     return ""
 
 
+def _with_seniority(title: str, prefix: str) -> str:
+    """Prepend a seniority prefix unless the title already carries one."""
+    if not prefix or title.split(" ", 1)[0] in _SENIORITY_WORDS:
+        return title
+    return f"{prefix} {title}"
+
+
 def _fill(template: str, rng: random.Random, skills: Sequence[str]) -> str:
     s, s2 = rng.sample(list(skills), 2)
     return template.format(s=s, s2=s2, n=rng.randint(1, 9), pct=rng.choice([20, 25, 30, 35, 40, 50, 60, 70]))
@@ -359,16 +369,11 @@ def _fill(template: str, rng: random.Random, skills: Sequence[str]) -> str:
 
 def _make_jobs(rng: random.Random, role: Dict[str, object], skills: Sequence[str], years: int) -> Tuple[Job, ...]:
     """Split a `years`-long career into 1-4 contiguous jobs ending at Present."""
-    n_jobs = max(1, min(4, years // 3 + (1 if years % 3 else 0)))
-    spans: List[int] = []
-    remaining = years
-    for i in range(n_jobs):
-        left = n_jobs - i - 1
-        size = remaining - left if left else remaining
-        size = max(1, min(size, rng.randint(1, max(1, remaining - left))))
-        spans.append(size)
-        remaining -= size
-    spans[-1] += remaining  # absorb rounding so the spans sum exactly to `years`
+    n_jobs = max(1, min(4, (years + 2) // 3))  # ceil(years / 3), capped at 4
+    # Correct by construction: every span >= 1 year and the spans sum to `years`.
+    spans = [1] * n_jobs
+    for _ in range(years - n_jobs):
+        spans[rng.randrange(n_jobs)] += 1
 
     titles = list(role["titles"])  # type: ignore[index]
     bullets = list(role["bullets"])  # type: ignore[index]
@@ -381,9 +386,7 @@ def _make_jobs(rng: random.Random, role: Dict[str, object], skills: Sequence[str
         end = "Present" if is_last else str(end_year)
         title = rng.choice(titles)
         if is_last:
-            prefix = _seniority(years)
-            if prefix and not title.startswith(prefix):
-                title = f"{prefix} {title}"
+            title = _with_seniority(title, _seniority(years))
         job_bullets = tuple(_fill(b, rng, skills) for b in rng.sample(bullets, min(2, len(bullets))))
         jobs.append(Job(title=title, company=companies[i], start=start, end=end, bullets=job_bullets))
         start = end_year
@@ -398,8 +401,7 @@ def _make_resume(idx: int, spec: Tuple[str, str, str, int], rng: random.Random) 
     skills = tuple(core + rng.sample(extra, min(len(extra), rng.randint(2, 4))))
 
     title = rng.choice(list(role["titles"]))  # type: ignore[index]
-    prefix = _seniority(years)
-    display_title = f"{prefix} {title}".strip()
+    display_title = _with_seniority(title, _seniority(years))
 
     level = rng.choices(
         ["bachelor", "master", "phd"],

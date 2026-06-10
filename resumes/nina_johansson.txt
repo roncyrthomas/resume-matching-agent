@@ -1,24 +1,24 @@
 Nina Johansson
 Big Data Engineer
-Amsterdam, Netherlands | nina.johansson@example.com | +1-555-0126
+London, UK | nina.johansson@example.com | +1-555-0126
 
-SUMMARY
+PROFILE
 Big Data Engineer with 5+ years of experience specialising in Python, SQL, Spark. Track record of delivering reliable, measurable results in production systems.
 
-SKILLS
-Python, SQL, Spark, Airflow, ETL, AWS, PostgreSQL, Data Warehousing, Kafka
+CORE COMPETENCIES
+Python, SQL, Spark, Airflow, ETL, Snowflake, dbt, AWS, PostgreSQL
 
-EXPERIENCE
-Big Data Engineer, Clearpath Energy (2023 - Present)
-- Modelled analytics tables in AWS powering 20+ dashboards.
-- Built Kafka pipelines moving 6TB per day into the warehouse.
+EMPLOYMENT HISTORY
+Data Engineer, AppWorks (2024 - Present)
+- Modelled analytics tables in SQL powering 90+ dashboards.
+- Cut pipeline failures 35% with AWS data-quality checks.
 
-Analytics Engineer, AppWorks (2021 - 2023)
-- Built SQL pipelines moving 7TB per day into the warehouse.
-- Cut pipeline failures 40% with Kafka data-quality checks.
+Big Data Engineer, Northwind Analytics (2021 - 2024)
+- Modelled analytics tables in Python powering 90+ dashboards.
+- Cut pipeline failures 20% with ETL data-quality checks.
 
-PROJECTS
-CDC Pipeline: change-data-capture into SQL using Spark.
+KEY PROJECTS
+CDC Pipeline: change-data-capture into PostgreSQL using Spark.
 
-EDUCATION
-Master of Science in Computer Science, State University (2020)
+EDUCATION & TRAINING
+M.Tech in Data Science, Westlake University (2020)

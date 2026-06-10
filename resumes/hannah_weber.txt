@@ -1,20 +1,20 @@
 Hannah Weber
-Full-Stack Engineer
-Singapore | hannah.weber@example.com | +1-555-0120
+Product Engineer
+Amsterdam, Netherlands | hannah.weber@example.com | +1-555-0120
 
-PROFILE
-Full-Stack Engineer with 3+ years of experience specialising in Python, React, TypeScript. Track record of delivering reliable, measurable results in production systems.
+SUMMARY
+Product Engineer with 3+ years of experience specialising in Python, React, TypeScript. Track record of delivering reliable, measurable results in production systems.
 
-CORE COMPETENCIES
-Python, React, TypeScript, PostgreSQL, Docker, GraphQL, Django, Node.js, Redis
+SKILLS
+Python, React, TypeScript, PostgreSQL, Docker, Next.js, GraphQL
 
-EDUCATION & TRAINING
-M.S. in Computer Science, Northfield College (2022)
+EXPERIENCE
+Product Engineer, FinServe (2023 - Present)
+- Delivered TypeScript + Next.js features end to end for 50k users.
+- Built REST and GraphQL APIs in GraphQL consumed by Next.js clients.
 
-EMPLOYMENT HISTORY
-Full-Stack Engineer, Craft Studio (2023 - Present)
-- Built REST and GraphQL APIs in Redis consumed by GraphQL clients.
-- Delivered TypeScript + Docker features end to end for 80k users.
+PROJECTS
+Marketplace MVP: Python backend with a Docker storefront.
 
-KEY PROJECTS
-Marketplace MVP: Node.js backend with a React storefront.
+EDUCATION
+M.Tech in Software Engineering, Westlake University (2023)

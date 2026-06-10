@@ -24,17 +24,16 @@
     "jane_smith.docx": {
       "name": "Jane Smith",
       "role": "frontend",
-      "title": "Senior Frontend Engineer",
+      "title": "Senior Frontend Developer",
       "total_years": 9,
       "education_level": "master",
       "skills": [
         "CSS",
-        "Cypress",
         "GraphQL",
         "HTML",
         "JavaScript",
+        "Next.js",
         "React",
-        "Redux",
         "Tailwind CSS",
         "TypeScript"
       ],
@@ -43,9 +42,9 @@
     "alex_lee.txt": {
       "name": "Alex Lee",
       "role": "ml",
-      "title": "Machine Learning Engineer",
+      "title": "Data Scientist",
       "total_years": 5,
-      "education_level": "master",
+      "education_level": "bachelor",
       "skills": [
         "Airflow",
         "Deep Learning",
@@ -54,7 +53,7 @@
         "PyTorch",
         "Python",
         "SQL",
-        "TensorFlow",
+        "Spark",
         "pandas",
         "scikit-learn"
       ],
@@ -68,12 +67,14 @@
       "education_level": "bachelor",
       "skills": [
         "AWS",
-        "Ansible",
         "CI/CD",
         "Docker",
         "GCP",
+        "Grafana",
+        "Helm",
         "Kubernetes",
         "Linux",
+        "Prometheus",
         "Terraform"
       ],
       "format": ".pdf"
@@ -81,7 +82,7 @@
     "sam_patel.txt": {
       "name": "Sam Patel",
       "role": "backend_java",
-      "title": "Staff Software Engineer, Java",
+      "title": "Senior Java Engineer",
       "total_years": 10,
       "education_level": "bachelor",
       "skills": [
@@ -89,6 +90,7 @@
         "Docker",
         "Java",
         "Kafka",
+        "Microservices",
         "MySQL",
         "REST APIs",
         "Spring Boot"
@@ -98,7 +100,7 @@
     "lin_wei.docx": {
       "name": "Lin Wei",
       "role": "ml",
-      "title": "Data Scientist",
+      "title": "Machine Learning Engineer",
       "total_years": 6,
       "education_level": "master",
       "skills": [
@@ -108,7 +110,6 @@
         "PyTorch",
         "Python",
         "SQL",
-        "TensorFlow",
         "pandas",
         "scikit-learn"
       ],
@@ -117,10 +118,11 @@
     "olivia_brown.txt": {
       "name": "Olivia Brown",
       "role": "design",
-      "title": "Senior UX Designer",
+      "title": "Senior Product Designer",
       "total_years": 9,
       "education_level": "bachelor",
       "skills": [
+        "Accessibility",
         "CSS",
         "Design Systems",
         "Figma",
@@ -133,18 +135,16 @@
     "noah_kim.pdf": {
       "name": "Noah Kim",
       "role": "fullstack",
-      "title": "Full-Stack Engineer",
+      "title": "Product Engineer",
       "total_years": 6,
       "education_level": "phd",
       "skills": [
-        "AWS",
         "Docker",
         "FastAPI",
         "Node.js",
         "PostgreSQL",
         "Python",
         "React",
-        "Redis",
         "TypeScript"
       ],
       "format": ".pdf"
@@ -154,16 +154,15 @@
       "role": "ml",
       "title": "Senior Data Scientist",
       "total_years": 7,
-      "education_level": "master",
+      "education_level": "bachelor",
       "skills": [
-        "AWS",
-        "Airflow",
         "Computer Vision",
-        "MLOps",
         "Machine Learning",
         "PyTorch",
         "Python",
         "SQL",
+        "Spark",
+        "TensorFlow",
         "pandas",
         "scikit-learn"
       ],
@@ -174,15 +173,16 @@
       "role": "ml",
       "title": "Applied Scientist",
       "total_years": 3,
-      "education_level": "phd",
+      "education_level": "bachelor",
       "skills": [
         "AWS",
-        "Airflow",
         "Computer Vision",
         "Machine Learning",
+        "NLP",
         "PyTorch",
         "Python",
         "SQL",
+        "Spark",
         "pandas",
         "scikit-learn"
       ],
@@ -193,15 +193,15 @@
       "role": "ml",
       "title": "Staff Machine Learning Engineer",
       "total_years": 11,
-      "education_level": "bachelor",
+      "education_level": "phd",
       "skills": [
-        "AWS",
+        "Docker",
         "MLOps",
         "Machine Learning",
         "PyTorch",
         "Python",
         "SQL",
-        "Spark",
+        "TensorFlow",
         "pandas",
         "scikit-learn"
       ],
@@ -210,33 +210,32 @@
     "ethan_walker.txt": {
       "name": "Ethan Walker",
       "role": "backend_python",
-      "title": "Python Developer",
+      "title": "Software Engineer, Backend",
       "total_years": 4,
-      "education_level": "bachelor",
+      "education_level": "master",
       "skills": [
-        "CI/CD",
+        "AWS",
         "Docker",
         "FastAPI",
-        "Kafka",
-        "Microservices",
+        "Flask",
         "PostgreSQL",
         "Python",
-        "REST APIs",
-        "Redis"
+        "REST APIs"
       ],
       "format": ".txt"
     },
     "sofia_rossi.pdf": {
       "name": "Sofia Rossi",
       "role": "backend_python",
-      "title": "Python Developer",
+      "title": "Backend Engineer",
       "total_years": 6,
       "education_level": "bachelor",
       "skills": [
-        "CI/CD",
+        "AWS",
+        "Django",
         "Docker",
         "FastAPI",
-        "Kubernetes",
+        "MongoDB",
         "PostgreSQL",
         "Python",
         "REST APIs"
@@ -246,14 +245,14 @@
     "omar_hassan.docx": {
       "name": "Omar Hassan",
       "role": "backend_python",
-      "title": "Staff Backend Engineer",
+      "title": "Staff Software Engineer, Backend",
       "total_years": 12,
       "education_level": "master",
       "skills": [
+        "AWS",
+        "Django",
         "Docker",
         "FastAPI",
-        "Flask",
-        "MongoDB",
         "PostgreSQL",
         "Python",
         "REST APIs",
@@ -264,17 +263,16 @@
     "ava_thompson.txt": {
       "name": "Ava Thompson",
       "role": "backend_java",
-      "title": "Software Engineer, Java",
+      "title": "Senior Java Engineer",
       "total_years": 5,
-      "education_level": "bachelor",
+      "education_level": "master",
       "skills": [
-        "AWS",
+        "Docker",
         "Java",
         "Kafka",
+        "Kubernetes",
         "MySQL",
-        "PostgreSQL",
         "REST APIs",
-        "Redis",
         "Spring Boot"
       ],
       "format": ".txt"
@@ -282,15 +280,15 @@
     "lucas_martin.pdf": {
       "name": "Lucas Martin",
       "role": "backend_java",
-      "title": "Senior Senior Java Engineer",
+      "title": "Senior Java Engineer",
       "total_years": 7,
-      "education_level": "master",
+      "education_level": "bachelor",
       "skills": [
-        "Docker",
+        "AWS",
         "Java",
         "Kafka",
+        "Kubernetes",
         "MySQL",
-        "PostgreSQL",
         "REST APIs",
         "Spring Boot"
       ],
@@ -299,17 +297,17 @@
     "isabella_silva.docx": {
       "name": "Isabella Silva",
       "role": "frontend",
-      "title": "Frontend Engineer",
+      "title": "UI Engineer",
       "total_years": 4,
-      "education_level": "master",
+      "education_level": "phd",
       "skills": [
         "CSS",
-        "Cypress",
+        "GraphQL",
         "HTML",
         "JavaScript",
-        "Next.js",
         "React",
-        "TypeScript"
+        "TypeScript",
+        "Vue.js"
       ],
       "format": ".docx"
     },
@@ -318,15 +316,15 @@
       "role": "frontend",
       "title": "UI Engineer",
       "total_years": 6,
-      "education_level": "bachelor",
+      "education_level": "master",
       "skills": [
         "CSS",
-        "Cypress",
         "HTML",
         "JavaScript",
         "React",
-        "TypeScript",
-        "Vue.js"
+        "Redux",
+        "Tailwind CSS",
+        "TypeScript"
       ],
       "format": ".txt"
     },
@@ -338,12 +336,10 @@
       "education_level": "master",
       "skills": [
         "CSS",
+        "Cypress",
         "HTML",
         "JavaScript",
-        "Next.js",
         "React",
-        "Redux",
-        "Tailwind CSS",
         "TypeScript",
         "Vue.js"
       ],
@@ -352,14 +348,14 @@
     "arjun_mehta.docx": {
       "name": "Arjun Mehta",
       "role": "fullstack",
-      "title": "Senior Full-Stack Engineer",
+      "title": "Senior Full Stack Developer",
       "total_years": 8,
-      "education_level": "bachelor",
+      "education_level": "master",
       "skills": [
-        "AWS",
         "Docker",
-        "FastAPI",
         "GraphQL",
+        "Next.js",
+        "Node.js",
         "PostgreSQL",
         "Python",
         "React",
@@ -371,18 +367,16 @@
     "hannah_weber.txt": {
       "name": "Hannah Weber",
       "role": "fullstack",
-      "title": "Full-Stack Engineer",
+      "title": "Product Engineer",
       "total_years": 3,
       "education_level": "master",
       "skills": [
-        "Django",
         "Docker",
         "GraphQL",
-        "Node.js",
+        "Next.js",
         "PostgreSQL",
         "Python",
         "React",
-        "Redis",
         "TypeScript"
       ],
       "format": ".txt"
@@ -395,7 +389,9 @@
       "education_level": "bachelor",
       "skills": [
         "Docker",
+        "GraphQL",
         "Next.js",
+        "Node.js",
         "PostgreSQL",
         "Python",
         "React",
@@ -407,19 +403,17 @@
     "fatima_khan.docx": {
       "name": "Fatima Khan",
       "role": "devops",
-      "title": "Platform Engineer",
+      "title": "DevOps Engineer",
       "total_years": 6,
       "education_level": "bachelor",
       "skills": [
         "AWS",
-        "Ansible",
+        "Bash",
         "CI/CD",
         "Docker",
-        "GCP",
-        "Helm",
         "Kubernetes",
         "Linux",
-        "Python",
+        "Prometheus",
         "Terraform"
       ],
       "format": ".docx"
@@ -427,15 +421,15 @@
     "carlos_mendez.txt": {
       "name": "Carlos Mendez",
       "role": "devops",
-      "title": "DevOps Engineer",
+      "title": "Platform Engineer",
       "total_years": 4,
       "education_level": "master",
       "skills": [
         "AWS",
-        "Ansible",
         "Bash",
         "CI/CD",
         "Docker",
+        "Grafana",
         "Helm",
         "Kubernetes",
         "Linux",
@@ -446,14 +440,13 @@
     "emily_davis.pdf": {
       "name": "Emily Davis",
       "role": "devops",
-      "title": "Staff DevOps Engineer",
+      "title": "Staff Site Reliability Engineer",
       "total_years": 12,
-      "education_level": "master",
+      "education_level": "bachelor",
       "skills": [
         "AWS",
         "CI/CD",
         "Docker",
-        "GCP",
         "Helm",
         "Kubernetes",
         "Linux",
@@ -467,11 +460,13 @@
       "role": "data_engineer",
       "title": "Senior Big Data Engineer",
       "total_years": 8,
-      "education_level": "bachelor",
+      "education_level": "master",
       "skills": [
+        "AWS",
         "Airflow",
         "Data Warehousing",
         "ETL",
+        "PostgreSQL",
         "Python",
         "SQL",
         "Spark",
@@ -488,20 +483,20 @@
       "skills": [
         "AWS",
         "Airflow",
-        "Data Warehousing",
         "ETL",
-        "Kafka",
         "PostgreSQL",
         "Python",
         "SQL",
-        "Spark"
+        "Snowflake",
+        "Spark",
+        "dbt"
       ],
       "format": ".txt"
     },
     "tomas_novak.pdf": {
       "name": "Tomas Novak",
       "role": "data_engineer",
-      "title": "Analytics Engineer",
+      "title": "Big Data Engineer",
       "total_years": 3,
       "education_level": "master",
       "skills": [
@@ -511,24 +506,26 @@
         "ETL",
         "Python",
         "SQL",
-        "Spark"
+        "Snowflake",
+        "Spark",
+        "dbt"
       ],
       "format": ".pdf"
     },
     "leila_aziz.docx": {
       "name": "Leila Aziz",
       "role": "data_engineer",
-      "title": "Staff Analytics Engineer",
+      "title": "Staff Data Engineer",
       "total_years": 10,
-      "education_level": "phd",
+      "education_level": "master",
       "skills": [
+        "AWS",
         "Airflow",
-        "Data Warehousing",
         "ETL",
+        "Kafka",
         "PostgreSQL",
         "Python",
         "SQL",
-        "Snowflake",
         "Spark"
       ],
       "format": ".docx"
@@ -536,16 +533,17 @@
     "jack_murphy.txt": {
       "name": "Jack Murphy",
       "role": "mobile",
-      "title": "Senior iOS Developer",
+      "title": "Senior Android Developer",
       "total_years": 7,
-      "education_level": "master",
+      "education_level": "bachelor",
       "skills": [
         "Android",
+        "Firebase",
+        "Flutter",
         "Git",
         "Kotlin",
         "REST APIs",
-        "React Native",
-        "Swift"
+        "iOS"
       ],
       "format": ".txt"
     },
@@ -557,28 +555,29 @@
       "education_level": "bachelor",
       "skills": [
         "Android",
-        "Flutter",
+        "Firebase",
         "Git",
+        "GraphQL",
         "Kotlin",
         "REST APIs",
         "React Native",
-        "Swift"
+        "iOS"
       ],
       "format": ".pdf"
     },
     "andre_williams.docx": {
       "name": "Andre Williams",
       "role": "mobile",
-      "title": "Senior iOS Developer",
+      "title": "Senior Mobile Engineer",
       "total_years": 9,
       "education_level": "master",
       "skills": [
         "Android",
-        "Flutter",
         "Git",
         "Kotlin",
         "REST APIs",
-        "Swift"
+        "React Native",
+        "iOS"
       ],
       "format": ".docx"
     },
@@ -587,13 +586,13 @@
       "role": "qa",
       "title": "QA Automation Engineer",
       "total_years": 6,
-      "education_level": "bachelor",
+      "education_level": "master",
       "skills": [
         "CI/CD",
         "Cypress",
         "Docker",
         "JUnit",
-        "Playwright",
+        "Java",
         "Python",
         "REST APIs",
         "Selenium",
@@ -606,12 +605,11 @@
       "role": "qa",
       "title": "Senior Software Engineer in Test",
       "total_years": 9,
-      "education_level": "bachelor",
+      "education_level": "phd",
       "skills": [
         "CI/CD",
-        "Cypress",
-        "Docker",
-        "Java",
+        "JUnit",
+        "Playwright",
         "Python",
         "REST APIs",
         "Selenium",
@@ -622,18 +620,17 @@
     "marcus_reed.docx": {
       "name": "Marcus Reed",
       "role": "security",
-      "title": "Senior Application Security Engineer",
+      "title": "Senior Security Engineer",
       "total_years": 8,
-      "education_level": "master",
+      "education_level": "bachelor",
       "skills": [
         "AWS",
         "Burp Suite",
-        "Docker",
         "Linux",
         "OWASP",
         "Penetration Testing",
         "Python",
-        "SIEM"
+        "Threat Modeling"
       ],
       "format": ".docx"
     },
@@ -642,7 +639,7 @@
       "role": "security",
       "title": "Application Security Engineer",
       "total_years": 5,
-      "education_level": "master",
+      "education_level": "bachelor",
       "skills": [
         "AWS",
         "Burp Suite",

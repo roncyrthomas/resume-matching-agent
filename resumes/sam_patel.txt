@@ -1,35 +1,32 @@
 Sam Patel
-Staff Software Engineer, Java
-Bengaluru, India | sam.patel@example.com | +1-555-0104
+Senior Java Engineer
+Pune, India | sam.patel@example.com | +1-555-0104
 
-PROFILE
-Staff Software Engineer, Java with 10+ years of experience specialising in Java, Spring Boot, MySQL. Track record of delivering reliable, measurable results in production systems.
+SUMMARY
+Senior Java Engineer with 10+ years of experience specialising in Java, Spring Boot, MySQL. Track record of delivering reliable, measurable results in production systems.
 
-CORE COMPETENCIES
-Java, Spring Boot, MySQL, Kafka, REST APIs, AWS, Docker
+SKILLS
+Java, Spring Boot, MySQL, Kafka, REST APIs, Docker, Microservices, AWS
 
-EDUCATION & TRAINING
-Bachelor of Technology in Computer Science, Tech Institute of Engineering (2016)
+EDUCATION
+B.S. in Computer Science, National Institute of Technology (2016)
 
-EMPLOYMENT HISTORY
-Staff Java Backend Developer, Streamline (2024 - Present)
-- Designed Docker services processing 7M transactions daily.
-- Hardened REST APIs APIs with circuit breakers and structured retries.
+EXPERIENCE
+Senior Java Engineer, FinServe (2021 - Present)
+- Hardened Kafka APIs with circuit breakers and structured retries.
+- Improved throughput 40% by introducing REST APIs message streaming.
 
-Senior Java Engineer, Northwind Analytics (2023 - 2024)
+Java Backend Developer, Acme Cloud (2020 - 2021)
+- Designed Kafka services processing 2M transactions daily.
+- Hardened Java APIs with circuit breakers and structured retries.
+
+Senior Java Engineer, WebStart (2018 - 2020)
 - Hardened Java APIs with circuit breakers and structured retries.
 - Designed Java services processing 2M transactions daily.
 
-Senior Java Engineer, Craft Studio (2022 - 2023)
-- Modernised legacy modules into Spring Boot microservices on MySQL.
-- Designed REST APIs services processing 9M transactions daily.
+Software Engineer, Java, Quant Co (2016 - 2018)
+- Hardened AWS APIs with circuit breakers and structured retries.
+- Improved throughput 20% by introducing Kafka message streaming.
 
-Software Engineer, Java, Quant Co (2016 - 2022)
-- Designed Kafka services processing 7M transactions daily.
-- Modernised legacy modules into Docker microservices on Kafka.
-
-KEY PROJECTS
-Ledger Service: double-entry bookkeeping engine on MySQL and Spring Boot.
-
-LICENSES & CERTIFICATIONS
-- Oracle Certified Professional: Java SE
+PROJECTS
+Ledger Service: double-entry bookkeeping engine on Spring Boot and Java.

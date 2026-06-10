@@ -1,6 +1,6 @@
 Ryan OConnor
 UI Engineer
-Remote (US) | ryan.oconnor@example.com | +1-555-0117
+London, UK | ryan.oconnor@example.com | +1-555-0117
 
 Professional Summary
 UI Engineer with 6+ years of experience specialising in JavaScript, TypeScript, React. Track record of delivering reliable, measurable results in production systems.
@@ -11,20 +11,20 @@ Technical Skills
 - React
 - CSS
 - HTML
-- Vue.js
-- Cypress
-
-Education
-Bachelor of Technology in Software Engineering, Westlake University (2020)
+- Redux
+- Tailwind CSS
 
 Work Experience
-Frontend Engineer, Craft Studio (2022 - Present)
-- Improved Core Web Vitals 70% by optimising HTML rendering.
-- Shipped accessible JavaScript components meeting WCAG 2.1 AA.
+Frontend Engineer, Helio Health (2022 - Present)
+- Built a JavaScript design system used across 2 product teams.
+- Improved Core Web Vitals 20% by optimising TypeScript rendering.
 
-Frontend Engineer, HostPro (2020 - 2022)
-- Shipped accessible CSS components meeting WCAG 2.1 AA.
-- Migrated a legacy UI to Vue.js with Cypress, cutting bundle size 70%.
+UI Engineer, Summit Robotics (2020 - 2022)
+- Shipped accessible Redux components meeting WCAG 2.1 AA.
+- Migrated a legacy UI to HTML with JavaScript, cutting bundle size 40%.
 
 Projects
-Dashboard Kit: reusable Cypress charting components with Vue.js.
+Dashboard Kit: reusable Tailwind CSS charting components with JavaScript.
+
+Education
+M.S. in Computer Science, Lakeside State University (2019)

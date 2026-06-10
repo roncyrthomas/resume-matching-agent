@@ -1,9 +1,9 @@
 Carlos Mendez
-DevOps Engineer
+Platform Engineer
 Seattle, WA | carlos.mendez@example.com | +1-555-0123
 
 Professional Summary
-DevOps Engineer with 4+ years of experience specialising in Kubernetes, Terraform, AWS. Track record of delivering reliable, measurable results in production systems.
+Platform Engineer with 4+ years of experience specialising in Kubernetes, Terraform, AWS. Track record of delivering reliable, measurable results in production systems.
 
 Technical Skills
 - Kubernetes
@@ -12,24 +12,21 @@ Technical Skills
 - Docker
 - CI/CD
 - Linux
-- Ansible
+- Grafana
 - Bash
 - Helm
 
 Education
-Master of Science in Information Systems, State University (2022)
+Master of Science in Information Systems, Tech Institute of Engineering (2021)
 
 Work Experience
-Site Reliability Engineer, Summit Robotics (2024 - Present)
-- Cut deployment lead time 60% by rebuilding Helm pipelines.
-- Ran 90+ Terraform clusters with GitOps-driven deployments.
+DevOps Engineer, FinServe (2023 - Present)
+- Automated Helm infrastructure with Linux, cutting provisioning time 60%.
+- Cut deployment lead time 40% by rebuilding Linux pipelines.
 
-DevOps Engineer, Craft Studio (2022 - 2024)
-- Built Bash observability dashboards reducing MTTR 50%.
-- Cut deployment lead time 40% by rebuilding AWS pipelines.
+Platform Engineer, Summit Robotics (2022 - 2023)
+- Ran 20+ Bash clusters with GitOps-driven deployments.
+- Cut deployment lead time 50% by rebuilding Terraform pipelines.
 
 Projects
-Self-Service Platform: Docker modules enabling one-click environments.
-
-Certifications
-- AWS Certified Solutions Architect - Associate
+Self-Service Platform: Terraform modules enabling one-click environments.
