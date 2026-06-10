@@ -27,13 +27,12 @@ CLI smoke tests (run from the project root):
 from __future__ import annotations
 
 import argparse
-import json
 import os
 import re
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Dict, Iterable, List, Optional, Protocol, Sequence, Tuple
+from typing import Dict, List, Optional, Protocol, Sequence, Tuple
 
 import fs_tools
 
@@ -189,8 +188,17 @@ def _header_kind(line: str) -> Optional[str]:
     known = _HEADER_LOOKUP.get(stripped.lower())
     if known:
         return known
-    # Unknown but header-shaped: short, ALL CAPS, no sentence punctuation.
-    if stripped.isupper() and len(stripped.split()) <= 5 and not stripped.endswith("."):
+    # Unknown but header-shaped: short ALL-CAPS line without list/date traits.
+    # len >= 6 keeps headers like "AWARDS" while rejecting acronyms such as
+    # "AWS" or "CISSP" that docx bullet extraction leaves as bare lines.
+    if (
+        stripped.isupper()
+        and len(stripped) >= 6
+        and len(stripped.split()) <= 5
+        and "," not in stripped
+        and not any(ch.isdigit() for ch in stripped)
+        and not stripped.endswith(".")
+    ):
         return "other"
     return None
 
