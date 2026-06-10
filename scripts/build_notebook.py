@@ -234,6 +234,141 @@ sample = {
 }
 print(_json.dumps(sample, indent=2)[:2500])""")
 
+md("""## 8. Hard corpus, harder numbers
+
+`resumes_hard/` (40 resumes, 3 difficulty tiers: clean / messy headers + month
+dates / no skills section + prose) exists to de-saturate the clean-corpus
+metrics. Same 6 JDs, same ground-truth methodology, three retrieval modes.""")
+
+code("""import os
+os.environ["RESUME_RAG_LLM"] = "off"   # regex-only baseline for section 9
+hard_rag = ResumeRAG(resumes_dir="resumes_hard", collection_name="resumes_hard")
+hard_stats = hard_rag.build_index(rebuild=True)
+HARD_LABELS = json.loads(Path("dataset/labels_hard.json").read_text(encoding="utf-8"))
+print(f"hard corpus: {hard_stats.files_indexed} files -> {hard_stats.chunks_indexed} chunks "
+      f"in {hard_stats.total_seconds}s")
+assert not hard_stats.failures, hard_stats.failures""")
+
+code("""from reranker import CrossEncoderReranker
+
+CE = CrossEncoderReranker()   # shared across modes so the model loads once
+
+
+def evaluate_corpus(rag_obj, labels, mode_label, *, semantic_only=False, rerank=False):
+    rows = []
+    m = JobMatcher(rag=rag_obj, reranker=CE if rerank else None, rerank=rerank)
+    for jd in JD_FILES:
+        truth = labels["job_descriptions"][jd.name]
+        rel_roles = set(truth["primary_roles"]) | set(truth["adjacent_roles"])
+        res = m.match_file(jd.as_posix(), k=10, apply_filters=False,
+                           semantic_only=semantic_only)
+        ranked = [Path(x["resume_path"]).name for x in res["top_matches"]]
+        rel = [labels["resumes"][f]["role"] in rel_roles for f in ranked]
+        total_rel = sum(1 for v in labels["resumes"].values() if v["role"] in rel_roles)
+        rr = next((1 / (i + 1) for i, hit in enumerate(rel) if hit), 0.0)
+        rows.append({"jd": jd.name, "mode": mode_label, "P@5": sum(rel[:5]) / 5,
+                     "R@10": sum(rel) / total_rel, "MRR": rr, "hit@1": float(rel[0])})
+    return pd.DataFrame(rows)
+
+
+MODES = {"semantic": {"semantic_only": True}, "hybrid": {}, "hybrid+rerank": {"rerank": True}}
+parts = []
+for corpus_label, (rag_obj, labels) in {"clean": (rag, LABELS), "hard": (hard_rag, HARD_LABELS)}.items():
+    for mode_label, kwargs in MODES.items():
+        df = evaluate_corpus(rag_obj, labels, mode_label, **kwargs)
+        df["corpus"] = corpus_label
+        parts.append(df)
+matrix = pd.concat(parts)
+matrix_summary = matrix.groupby(["corpus", "mode"])[["P@5", "R@10", "MRR", "hit@1"]].mean().round(3)
+display(matrix_summary)""")
+
+code("""ax = matrix_summary["P@5"].unstack("mode").plot.bar(figsize=(8, 4), rot=0)
+ax.set_title("Soft P@5 by corpus and retrieval mode")
+ax.set_ylim(0, 1.05)
+ax.legend(title="mode")
+plt.tight_layout()
+plt.show()""")
+
+md("""## 9. Extraction accuracy on the hard corpus — regex vs regex + Claude
+
+The deterministic extractor handles month dates and per-skill tenure; tier-2
+prose resumes are where it struggles. With `RESUME_RAG_LLM=auto`, low-confidence
+resumes get a cached Claude tool-use pass that fills only the missing fields.""")
+
+code("""def extraction_accuracy(rag_obj, labels):
+    profiles = {Path(k).name: v for k, v in rag_obj.candidate_profiles().items()}
+    rows = []
+    for fname, truth in labels["resumes"].items():
+        p = profiles.get(fname)
+        if p is None:
+            continue
+        sy_true = truth.get("skill_years", {}) or {}
+        sy_pred = p.get("skill_years", {}) or {}
+        common = set(sy_true) & set(sy_pred)
+        mae = (sum(abs(float(sy_pred[s]) - float(sy_true[s])) for s in common) / len(common)) if common else float("nan")
+        rows.append({
+            "name_ok": p["candidate"] == truth["name"],
+            "years_ok": p["exp_years"] == truth["total_years"],
+            "edu_ok": p["education_level"] == truth["education_level"],
+            "skills_recall": len(set(p["skills"]) & set(truth["skills"])) / len(truth["skills"]),
+            "sy_mae": mae,
+        })
+    df = pd.DataFrame(rows)
+    return pd.Series({
+        "name accuracy": df.name_ok.mean(),
+        "experience-years accuracy": df.years_ok.mean(),
+        "education-level accuracy": df.edu_ok.mean(),
+        "skills recall (mean)": df.skills_recall.mean(),
+        "skill-years MAE (yrs)": df.sy_mae.mean(),
+    })
+
+
+regex_acc = extraction_accuracy(hard_rag, HARD_LABELS)
+display(regex_acc.round(3))""")
+
+code("""from dotenv import load_dotenv
+
+load_dotenv()
+if os.environ.get("ANTHROPIC_API_KEY"):
+    os.environ["RESUME_RAG_LLM"] = "auto"
+    llm_stats = hard_rag.build_index(rebuild=True)
+    os.environ["RESUME_RAG_LLM"] = "off"
+    print(f"LLM-assisted resumes this pass: {llm_stats.llm_assisted} (results disk-cached)")
+    llm_acc = extraction_accuracy(hard_rag, HARD_LABELS)
+    display(pd.DataFrame({"regex only": regex_acc, "regex + Claude (auto)": llm_acc}).round(3))
+else:
+    llm_acc = None
+    print("LLM pass skipped (no ANTHROPIC_API_KEY)")""")
+
+md("""## 10. Rerank latency cost""")
+
+code("""m = JobMatcher(rag=hard_rag, reranker=CE, rerank=True)
+m.match_file(JD_FILES[0].as_posix(), k=10)  # warm-up
+lat_rows = [m.match_file(jd.as_posix(), k=10)["latency_ms"]
+            for jd in JD_FILES for _ in range(3)]
+lat_hard = pd.DataFrame(lat_rows)[["semantic_search", "keyword_search", "rerank", "total"]]
+display(pd.DataFrame({"mean_ms": lat_hard.mean(), "p50_ms": lat_hard.quantile(0.5),
+                      "p95_ms": lat_hard.quantile(0.95)}).round(1))""")
+
+code("""hs = matrix_summary.loc["hard"]
+cs = matrix_summary.loc["clean"]
+lines = [
+    "Generated takeaways (computed from THIS run -- no hand-written claims):",
+    f"- clean corpus stays saturated: P@5 hybrid {cs.loc['hybrid', 'P@5']:.3f} vs semantic {cs.loc['semantic', 'P@5']:.3f}",
+    f"- hard corpus P@5: semantic {hs.loc['semantic', 'P@5']:.3f} | hybrid {hs.loc['hybrid', 'P@5']:.3f} | hybrid+rerank {hs.loc['hybrid+rerank', 'P@5']:.3f}",
+    f"- hard corpus MRR: semantic {hs.loc['semantic', 'MRR']:.3f} | hybrid {hs.loc['hybrid', 'MRR']:.3f} | hybrid+rerank {hs.loc['hybrid+rerank', 'MRR']:.3f}",
+    f"- hard corpus R@10: semantic {hs.loc['semantic', 'R@10']:.3f} | hybrid {hs.loc['hybrid', 'R@10']:.3f} | hybrid+rerank {hs.loc['hybrid+rerank', 'R@10']:.3f}",
+    f"- rerank costs ~{lat_hard['rerank'].median():.0f} ms median per query on top of ~{lat_hard['semantic_search'].median():.0f} ms semantic",
+    f"- regex-only extraction on hard corpus: years exact {regex_acc['experience-years accuracy']:.2f}, "
+    f"education {regex_acc['education-level accuracy']:.2f}, skills recall {regex_acc['skills recall (mean)']:.2f}",
+]
+if llm_acc is not None:
+    lines.append(
+        f"- with Claude assist: years exact {llm_acc['experience-years accuracy']:.2f}, "
+        f"education {llm_acc['education-level accuracy']:.2f}, skills recall {llm_acc['skills recall (mean)']:.2f}"
+    )
+print("\\n".join(lines))""")
+
 md("""## Conclusions
 
 - **Section-aware chunking** keeps retrieval explainable: matches cite the
