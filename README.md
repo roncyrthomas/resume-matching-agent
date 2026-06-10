@@ -15,11 +15,18 @@ of resume files.
 
 ```
 fs-tools/
-├── fs_tools.py             # Part A: the four file-system tools
-├── llm_file_assistant.py   # Part B: Anthropic tool-use loop + CLI
-├── scripts/make_samples.py # generates the dummy resumes
-├── resumes/                # 8 sample resumes (.txt/.pdf/.docx) [generated]
-├── tests/test_fs_tools.py  # pytest suite
+├── fs_tools.py             # M1 Part A: the four file-system tools
+├── llm_file_assistant.py   # M1 Part B: Anthropic tool-use loop + CLI
+├── resume_rag.py           # M2 Part A: chunking + embeddings + ChromaDB
+├── job_matcher.py          # M2 Part B: hybrid search, scoring, filtering
+├── rag_analysis.ipynb      # M2: executed experiments (accuracy, latency)
+├── scripts/make_samples.py # generates the original 8 dummy resumes
+├── scripts/make_dataset.py # M2: 36 labelled resumes + 6 JDs + ground truth
+├── scripts/build_notebook.py # M2: builds + executes rag_analysis.ipynb
+├── resumes/                # 36 resumes (.txt/.pdf/.docx) [generated]
+├── job_descriptions/       # 6 job descriptions [generated]
+├── dataset/labels.json     # ground-truth labels [generated]
+├── tests/                  # pytest suites (fs tools, RAG, matcher)
 ├── requirements.txt
 ├── .env.example
 └── README.md
@@ -123,3 +130,90 @@ max-iterations guard) — no API key or network required.
 
 A 2–3 minute walkthrough should show: generating the samples, running each of
 the three example queries, and the printed tool calls Claude makes for each.
+
+---
+
+# Milestone 2 — Resume RAG + Job Matching Engine
+
+Builds on the Milestone 1 tools: resumes are **loaded via `fs_tools`**, chunked
+section-aware, embedded with HuggingFace **all-MiniLM-L6-v2** and stored in a
+persistent **ChromaDB** collection with extracted metadata. A hybrid matcher
+ranks resumes against a job description with 0-100 scores, reasoning and
+must-have filtering.
+
+## Quickstart
+
+```powershell
+pip install -r requirements.txt
+python scripts\make_dataset.py            # 36 resumes + 6 JDs + ground truth
+python resume_rag.py --rebuild --stats    # build the vector index (.chroma/)
+python job_matcher.py job_descriptions\senior_ml_engineer.txt -k 10
+python scripts\build_notebook.py          # rebuild + execute rag_analysis.ipynb
+pytest -q                                 # full test suite (49 tests)
+```
+
+## Part A — `resume_rag.py`
+
+1. **Load** — `fs_tools.list_files` / `fs_tools.read_file` (txt/pdf/docx, sandboxed).
+2. **Chunk** — split on section headers (3 header styles supported:
+   `SUMMARY` / `Professional Summary` / `PROFILE`, ...), then paragraph-packed
+   to ~1100 chars with 150 overlap. A chunk never mixes two sections; bullet
+   items and bare acronyms are never mistaken for headers.
+3. **Metadata** — per resume: name (header block), skills (75-entry canonical
+   vocabulary with aliases, word-boundary matched so `Java` ≠ `JavaScript`),
+   experience years (dated ranges like `2018 - Present`, fallback "N+ years"),
+   education level (PhD/Master/Bachelor).
+4. **Embed + store** — `all-MiniLM-L6-v2` via sentence-transformers (or
+   ChromaDB's ONNX build of the same model: set `RESUME_RAG_EMBEDDER=onnx`),
+   persisted in ChromaDB (cosine space) with metadata on every chunk, so
+   queries can filter, e.g. `where={"exp_years": {"$gte": 5}}`.
+
+## Part B — `job_matcher.py`
+
+- **JD parsing** — title, skills, and structured must-haves from the
+  Requirements section: `5+ years Python` → skill+years, `FastAPI or Django`
+  → any-of group, `Bachelor's degree` → education floor. JDs without a
+  Requirements section fall back to experience-cued patterns only, so
+  "a 10+ years old company" never becomes a fake requirement.
+- **Hybrid retrieval** — semantic (ChromaDB) + BM25 keyword scores blended
+  `0.65 / 0.35` per candidate; keyword evidence anchors critical skills.
+- **Scoring (0-100)** — `45%` retrieval strength + `35%` required-skill
+  coverage + `15%` experience fit + `5%` nice-to-haves, with a per-component
+  `score_breakdown` on every match.
+- **Filtering** — candidates failing any must-have are excluded from
+  `top_matches` and listed in `filtered_out` with exact reasons. Per-skill
+  tenure is approximated as *has skill + total years ≥ N* (documented).
+- **Output** — the assignment's JSON shape (`job_description`, `top_matches`
+  with `candidate_name`, `resume_path`, `match_score`, `matched_skills`,
+  `relevant_excerpts`, `reasoning`) plus extras (`filtered_out`, `latency_ms`).
+
+## Results (from the executed `rag_analysis.ipynb`)
+
+| Metric | Value |
+|---|---|
+| Metadata extraction (name / years / education / skills recall) | 100% on all four (36 resumes) |
+| Retrieval P@5, soft relevance (hybrid) | 0.967 |
+| Retrieval MRR / hit@1 (hybrid, soft) | 1.000 / 1.000 |
+| Recall@10, soft (hybrid vs semantic-only) | 0.921 vs 0.886 |
+| Query latency p50 / p95 (end-to-end match) | 30.2 ms / 35.6 ms |
+| Index build (36 resumes → 231 chunks) | ~2 s one-off |
+
+This clean synthetic corpus saturates ranking quality for both modes
+(identical P@5/MRR); hybrid's measured gain is soft Recall@10, where BM25's
+exact-term anchoring pulls extra adjacent-role candidates into the top-10.
+The weight-sweep ablation is flat, so the default `w=0.65` is safe. Full
+methodology, charts and the must-have-filtering demo are in the notebook.
+
+## Demo video script (3-4 min)
+
+1. **0:00-0:30** — repo tour: M1 tools, M2 files, dataset folders.
+2. **0:30-1:00** — `python scripts\make_dataset.py`: show a generated PDF
+   resume + `dataset/labels.json` ground truth.
+3. **1:00-1:40** — `python resume_rag.py --rebuild --stats`, then a
+   `--query` call: point out section-aware hits and similarities.
+4. **1:40-2:40** — `python job_matcher.py job_descriptions\senior_ml_engineer.txt`:
+   walk the JSON (scores, matched_skills, excerpts, reasoning), highlight
+   `filtered_out` (Daniel Okafor fails "5+ years Python").
+5. **2:40-3:30** — open `rag_analysis.ipynb`: metadata accuracy table,
+   hybrid-vs-semantic bar chart, latency table, weight-sweep plot.
+6. **3:30-4:00** — wrap: architecture recap + limitations.
