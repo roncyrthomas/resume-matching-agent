@@ -166,7 +166,7 @@ def merge_metadata(
     # Experience years
     llm_years_raw = llm.get("experience_years", 0)
     try:
-        llm_years = int(llm_years_raw)
+        llm_years = round(float(llm_years_raw))  # schema allows floats; don't truncate 6.9 -> 6
     except (TypeError, ValueError):
         llm_years = 0
     experience_years = llm_years if regex_meta.experience_years == 0 else regex_meta.experience_years

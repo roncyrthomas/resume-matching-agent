@@ -461,7 +461,6 @@ def _merge_intervals(
     merged: List[Tuple[Tuple[int, int], Tuple[int, int]]] = [sorted_ivs[0]]
     for start, end in sorted_ivs[1:]:
         prev_start, prev_end = merged[-1]
-        ps = prev_start[0] * 12 + prev_start[1]
         pe = prev_end[0] * 12 + prev_end[1]
         s = start[0] * 12 + start[1]
         e = end[0] * 12 + end[1]
@@ -487,6 +486,10 @@ def extract_skill_years(
     4. Skills found in the whole resume but not in any job block get the full
        career span (matches dataset labelling: skills not tied to a job block
        are treated as spanning the whole career).
+
+    Note: per-skill years round to 1 decimal, while total experience in
+    ``_extract_experience_years`` floors whole years — intentional, mirrors
+    how the dataset labels both.
     """
     if today is None:
         lt = time.localtime()
@@ -523,6 +526,10 @@ def extract_skill_years(
         if not block_ranges:
             # no date range in header — check full block text
             block_ranges = extract_date_ranges(block_text, today=today)
+        if not block_ranges:
+            # Date-less prose block (e.g. tier-2 leading paragraph): leave its
+            # skills to the career-span fallback below rather than pin them 0.0.
+            continue
         for skill in block_skills:
             skills_in_blocks.add(skill)
             skill_intervals.setdefault(skill, []).extend(block_ranges)
@@ -533,8 +540,6 @@ def extract_skill_years(
     if career_ranges:
         career_min = min(r[0][0] * 12 + r[0][1] for r in career_ranges)
         career_max = max(r[1][0] * 12 + r[1][1] for r in career_ranges)
-        career_start = divmod(career_min, 12)  # (year, month)  -- actually need real tuple
-        # Rebuild as proper (year, month) tuples
         start_y, start_m = career_min // 12, career_min % 12
         if start_m == 0:
             start_y -= 1
