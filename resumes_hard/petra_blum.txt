@@ -2,7 +2,7 @@ Petra Blum
 Security Engineer | Amsterdam, Netherlands | petra.blum@example.com | +1-555-1134
 
 SUMMARY
-Security Engineer with 4+ years of experience. Core skills include Penetration Testing, OWASP, Burp Suite applied across production systems. Proven record of delivering results with cross-functional teams.
+Security Engineer with 4+ years of experience. Core skills include Penetration Testing, OWASP, Burp Suite applied across production systems. Proven record of delivering results with cross-functional teams. Day-to-day toolkit also covers Python and SIEM.
 
 EMPLOYMENT HISTORY
 Security Engineer, Vertex Logistics (10/2025 - present)

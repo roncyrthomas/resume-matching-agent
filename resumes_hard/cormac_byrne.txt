@@ -1,7 +1,7 @@
 Cormac Byrne
 QA Automation Engineer | Bengaluru, India | cormac.byrne@example.com | +1-555-1131
 
-QA Automation Engineer with 6+ years of experience. Core skills include Selenium, Python, pytest applied across production systems. Proven record of delivering results with cross-functional teams.
+QA Automation Engineer with 6+ years of experience. Core skills include Selenium, Python, pytest applied across production systems. Proven record of delivering results with cross-functional teams. Day-to-day toolkit also covers REST APIs and Docker.
 
 EXPERIENCE
 QA Automation Engineer, Acme Cloud (2022 - present)

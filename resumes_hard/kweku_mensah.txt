@@ -1,7 +1,7 @@
 Kweku Mensah
 Analytics Engineer | Amsterdam, Netherlands | kweku.mensah@example.com | +1-555-1139
 
-Analytics Engineer with 5+ years of experience. Core skills include Python, SQL, Spark applied across production systems. Proven record of delivering results with cross-functional teams.
+Analytics Engineer with 5+ years of experience. Core skills include Python, SQL, Spark applied across production systems. Proven record of delivering results with cross-functional teams. Day-to-day toolkit also covers Airflow and AWS.
 
 EXPERIENCE
 Data Engineer, FinServe (2022 - Present)

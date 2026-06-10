@@ -2,7 +2,7 @@ Olumide Adeyemi
 Mobile Engineer | Seattle, WA | olumide.adeyemi@example.com | +1-555-1129
 
 PROFILE
-Mobile Engineer with 3+ years of experience. Core skills include Kotlin, Android, REST APIs applied across production systems. Proven record of delivering results with cross-functional teams.
+Mobile Engineer with 3+ years of experience. Core skills include Kotlin, Android, REST APIs applied across production systems. Proven record of delivering results with cross-functional teams. Day-to-day toolkit also covers Swift.
 
 EXPERIENCE
 iOS Developer, DataWorks (2023 - Current)

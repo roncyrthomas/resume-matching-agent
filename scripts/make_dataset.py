@@ -576,13 +576,6 @@ def _make_hard_resume(idx: int, spec: Tuple[str, str, str, int], rng: random.Ran
         education_level = "unknown"
         education_line = ""
 
-    top = ", ".join(skills[:3])
-    summary = (
-        f"{display_title} with {years}+ years of experience. "
-        f"Core skills include {top} applied across production systems. "
-        f"Proven record of delivering results with cross-functional teams."
-    )
-
     jobs = _make_hard_jobs(rng, role, skills, years)
     career_months = _total_months(jobs)
 
@@ -598,6 +591,35 @@ def _make_hard_resume(idx: int, spec: Tuple[str, str, str, int], rng: random.Ran
         tuple(rng.sample(certs_pool, min(len(certs_pool), rng.randint(0, 2))))
         if certs_pool else ()
     )
+
+    top = ", ".join(skills[:3])
+    summary = (
+        f"{display_title} with {years}+ years of experience. "
+        f"Core skills include {top} applied across production systems. "
+        f"Proven record of delivering results with cross-functional teams."
+    )
+    if tier == 2:
+        # Tier 2 has no skills section, so every labelled skill must be
+        # recoverable from prose. Weave any skill that does not already appear
+        # in the summary, job titles/bullets, projects or certs into one extra
+        # summary sentence. (Labels give such skills the full career span —
+        # the extractor mirrors that fallback for non-block skills.)
+        rendered = " ".join(
+            [summary]
+            + [job.title for job in jobs]
+            + [b for job in jobs for b in job.bullets]
+            + list(projects)
+            + list(certifications)
+        ).lower()
+        leftover = [s for s in skills if s.lower() not in rendered]
+        if leftover:
+            summary += (
+                " Day-to-day toolkit also covers "
+                + ", ".join(leftover[:-1])
+                + (" and " if len(leftover) > 1 else "")
+                + leftover[-1]
+                + "."
+            )
 
     has_skills_section = (tier != 2)
     # tier-2 ~half have no summary header; others always have one
