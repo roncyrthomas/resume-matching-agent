@@ -47,6 +47,8 @@ from resume_rag import ChunkHit, ResumeRAG, extract_skills
 TOP_K = 10                 # assignment default
 CHUNK_POOL = 60            # semantic pool; candidates with no chunk in this top-N are not ranked
 SEMANTIC_WEIGHT = 0.65     # semantic share inside the retrieval signal (vs BM25)
+RERANK_PAIRS = 40          # top chunks by cosine that get reranked
+RERANK_BLEND = (0.40, 0.20, 0.40)  # semantic, bm25, rerank weights when reranking is on
 W_RETRIEVAL = 0.45
 W_SKILLS = 0.35
 W_EXPERIENCE = 0.15
@@ -263,11 +265,15 @@ class JobMatcher:
     """
 
     def __init__(self, rag: Optional[ResumeRAG] = None,
-                 semantic_weight: float = SEMANTIC_WEIGHT) -> None:
+                 semantic_weight: float = SEMANTIC_WEIGHT,
+                 reranker: object = None,
+                 rerank: bool = False) -> None:
         if not 0.0 <= semantic_weight <= 1.0:
             raise ValueError("semantic_weight must be within [0, 1]")
         self.rag = rag or ResumeRAG()
         self.semantic_weight = semantic_weight
+        self._reranker = reranker
+        self._rerank_default = rerank
         self._chunks: List[ChunkHit] = []
         self._bm25 = None
         self._profiles: Dict[str, Dict[str, object]] = {}
@@ -306,8 +312,7 @@ class JobMatcher:
 
     # -- semantic side ----------------------------------------------------------
 
-    def _semantic_by_candidate(self, jd_text: str, pool: int) -> Dict[str, _CandidateSignals]:
-        hits = self.rag.query(jd_text, k=pool)
+    def _signals_from_hits(self, hits: List[ChunkHit]) -> Dict[str, _CandidateSignals]:
         grouped: Dict[str, List[ChunkHit]] = {}
         for hit in hits:
             grouped.setdefault(hit.file, []).append(hit)
@@ -330,6 +335,27 @@ class JobMatcher:
             )
         return signals
 
+    def _semantic_by_candidate(self, jd_text: str, pool: int) -> Dict[str, _CandidateSignals]:
+        hits = self.rag.query(jd_text, k=pool)
+        return self._signals_from_hits(hits)
+
+    def _rerank_by_candidate(self, jd_text: str, hits: List[ChunkHit]) -> Dict[str, float]:
+        """Run cross-encoder on top RERANK_PAIRS hits; return per-file best score."""
+        top_hits = sorted(hits, key=lambda h: h.similarity, reverse=True)[:RERANK_PAIRS]
+        if not top_hits:
+            return {}
+        scores = self._reranker.score(jd_text, [h.text for h in top_hits])  # type: ignore[union-attr]
+        best: Dict[str, float] = {}
+        for hit, score in zip(top_hits, scores):
+            best[hit.file] = max(best.get(hit.file, 0.0), float(score))
+        # Normalise by the pool max (same policy as BM25): ms-marco logits are
+        # built for ranking, not absolute calibration — raw sigmoids for long
+        # JD-vs-chunk pairs sit low and would deflate every blended score.
+        top = max(best.values(), default=0.0)
+        if top > 0:
+            best = {file: value / top for file, value in best.items()}
+        return best
+
     # -- scoring -----------------------------------------------------------------
 
     @staticmethod
@@ -342,11 +368,17 @@ class JobMatcher:
     def _score_candidate(
         self, jd: JobDescription, signals: _CandidateSignals,
         bm25_norm: float, profile: Dict[str, object], semantic_only: bool,
+        rerank_score: float = 0.0, use_rerank: bool = False,
     ) -> Tuple[int, Dict[str, float], List[str]]:
         semantic = self._semantic_strength(signals)
-        retrieval = semantic if semantic_only else (
-            self.semantic_weight * semantic + (1 - self.semantic_weight) * bm25_norm
-        )
+        if semantic_only:
+            retrieval = semantic
+        elif use_rerank:
+            w_sem, w_bm25, w_re = RERANK_BLEND
+            retrieval = w_sem * semantic + w_bm25 * bm25_norm + w_re * rerank_score
+        else:
+            retrieval = (self.semantic_weight * semantic
+                         + (1 - self.semantic_weight) * bm25_norm)
 
         cand_skills = set(profile.get("skills") or [])
         required = list(jd.required_skills)
@@ -367,6 +399,7 @@ class JobMatcher:
         breakdown = {
             "semantic": round(semantic, 3),
             "keyword_bm25": round(bm25_norm, 3),
+            "rerank": round(rerank_score, 3),
             "skill_coverage": round(skill_cov, 3),
             "experience_fit": round(exp_fit, 3),
             "nice_to_have": round(nice_cov, 3),
@@ -404,28 +437,46 @@ class JobMatcher:
     # -- public API -----------------------------------------------------------------
 
     def match(self, jd_text: str, k: int = TOP_K, *, apply_filters: bool = True,
-              semantic_only: bool = False) -> Dict[str, object]:
+              semantic_only: bool = False, rerank: Optional[bool] = None) -> Dict[str, object]:
         """Match resumes to *jd_text* and return the assignment's JSON shape."""
         if k <= 0:
             raise ValueError("k must be positive")
+        use_rerank = self._rerank_default if rerank is None else rerank
+        if semantic_only:
+            use_rerank = False
+
         total_start = time.perf_counter()
         jd = parse_job_description(jd_text)
         built_keyword_index = self._ensure_keyword_index()
 
         sem_start = time.perf_counter()
-        signals = self._semantic_by_candidate(jd.text, pool=CHUNK_POOL)
+        hits = self.rag.query(jd.text, k=CHUNK_POOL)
+        signals = self._signals_from_hits(hits)
         semantic_ms = round((time.perf_counter() - sem_start) * 1000, 1)
 
         kw_start = time.perf_counter()
         bm25 = {} if semantic_only else self._bm25_by_candidate(jd.text)
         keyword_ms = round((time.perf_counter() - kw_start) * 1000, 1)
 
+        # -- optional reranking stage -------------------------------------------
+        if use_rerank and self._reranker is None:
+            from reranker import CrossEncoderReranker
+            self._reranker = CrossEncoderReranker()
+
+        rerank_start = time.perf_counter()
+        rerank_by_file: Dict[str, float] = (
+            self._rerank_by_candidate(jd.text, hits) if use_rerank else {}
+        )
+        rerank_ms = round((time.perf_counter() - rerank_start) * 1000, 1) if use_rerank else 0.0
+
         matches: List[Dict[str, object]] = []
         filtered_out: List[Dict[str, object]] = []
         for file, sig in signals.items():
             profile = self._profiles.get(file, {})
             score, breakdown, matched = self._score_candidate(
-                jd, sig, bm25.get(file, 0.0), profile, semantic_only
+                jd, sig, bm25.get(file, 0.0), profile, semantic_only,
+                rerank_score=rerank_by_file.get(file, 0.0),
+                use_rerank=use_rerank,
             )
             entry: Dict[str, object] = {
                 "candidate_name": profile.get("candidate", file),
@@ -451,6 +502,13 @@ class JobMatcher:
         filtered_out.sort(key=lambda m: -int(m["match_score"]))
         total_ms = round((time.perf_counter() - total_start) * 1000, 1)
 
+        if semantic_only:
+            mode = "semantic_only"
+        elif use_rerank:
+            mode = "hybrid+rerank"
+        else:
+            mode = "hybrid"
+
         return {
             "job_description": jd.text.strip(),
             "top_matches": matches[:k],
@@ -460,13 +518,14 @@ class JobMatcher:
                 "required_skills": list(jd.required_skills),
                 "nice_to_have": list(jd.nice_to_have),
                 "must_haves": [mh.raw for mh in jd.must_haves],
-                "mode": "semantic_only" if semantic_only else "hybrid",
+                "mode": mode,
                 "k": k,
             },
             "latency_ms": {
                 "semantic_search": semantic_ms,
                 "keyword_search": keyword_ms,
                 "keyword_index_build": self.keyword_index_ms if built_keyword_index else 0.0,
+                "rerank": rerank_ms,
                 "total": total_ms,
             },
         }
@@ -492,6 +551,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
                         help="disable the BM25 keyword signal (ablation)")
     parser.add_argument("--no-filters", action="store_true",
                         help="do not exclude candidates failing must-haves")
+    parser.add_argument("--rerank", action="store_true",
+                        help="enable cross-encoder reranking (downloads model on first use)")
     parser.add_argument("--output", help="also write the JSON result to this path")
     args = parser.parse_args(argv)
 
@@ -500,11 +561,13 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         if args.jd_path:
             result = matcher.match_file(args.jd_path, k=args.k,
                                         apply_filters=not args.no_filters,
-                                        semantic_only=args.semantic_only)
+                                        semantic_only=args.semantic_only,
+                                        rerank=args.rerank or None)
         else:
             result = matcher.match(args.text, k=args.k,
                                    apply_filters=not args.no_filters,
-                                   semantic_only=args.semantic_only)
+                                   semantic_only=args.semantic_only,
+                                   rerank=args.rerank or None)
     except (RuntimeError, FileNotFoundError, ValueError) as exc:
         print(f"error: {exc}")
         return 1
