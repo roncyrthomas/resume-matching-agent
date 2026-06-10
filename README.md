@@ -1,13 +1,13 @@
-﻿# Resume File-System Tools + LLM Assistant
+# Resume File-System Tools + LLM Assistant
 
 A small Python project that exposes four file-system tools and lets an LLM
 (Anthropic Claude) call them to answer natural-language questions about a folder
 of resume files.
 
-- **Part A â€” `fs_tools.py`**: `read_file`, `list_files`, `write_file`,
+- **Part A — `fs_tools.py`**: `read_file`, `list_files`, `write_file`,
   `search_in_file`. Each returns a structured response and handles errors
   gracefully.
-- **Part B â€” `llm_file_assistant.py`**: registers those tools with Claude's
+- **Part B — `llm_file_assistant.py`**: registers those tools with Claude's
   tool-use API and runs a query loop so the model can read, list, search and
   write files on your behalf.
 
@@ -15,25 +15,25 @@ of resume files.
 
 ```
 fs-tools/
-â”œâ”€â”€ fs_tools.py             # M1 Part A: the four file-system tools
-â”œâ”€â”€ llm_file_assistant.py   # M1 Part B: Anthropic tool-use loop + CLI
-â”œâ”€â”€ resume_rag.py           # M2 Part A: chunking + embeddings + ChromaDB
-â”œâ”€â”€ job_matcher.py          # M2 Part B: hybrid search, scoring, filtering
-â”œâ”€â”€ llm_extractor.py        # NL: Claude-assisted extraction fallback (cached)
-â”œâ”€â”€ reranker.py             # NL: cross-encoder rerank stage (opt-in)
-â”œâ”€â”€ app.py                  # NL: Streamlit UI (python -m streamlit run app.py)
-â”œâ”€â”€ rag_analysis.ipynb      # executed experiments (accuracy, latency, ablations)
-â”œâ”€â”€ scripts/make_samples.py # generates the original 8 dummy resumes
-â”œâ”€â”€ scripts/make_dataset.py # 36 labelled resumes + 6 JDs (+ --hard corpus)
-â”œâ”€â”€ scripts/build_notebook.py # builds + executes rag_analysis.ipynb
-â”œâ”€â”€ resumes/                # 36 clean resumes (.txt/.pdf/.docx) [generated]
-â”œâ”€â”€ resumes_hard/           # 40 hard-mode resumes, 3 difficulty tiers [generated]
-â”œâ”€â”€ job_descriptions/       # 6 job descriptions [generated]
-â”œâ”€â”€ dataset/                # labels.json + labels_hard.json ground truth [generated]
-â”œâ”€â”€ tests/                  # pytest suites (fs tools, RAG, matcher)
-â”œâ”€â”€ requirements.txt
-â”œâ”€â”€ .env.example
-â””â”€â”€ README.md
+├── fs_tools.py             # M1 Part A: the four file-system tools
+├── llm_file_assistant.py   # M1 Part B: Anthropic tool-use loop + CLI
+├── resume_rag.py           # M2 Part A: chunking + embeddings + ChromaDB
+├── job_matcher.py          # M2 Part B: hybrid search, scoring, filtering
+├── llm_extractor.py        # NL: Claude-assisted extraction fallback (cached)
+├── reranker.py             # NL: cross-encoder rerank stage (opt-in)
+├── app.py                  # NL: Streamlit UI (python -m streamlit run app.py)
+├── rag_analysis.ipynb      # executed experiments (accuracy, latency, ablations)
+├── scripts/make_samples.py # generates the original 8 dummy resumes
+├── scripts/make_dataset.py # 36 labelled resumes + 6 JDs (+ --hard corpus)
+├── scripts/build_notebook.py # builds + executes rag_analysis.ipynb
+├── resumes/                # 36 clean resumes (.txt/.pdf/.docx) [generated]
+├── resumes_hard/           # 40 hard-mode resumes, 3 difficulty tiers [generated]
+├── job_descriptions/       # 6 job descriptions [generated]
+├── dataset/                # labels.json + labels_hard.json ground truth [generated]
+├── tests/                  # pytest suites (fs tools, RAG, matcher)
+├── requirements.txt
+├── .env.example
+└── README.md
 ```
 
 ## Setup
@@ -57,7 +57,7 @@ copy .env.example .env               # cp .env.example .env on macOS/Linux
 python scripts/make_samples.py
 ```
 
-## Part A â€” the tools
+## Part A — the tools
 
 ```python
 import fs_tools
@@ -85,7 +85,7 @@ fs_tools.search_in_file("resumes/alex_lee.txt", "python")
 - Supported formats: `.txt`, `.pdf` (pdfplumber, with a pypdf fallback) and
   `.docx` (paragraphs **plus** tables and headers/footers).
 - All paths are confined to a base directory (the project root by default, or
-  `$FS_TOOLS_BASE_DIR`). Attempts to escape it are rejected â€” the LLM cannot read
+  `$FS_TOOLS_BASE_DIR`). Attempts to escape it are rejected — the LLM cannot read
   arbitrary system files.
 - Text is decoded as UTF-8 with `errors="replace"`.
 - Tools never raise to the caller: failures come back as
@@ -93,7 +93,7 @@ fs_tools.search_in_file("resumes/alex_lee.txt", "python")
 - `search_in_file` reports **character offsets** (reliable for extracted PDF
   text) plus a `line_number` for `.txt`/`.docx`.
 
-## Part B â€” the LLM assistant
+## Part B — the LLM assistant
 
 ```powershell
 python llm_file_assistant.py "Read all resumes in the resumes folder"
@@ -115,7 +115,7 @@ Configuration (via `.env` or environment):
 
 | Variable | Required | Default | Purpose |
 |----------|----------|---------|---------|
-| `ANTHROPIC_API_KEY` | yes | â€” | Anthropic API key |
+| `ANTHROPIC_API_KEY` | yes | — | Anthropic API key |
 | `ANTHROPIC_MODEL` | no | `claude-sonnet-4-6` | Model id |
 | `FS_TOOLS_BASE_DIR` | no | current directory | Sandbox root for file access |
 
@@ -128,16 +128,16 @@ pytest -q
 The suite covers each tool's success and error paths (missing file, unsupported
 extension, path traversal, empty keyword) and the assistant loop with a mocked
 Anthropic client (tool execution, `is_error` propagation, and the
-max-iterations guard) â€” no API key or network required.
+max-iterations guard) — no API key or network required.
 
 ## Demo video
 
-A 2â€“3 minute walkthrough should show: generating the samples, running each of
+A 2–3 minute walkthrough should show: generating the samples, running each of
 the three example queries, and the printed tool calls Claude makes for each.
 
 ---
 
-# Milestone 2 â€” Resume RAG + Job Matching Engine
+# Milestone 2 — Resume RAG + Job Matching Engine
 
 Builds on the Milestone 1 tools: resumes are **loaded via `fs_tools`**, chunked
 section-aware, embedded with HuggingFace **all-MiniLM-L6-v2** and stored in a
@@ -156,38 +156,38 @@ python scripts\build_notebook.py          # rebuild + execute rag_analysis.ipynb
 pytest -q                                 # full test suite (49 tests)
 ```
 
-## Part A â€” `resume_rag.py`
+## Part A — `resume_rag.py`
 
-1. **Load** â€” `fs_tools.list_files` / `fs_tools.read_file` (txt/pdf/docx, sandboxed).
-2. **Chunk** â€” split on section headers (3 header styles supported:
+1. **Load** — `fs_tools.list_files` / `fs_tools.read_file` (txt/pdf/docx, sandboxed).
+2. **Chunk** — split on section headers (3 header styles supported:
    `SUMMARY` / `Professional Summary` / `PROFILE`, ...), then paragraph-packed
    to ~1100 chars with 150 overlap. A chunk never mixes two sections; bullet
    items and bare acronyms are never mistaken for headers.
-3. **Metadata** â€” per resume: name (header block), skills (75-entry canonical
-   vocabulary with aliases, word-boundary matched so `Java` â‰  `JavaScript`),
+3. **Metadata** — per resume: name (header block), skills (75-entry canonical
+   vocabulary with aliases, word-boundary matched so `Java` ≠ `JavaScript`),
    experience years (dated ranges like `2018 - Present`, fallback "N+ years"),
    education level (PhD/Master/Bachelor).
-4. **Embed + store** â€” `all-MiniLM-L6-v2` via sentence-transformers (or
+4. **Embed + store** — `all-MiniLM-L6-v2` via sentence-transformers (or
    ChromaDB's ONNX build of the same model: set `RESUME_RAG_EMBEDDER=onnx`),
    persisted in ChromaDB (cosine space) with metadata on every chunk, so
    queries can filter, e.g. `where={"exp_years": {"$gte": 5}}`.
 
-## Part B â€” `job_matcher.py`
+## Part B — `job_matcher.py`
 
-- **JD parsing** â€” title, skills, and structured must-haves from the
-  Requirements section: `5+ years Python` â†’ skill+years, `FastAPI or Django`
-  â†’ any-of group, `Bachelor's degree` â†’ education floor. JDs without a
+- **JD parsing** — title, skills, and structured must-haves from the
+  Requirements section: `5+ years Python` → skill+years, `FastAPI or Django`
+  → any-of group, `Bachelor's degree` → education floor. JDs without a
   Requirements section fall back to experience-cued patterns only, so
   "a 10+ years old company" never becomes a fake requirement.
-- **Hybrid retrieval** â€” semantic (ChromaDB) + BM25 keyword scores blended
+- **Hybrid retrieval** — semantic (ChromaDB) + BM25 keyword scores blended
   `0.65 / 0.35` per candidate; keyword evidence anchors critical skills.
-- **Scoring (0-100)** â€” `45%` retrieval strength + `35%` required-skill
+- **Scoring (0-100)** — `45%` retrieval strength + `35%` required-skill
   coverage + `15%` experience fit + `5%` nice-to-haves, with a per-component
   `score_breakdown` on every match.
-- **Filtering** â€” candidates failing any must-have are excluded from
+- **Filtering** — candidates failing any must-have are excluded from
   `top_matches` and listed in `filtered_out` with exact reasons. Per-skill
-  tenure is approximated as *has skill + total years â‰¥ N* (documented).
-- **Output** â€” the assignment's JSON shape (`job_description`, `top_matches`
+  tenure is approximated as *has skill + total years ≥ N* (documented).
+- **Output** — the assignment's JSON shape (`job_description`, `top_matches`
   with `candidate_name`, `resume_path`, `match_score`, `matched_skills`,
   `relevant_excerpts`, `reasoning`) plus extras (`filtered_out`, `latency_ms`).
 
@@ -200,7 +200,7 @@ pytest -q                                 # full test suite (49 tests)
 | Retrieval MRR / hit@1 (hybrid, soft) | 1.000 / 1.000 |
 | Recall@10, soft (hybrid vs semantic-only) | 0.921 vs 0.886 |
 | Query latency p50 / p95 (end-to-end match) | 30.2 ms / 35.6 ms |
-| Index build (36 resumes â†’ 231 chunks) | ~2 s one-off |
+| Index build (36 resumes → 231 chunks) | ~2 s one-off |
 
 This clean synthetic corpus saturates ranking quality for both modes
 (identical P@5/MRR); hybrid's measured gain is soft Recall@10, where BM25's
@@ -210,24 +210,24 @@ methodology, charts and the must-have-filtering demo are in the notebook.
 
 ## Demo video script (3-4 min)
 
-1. **0:00-0:30** â€” repo tour: M1 tools, M2 files, dataset folders.
-2. **0:30-1:00** â€” `python scripts\make_dataset.py`: show a generated PDF
+1. **0:00-0:30** — repo tour: M1 tools, M2 files, dataset folders.
+2. **0:30-1:00** — `python scripts\make_dataset.py`: show a generated PDF
    resume + `dataset/labels.json` ground truth.
-3. **1:00-1:40** â€” `python resume_rag.py --rebuild --stats`, then a
+3. **1:00-1:40** — `python resume_rag.py --rebuild --stats`, then a
    `--query` call: point out section-aware hits and similarities.
-4. **1:40-2:40** â€” `python job_matcher.py job_descriptions\senior_ml_engineer.txt`:
+4. **1:40-2:40** — `python job_matcher.py job_descriptions\senior_ml_engineer.txt`:
    walk the JSON (scores, matched_skills, excerpts, reasoning), highlight
    `filtered_out` (Daniel Okafor fails "5+ years Python").
-5. **2:40-3:30** â€” open `rag_analysis.ipynb`: metadata accuracy table,
+5. **2:40-3:30** — open `rag_analysis.ipynb`: metadata accuracy table,
    hybrid-vs-semantic bar chart, latency table, weight-sweep plot.
-6. **3:30-4:00** â€” wrap: architecture recap + limitations.
+6. **3:30-4:00** — wrap: architecture recap + limitations.
 
 ---
 
-# Next level â€” Hard corpus, smarter extraction, reranking, UI
+# Next level — Hard corpus, smarter extraction, reranking, UI
 
 Four upgrades on top of Milestone 2, with every claim below measured in the
-re-executed `rag_analysis.ipynb` (Â§8-Â§10).
+re-executed `rag_analysis.ipynb` (§8-§10).
 
 ## Streamlit UI
 
@@ -241,7 +241,7 @@ candidate cards with the 0-100 score, per-component breakdown bars
 evidence excerpts, reasoning, and a "Filtered out" panel showing exactly which
 must-have each excluded candidate failed. Sidebar extras: retrieval-mode
 toggle, semantic-weight slider, index rebuild (optionally Claude-assisted),
-and drag-and-drop upload of a new resume or JD â€” uploads are parsed, indexed
+and drag-and-drop upload of a new resume or JD — uploads are parsed, indexed
 and matchable immediately.
 
 ## Hard-mode corpus (`scripts/make_dataset.py --hard`)
@@ -252,14 +252,14 @@ month-level dates (`Jan 2020 - Mar 2023`, `03/2019 - present`); tier 2 no
 skills section at all (skills live only in prose), missing education lines,
 headerless lead-ins. `dataset/labels_hard.json` carries per-resume ground
 truth incl. per-skill tenure, derived strictly from what the rendered text
-shows â€” so accuracy numbers are fair.
+shows — so accuracy numbers are fair.
 
 ## Extraction v2 + Claude fallback
 
 Month-aware date parsing (month names, `MM/YYYY`, bare years, en-dashes,
 "to"), per-skill tenure via job-block attribution with interval merging, and
 an optional Anthropic pass (`RESUME_RAG_LLM=off|auto|always`, model override
-via `RESUME_RAG_LLM_MODEL`) that fills only low-confidence gaps â€” results are
+via `RESUME_RAG_LLM_MODEL`) that fills only low-confidence gaps — results are
 disk-cached in `.cache/llm_extract/` and every failure path falls back to the
 deterministic extractor (offline-safe; mocked in tests).
 
@@ -267,34 +267,34 @@ deterministic extractor (offline-safe; mocked in tests).
 
 `ms-marco-MiniLM-L-6-v2` rescores the top retrieved chunks as (JD, chunk)
 pairs: `python job_matcher.py <jd> --rerank`, the UI's "Hybrid + rerank"
-mode, or `JobMatcher(rerank=True)`. Off by default â€” see the measurements.
+mode, or `JobMatcher(rerank=True)`. Off by default — see the measurements.
 
-## Measured results (notebook Â§8-Â§10, this repo, CPU)
+## Measured results (notebook §8-§10, this repo, CPU)
 
 | Metric | Clean (36) | Hard (40) |
 |---|---|---|
-| P@5 soft â€” semantic / hybrid / hybrid+rerank | 0.967 / 0.967 / 0.967 | 0.933 / 0.933 / 0.933 |
-| R@10 soft â€” semantic / hybrid / hybrid+rerank | 0.886 / 0.921 / 0.900 | 0.889 / 0.889 / 0.889 |
+| P@5 soft — semantic / hybrid / hybrid+rerank | 0.967 / 0.967 / 0.967 | 0.933 / 0.933 / 0.933 |
+| R@10 soft — semantic / hybrid / hybrid+rerank | 0.886 / 0.921 / 0.900 | 0.889 / 0.889 / 0.889 |
 | MRR / hit@1 (all modes) | 1.000 / 1.000 | 1.000 / 1.000 |
 | Extraction: name / years / education / skills recall (regex only) | 1.00 each | 1.00 each |
-| Per-skill tenure MAE | â€” | 0.13 yrs |
-| Rerank latency (median, on top of ~25 ms semantic) | â€” | ~1.1 s |
+| Per-skill tenure MAE | — | 0.13 yrs |
+| Rerank latency (median, on top of ~25 ms semantic) | — | ~1.1 s |
 
-**Honest findings:** role-separated corpora nearly saturate MiniLM ranking â€”
+**Honest findings:** role-separated corpora nearly saturate MiniLM ranking —
 the hard corpus only moves P@5 from 0.967 to 0.933, all three retrieval modes
 tie there, and the cross-encoder's ~1.1 s/query buys no measurable ranking
 gain on this data (its value is expected on genuinely noisy, overlapping
 real-world resumes; it stays opt-in for exactly that reason). The month-aware
 extractor recovers 100% of the hard-corpus metadata, so the Claude fallback
-correctly never fires (`llm_assisted: 0` in auto mode) â€” its trigger logic
+correctly never fires (`llm_assisted: 0` in auto mode) — its trigger logic
 and gap-filling merge are unit-tested with mocked clients, and it exists for
 truly unstructured resumes the deterministic path can't parse, e.g. arbitrary
 uploads through the UI.
 
 ## Demo video addendum (+45 s)
 
-7. **4:00-4:30** â€” `python -m streamlit run app.py`: match the ML JD on the hard corpus,
+7. **4:00-4:30** — `python -m streamlit run app.py`: match the ML JD on the hard corpus,
    point at breakdown bars + filtered-out reasons; drag in a new resume and
    re-match to show it ranked.
-8. **4:30-4:45** â€” notebook Â§8 bar chart (clean vs hard) + the generated
+8. **4:30-4:45** — notebook §8 bar chart (clean vs hard) + the generated
    takeaways cell: metrics computed live, no hand-written claims.
