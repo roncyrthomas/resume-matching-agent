@@ -83,7 +83,13 @@ B.Sc. in Software Engineering, Westlake University (2018)
 
 
 def make_corpus(tmp_path, monkeypatch):
-    """Write 3 small resumes, sandbox fs_tools there, return a ResumeRAG."""
+    """Write 3 small resumes, sandbox fs_tools there, return a ResumeRAG.
+
+    Uses a per-call unique collection name so multiple make_corpus() calls in
+    the same pytest process (which shares a single EphemeralClient singleton)
+    do not write into the default 'resumes' collection and pollute tests that
+    assert on an empty index.
+    """
     import chromadb
 
     from resume_rag import ResumeRAG
@@ -94,8 +100,12 @@ def make_corpus(tmp_path, monkeypatch):
     (resumes / "jordan_blake.txt").write_text(JUNIOR_RESUME, encoding="utf-8")
     (resumes / "casey_morgan.txt").write_text(FRONTEND_RESUME, encoding="utf-8")
     monkeypatch.setenv("FS_TOOLS_BASE_DIR", str(tmp_path))
+    # Unique collection per corpus so the shared EphemeralClient singleton does
+    # not contaminate the default "resumes" collection used by empty-index tests.
+    collection_name = f"resumes_{abs(hash(str(tmp_path)))}"
     return ResumeRAG(
         resumes_dir="resumes",
         embedder=FakeEmbedder(),
         client=chromadb.EphemeralClient(),
+        collection_name=collection_name,
     )
