@@ -241,9 +241,12 @@ md("""## Conclusions
 - **Metadata extraction** is near-perfect on this corpus (tables above) because
   extraction is deterministic over structured sections; real-world resumes
   would need an LLM-assisted fallback.
-- **Hybrid > semantic-only** on ranking quality: BM25 anchors exact skill
-  terms (e.g. "Terraform", "PyTorch") that embeddings can blur across related
-  roles; the sweep shows the chosen default w=0.65 sits on the plateau.
+- **Hybrid vs semantic-only:** this clean synthetic corpus saturates both
+  modes (identical P@5/MRR); the measurable hybrid gain is soft Recall@10
+  (0.921 vs 0.886) - BM25's exact-term anchoring pulls extra adjacent-role
+  candidates into the top-10. The weight sweep is flat at P@5 0.967 for every
+  w, so the default w=0.65 is safe; on noisier real-world resumes the keyword
+  signal (and the per-component score_breakdown) is where hybrid earns its keep.
 - **Latency** is interactive (tens of ms per query after warm-up) with a
   one-off index build of a few seconds for 36 resumes — comfortably scalable
   to thousands of resumes before needing approximate-recall tuning.
