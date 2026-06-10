@@ -154,6 +154,15 @@ def parse_job_description(text: str) -> JobDescription:
     must_haves = tuple(
         mh for mh in (_parse_requirement_line(ln) for ln in req_lines) if mh
     )
+    if not must_haves:
+        # No Requirements section (e.g. an inline one-liner JD). Fall back to
+        # high-precision patterns anywhere in the text: years and degree
+        # demands are unambiguous must-haves; bare skill mentions are not.
+        candidates = (_parse_requirement_line(ln) for ln in text.splitlines())
+        must_haves = tuple(
+            mh for mh in candidates
+            if mh and mh.kind in ("skill_years", "total_years", "education")
+        )
     required_skills = tuple(sorted({s for mh in must_haves for s in mh.skills}))
     nice_to_have = tuple(extract_skills("\n".join(nice_lines)))
     all_skills = tuple(extract_skills(text))
