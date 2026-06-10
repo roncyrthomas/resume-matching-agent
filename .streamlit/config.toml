@@ -1,0 +1,8 @@
+# Disable the hot-reload file watcher: it walks every imported module and
+# spams tracebacks probing transformers' optional torchvision submodules.
+# Not needed for running/demoing the app (edit app.py -> just rerun).
+[server]
+fileWatcherType = "none"
+
+[browser]
+gatherUsageStats = false
