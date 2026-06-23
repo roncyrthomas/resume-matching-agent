@@ -36,3 +36,21 @@ def test_deterministic_nodes_produce_ranked_shortlist(tmp_path, monkeypatch):
     assert {"name", "resume_path", "score", "breakdown", "matched_skills",
             "excerpts", "reasoning"} <= sl[0].keys()
     assert state["requirements"]["title"] == "Machine Learning Engineer"
+
+
+def test_summarize_and_report_do_not_reorder(tmp_path, monkeypatch):
+    llm = StubLLM(lambda system, prompt: "Strength: Python. Gap: Docker.")
+    nodes = make_nodes(_engine(tmp_path, monkeypatch, llm))
+    state = {"jd_text": ML_JD, "k": 5, "messages": []}
+    for name in ("parse_jd", "extract_requirements", "search_resumes", "rank_candidates"):
+        state.update(nodes[name](state))
+    order_before = [r["name"] for r in state["shortlist"]]
+
+    state.update(nodes["summarize_shortlist"](state))
+    state.update(nodes["generate_report"](state))
+
+    assert [r["name"] for r in state["shortlist"]] == order_before  # invariant
+    assert all("summary" in r for r in state["shortlist"])
+    assert isinstance(state["report"], str) and state["report"].strip()
+    # LLM never saw raw resume file content (only excerpts/skills).
+    assert all("EXPERIENCE\n" not in call[1] or "[" in call[1] for call in llm.calls)
