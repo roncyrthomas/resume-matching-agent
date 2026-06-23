@@ -30,3 +30,6 @@ pytest==8.3.3
 
 # Next-level — UI
 streamlit>=1.40
+
+# Milestone 3 — LangGraph conversational matching agent
+langgraph>=0.2

@@ -54,3 +54,32 @@ def test_summarize_and_report_do_not_reorder(tmp_path, monkeypatch):
     assert isinstance(state["report"], str) and state["report"].strip()
     # LLM never saw raw resume file content (only excerpts/skills).
     assert all("EXPERIENCE\n" not in call[1] or "[" in call[1] for call in llm.calls)
+
+
+# --- Task 7: graph + HITL router ------------------------------------------------
+
+from langgraph.types import Command
+from matching_agent import build_agent
+
+
+def _run_first_pass(engine, thread="t1"):
+    graph = build_agent(engine)
+    cfg = {"configurable": {"thread_id": thread}}
+    state = graph.invoke({"jd_text": ML_JD, "k": 5, "messages": []}, cfg)
+    return graph, cfg, state
+
+
+def test_first_pass_interrupts_with_report(tmp_path, monkeypatch):
+    engine = _engine(tmp_path, monkeypatch, StubLLM(lambda s, p: "ok"))
+    _, _, state = _run_first_pass(engine)
+    assert state["shortlist"]
+    assert "__interrupt__" in state  # paused at human_feedback
+
+
+def test_done_intent_ends_graph(tmp_path, monkeypatch):
+    # Narration calls return "ok"; the router classifies "done".
+    engine = _engine(tmp_path, monkeypatch,
+                     StubLLM(lambda s, p: "done" if "allowed labels" in p.lower() else "ok"))
+    graph, cfg, _ = _run_first_pass(engine)
+    final = graph.invoke(Command(resume="thanks, that's all"), cfg)
+    assert final.get("last_intent") == "done"
