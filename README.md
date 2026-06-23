@@ -298,3 +298,91 @@ uploads through the UI.
    re-match to show it ranked.
 8. **4:30-4:45** — notebook §8 bar chart (clean vs hard) + the generated
    takeaways cell: metrics computed live, no hand-written claims.
+
+---
+
+# Milestone 3 — LangGraph conversational matching agent
+
+A LangGraph agent (`matching_agent.py`) wraps the M1 tools + M2 matcher into an
+interactive, multi-round recruiting assistant. The deterministic core still owns
+every score; the LLM only routes intent, writes prose, and asks interview
+questions — it can never reorder a ranking.
+
+## Architecture
+
+```
+START → parse_jd → extract_requirements → search_resumes → rank_candidates
+      → summarize_shortlist → generate_report → human_feedback [interrupt()]
+           ├─ refine    → extract_requirements   (adjust weights, explain Δ)
+           ├─ compare   → compare_candidates
+           ├─ interview → generate_interview_questions
+           ├─ screen    → multi_round_screen      (Send() fan-out → hire/no-hire)
+           └─ done      → END
+```
+
+State machine diagram: `docs/diagrams/matching_agent_state_machine.md` (Mermaid)
+and `.png`. Regenerate with `python scripts/export_graph.py`.
+
+## Modules
+
+- `matching_agent.py` — `AgentState`, the graph, all nodes, `build_agent()`, the
+  `MatchingAgent` wrapper, and the fairness helpers.
+- `agent_tools.py` — `extract_requirements`, `compare_candidates`,
+  `generate_interview_questions`, `rag_search`.
+- `agent_llm.py` — injectable `LLMClient` Protocol, `AnthropicLLM` adapter
+  (reuses the existing `anthropic` SDK), and `StubLLM` for tests.
+- `agent_cli.py` / the **Agent Chat** tab in `app.py` — the two chat interfaces.
+
+## Run it
+
+```bash
+python resume_rag.py --rebuild              # index ./resumes (once)
+python agent_cli.py job_descriptions/senior_ml_engineer.txt
+python agent_cli.py "Senior React engineer, 5+ years" -k 5 --anonymize
+python -m streamlit run app.py              # → "Agent Chat" tab
+```
+
+Then chat: `weight experience higher`, `compare the top 3`,
+`interview questions for <name>`, `deep-screen the top 10`, `done`.
+
+## Design highlights (research-informed)
+
+- **Two-stage retrieve-then-rerank** core (M2) — the dominant production shape.
+- **Deterministic scoring / generative explanation split** — LLM nodes receive
+  pre-computed scores + excerpts only, never raw resumes, so every explanation
+  is auditable (enforced by a test: a hostile LLM cannot reorder the shortlist).
+- **`interrupt()` + checkpointer** human-in-the-loop; idempotent nodes.
+- **`Send()` orchestrator-worker fan-out** for per-candidate round-2 deep
+  analysis → round-3 hire/no-hire recommendation.
+
+## Explainability & Compliance
+
+- **Auditability by construction** — reproducible rankings + evidence-backed
+  explanations; optional JSON decision log (`write_decision_log`).
+- **`--anonymize`** redacts the name/contact preamble (demographic proxies)
+  before scoring.
+- **Documented limitation** — automated hiring is regulated (NYC Local Law 144's
+  annual impact-ratio bias audit, the EEOC four-fifths rule, the EU AI Act's
+  high-risk classification). Model-level fairness metrics alone **cannot** capture
+  whole-funnel ("effective") bias; a real deployment needs an independent annual
+  bias audit. This project does not claim compliance.
+
+## Tests
+
+`python -m pytest tests/test_matching_agent.py tests/test_agent_tools.py
+tests/test_agent_llm.py` — covers the 5+ required conversation flows (first pass,
+refine, compare, interview, multi-round screen) plus the ordering invariant,
+unknown-candidate handling, and the fairness helpers. All use `StubLLM`
+(no API key, no network).
+
+## Demo video (5-6 min)
+
+1. **0:00-0:30** — the state-machine diagram; name the nodes and the HITL loop.
+2. **0:30-2:00** — `python agent_cli.py <jd>`: watch parse → extract → rank →
+   report; call out must-haves and the score breakdown.
+3. **2:00-3:00** — refine ("weight experience higher") and show the ranking-Δ
+   explanation; then "compare the top 3".
+4. **3:00-4:30** — "deep-screen the top candidates": the `Send()` fan-out, then
+   per-candidate hire/no-hire recommendations.
+5. **4:30-5:30** — the Streamlit **Agent Chat** tab end-to-end; close on the
+   Explainability & Compliance note.

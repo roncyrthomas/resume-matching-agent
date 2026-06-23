@@ -384,3 +384,33 @@ class MatchingAgent:
     def send(self, message: str) -> dict:
         """Resume the graph with a natural-language follow-up."""
         return self._graph.invoke(Command(resume=message), self._cfg)
+
+
+# ---------------------------------------------------------------------------
+# Fairness / auditability helpers
+# ---------------------------------------------------------------------------
+
+
+def anonymize_jd_or_resume(text: str) -> str:
+    """Drop the name/contact preamble (demographic proxies) before scoring."""
+    from resume_rag import split_into_sections
+    sections = split_into_sections(text)
+    kept = [s for s in sections if s.kind != "header"]
+    body = "\n\n".join(
+        f"{s.header}\n{s.text}" if s.header else s.text for s in kept)
+    return body or text
+
+
+def write_decision_log(state: dict, path: str) -> dict:
+    """Persist an auditable JSON record of one matching run."""
+    import json
+    record = {
+        "title": (state.get("requirements") or {}).get("title", ""),
+        "weights": (state.get("requirements") or {}).get("weights", {}),
+        "candidates": [
+            {"name": r["name"], "score": r["score"],
+             "breakdown": r.get("breakdown", {}), "reasoning": r.get("reasoning", "")}
+            for r in state.get("shortlist", [])
+        ],
+    }
+    return fs_tools.write_file(path, json.dumps(record, indent=2))

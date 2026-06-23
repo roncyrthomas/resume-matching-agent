@@ -5,7 +5,9 @@ Run from the project root:
     streamlit run app.py
 
 Everything heavy lives in the backend modules (resume_rag / job_matcher /
-reranker); this app only collects inputs and renders results.
+reranker / matching_agent); this app only collects inputs and renders results.
+Two tabs: the one-shot **Matcher** and the conversational **Agent Chat**
+(LangGraph agent, Milestone 3).
 """
 
 from __future__ import annotations
@@ -113,6 +115,42 @@ def clamp01(value: object) -> float:
         return 0.0
 
 
+# --- Agent Chat tab (Milestone 3) --------------------------------------------------
+
+
+def render_agent_tab() -> None:
+    """Conversational LangGraph agent over the default resume corpus."""
+    from agent_llm import AnthropicLLM
+    from matching_agent import MatchingAgent
+
+    st.subheader("Agent Chat")
+    st.caption(
+        "LangGraph agent: parse JD → extract requirements → search → rank → "
+        "report → human feedback. Then chat: refine, compare, interview, screen."
+    )
+    jd = st.text_area("Job description", height=180, key="agent_jd")
+    cols = st.columns([1, 3])
+    with cols[0]:
+        start = st.button("Start matching", key="agent_start")
+    if start and jd.strip():
+        st.session_state["agent"] = MatchingAgent(
+            JobMatcher(), AnthropicLLM(), thread_id="streamlit")
+        st.session_state["agent_state"] = st.session_state["agent"].start(jd, k=10)
+
+    state = st.session_state.get("agent_state")
+    if state:
+        if state.get("shortlist"):
+            st.dataframe(
+                [{"name": r["name"], "score": r["score"]} for r in state["shortlist"]],
+                use_container_width=True, hide_index=True,
+            )
+        st.markdown(state.get("report", ""))
+        follow = st.chat_input("Refine, compare, interview <name>, screen, or done")
+        if follow:
+            st.session_state["agent_state"] = st.session_state["agent"].send(follow)
+            st.rerun()
+
+
 # --- page scaffold -----------------------------------------------------------------
 
 st.set_page_config(page_title="Resume Matcher", page_icon="🎯", layout="wide")
@@ -175,126 +213,130 @@ with st.sidebar:
             st.success(f"Indexed {Path(info).name} (+{rag.count() - before} chunks)")
             st.rerun()
 
-# --- main pane: job description input ----------------------------------------------
+# --- tabs: one-shot matcher + conversational agent ---------------------------------
 
-st.subheader("Job description")
+tab_match, tab_agent = st.tabs(["Matcher", "Agent Chat"])
 
-if "jd_text" not in st.session_state:
-    default_jd = JD_DIR / "senior_ml_engineer.txt"
-    ok, text = read_text(str(default_jd)) if default_jd.exists() else (False, "")
-    st.session_state["jd_text"] = text if ok else ""
-    st.session_state["_last_jd_choice"] = "senior_ml_engineer.txt"
+with tab_agent:
+    render_agent_tab()
 
-left, right = st.columns([3, 2])
-with left:
-    choices = [PASTE_OPTION] + jd_file_options()
-    last_choice = st.session_state.get("_last_jd_choice", PASTE_OPTION)
-    index = choices.index(last_choice) if last_choice in choices else 0
-    selected = st.selectbox("Load a job description", choices, index=index)
-    if selected != st.session_state.get("_last_jd_choice"):
-        st.session_state["_last_jd_choice"] = selected
-        if selected != PASTE_OPTION:
-            ok, text = read_text(str(JD_DIR / selected))
-            if ok:
-                st.session_state["jd_text"] = text
+with tab_match:
+    st.subheader("Job description")
+
+    if "jd_text" not in st.session_state:
+        default_jd = JD_DIR / "senior_ml_engineer.txt"
+        ok, text = read_text(str(default_jd)) if default_jd.exists() else (False, "")
+        st.session_state["jd_text"] = text if ok else ""
+        st.session_state["_last_jd_choice"] = "senior_ml_engineer.txt"
+
+    left, right = st.columns([3, 2])
+    with left:
+        choices = [PASTE_OPTION] + jd_file_options()
+        last_choice = st.session_state.get("_last_jd_choice", PASTE_OPTION)
+        index = choices.index(last_choice) if last_choice in choices else 0
+        selected = st.selectbox("Load a job description", choices, index=index)
+        if selected != st.session_state.get("_last_jd_choice"):
+            st.session_state["_last_jd_choice"] = selected
+            if selected != PASTE_OPTION:
+                ok, text = read_text(str(JD_DIR / selected))
+                if ok:
+                    st.session_state["jd_text"] = text
+                else:
+                    st.error(text)
+            st.rerun()
+    with right:
+        jd_upload = st.file_uploader(
+            "...or upload a JD (txt/pdf/docx)", type=["txt", "pdf", "docx"], key="jd_upload"
+        )
+        if jd_upload is not None and st.button("Use uploaded JD"):
+            ok, info = save_upload(jd_upload, str(JD_UPLOAD_DIR))
+            if not ok:
+                st.error(info)
             else:
-                st.error(text)
-        st.rerun()
-with right:
-    jd_upload = st.file_uploader(
-        "...or upload a JD (txt/pdf/docx)", type=["txt", "pdf", "docx"], key="jd_upload"
-    )
-    if jd_upload is not None and st.button("Use uploaded JD"):
-        ok, info = save_upload(jd_upload, str(JD_UPLOAD_DIR))
-        if not ok:
-            st.error(info)
-        else:
-            ok, text = read_text(info)
-            if ok:
-                st.session_state["jd_text"] = text
-                st.session_state["_last_jd_choice"] = PASTE_OPTION
-                st.rerun()
-            else:
-                st.error(text)
+                ok, text = read_text(info)
+                if ok:
+                    st.session_state["jd_text"] = text
+                    st.session_state["_last_jd_choice"] = PASTE_OPTION
+                    st.rerun()
+                else:
+                    st.error(text)
 
-jd_text = st.text_area("Job description text", key="jd_text", height=260)
+    jd_text = st.text_area("Job description text", key="jd_text", height=260)
 
-run_match = st.button("Match candidates", type="primary")
+    run_match = st.button("Match candidates", type="primary")
 
-# --- matching + results --------------------------------------------------------------
+    if run_match:
+        if not jd_text or not jd_text.strip():
+            st.warning("Paste or load a job description first.")
+            st.stop()
 
-if run_match:
-    if not jd_text or not jd_text.strip():
-        st.warning("Paste or load a job description first.")
-        st.stop()
+        rag = get_rag(resumes_dir, collection)
+        ensure_indexed(rag)
 
-    rag = get_rag(resumes_dir, collection)
-    ensure_indexed(rag)
+        use_rerank = mode == "Hybrid + rerank"
+        semantic_only = mode == "Semantic only"
+        # A fresh JobMatcher per click: BM25 + profile caches stay consistent with
+        # the current index and sliders. The rebuild costs ~50 ms — negligible here.
+        matcher = JobMatcher(
+            rag=rag,
+            semantic_weight=semantic_weight,
+            reranker=get_reranker() if use_rerank else None,
+            rerank=use_rerank,
+        )
 
-    use_rerank = mode == "Hybrid + rerank"
-    semantic_only = mode == "Semantic only"
-    # A fresh JobMatcher per click: BM25 + profile caches stay consistent with
-    # the current index and sliders. The rebuild costs ~50 ms — negligible here.
-    matcher = JobMatcher(
-        rag=rag,
-        semantic_weight=semantic_weight,
-        reranker=get_reranker() if use_rerank else None,
-        rerank=use_rerank,
-    )
+        try:
+            with st.spinner("Matching..."):
+                result = matcher.match(
+                    jd_text, k=k, apply_filters=apply_filters, semantic_only=semantic_only
+                )
+        except (RuntimeError, ValueError) as exc:
+            st.error(f"{exc} — try 'Rebuild index' in the sidebar.")
+            st.stop()
 
-    try:
-        with st.spinner("Matching..."):
-            result = matcher.match(
-                jd_text, k=k, apply_filters=apply_filters, semantic_only=semantic_only
-            )
-    except (RuntimeError, ValueError) as exc:
-        st.error(f"{exc} — try 'Rebuild index' in the sidebar.")
-        st.stop()
+        query = result["query"]
+        st.caption(
+            f"**{query['title']}** · {len(query['required_skills'])} required skills · "
+            f"{len(query['must_haves'])} must-haves · mode: `{query['mode']}` · "
+            f"corpus: {corpus_label}"
+        )
 
-    query = result["query"]
-    st.caption(
-        f"**{query['title']}** · {len(query['required_skills'])} required skills · "
-        f"{len(query['must_haves'])} must-haves · mode: `{query['mode']}` · "
-        f"corpus: {corpus_label}"
-    )
+        matches = result["top_matches"]
+        if not matches:
+            st.info("No candidates survived the must-have filters — see below.")
 
-    matches = result["top_matches"]
-    if not matches:
-        st.info("No candidates survived the must-have filters — see below.")
+        for rank, match in enumerate(matches, start=1):
+            with st.container(border=True):
+                head_left, head_right = st.columns([4, 1])
+                with head_left:
+                    st.subheader(f"#{rank} {match['candidate_name']}")
+                    if match["matched_skills"]:
+                        st.markdown(" ".join(f"`{s}`" for s in match["matched_skills"]))
+                    st.caption(match["reasoning"])
+                with head_right:
+                    st.metric("Score", match["match_score"])
+                    st.caption(match["resume_path"])
 
-    for rank, match in enumerate(matches, start=1):
-        with st.container(border=True):
-            head_left, head_right = st.columns([4, 1])
-            with head_left:
-                st.subheader(f"#{rank} {match['candidate_name']}")
-                if match["matched_skills"]:
-                    st.markdown(" ".join(f"`{s}`" for s in match["matched_skills"]))
-                st.caption(match["reasoning"])
-            with head_right:
-                st.metric("Score", match["match_score"])
-                st.caption(match["resume_path"])
+                bars = st.columns(len(BREAKDOWN_BARS))
+                breakdown = match.get("score_breakdown", {})
+                for col, (key, label) in zip(bars, BREAKDOWN_BARS):
+                    value = clamp01(breakdown.get(key, 0.0))
+                    col.progress(value, text=f"{label}: {value:.2f}")
 
-            bars = st.columns(len(BREAKDOWN_BARS))
-            breakdown = match.get("score_breakdown", {})
-            for col, (key, label) in zip(bars, BREAKDOWN_BARS):
-                value = clamp01(breakdown.get(key, 0.0))
-                col.progress(value, text=f"{label}: {value:.2f}")
+                with st.expander("Evidence excerpts"):
+                    for excerpt in match["relevant_excerpts"]:
+                        st.markdown(f"- {bold_section_prefix(excerpt)}")
 
-            with st.expander("Evidence excerpts"):
-                for excerpt in match["relevant_excerpts"]:
-                    st.markdown(f"- {bold_section_prefix(excerpt)}")
+        filtered = result["filtered_out"]
+        with st.expander(f"Filtered out ({len(filtered)})"):
+            if not filtered:
+                st.caption("Nobody was excluded by must-have requirements.")
+            for entry in filtered:
+                st.markdown(f"**{entry['candidate_name']}** — score {entry['match_score']}")
+                for reason in entry["failed_requirements"]:
+                    st.markdown(f"  - {reason}")
 
-    filtered = result["filtered_out"]
-    with st.expander(f"Filtered out ({len(filtered)})"):
-        if not filtered:
-            st.caption("Nobody was excluded by must-have requirements.")
-        for entry in filtered:
-            st.markdown(f"**{entry['candidate_name']}** — score {entry['match_score']}")
-            for reason in entry["failed_requirements"]:
-                st.markdown(f"  - {reason}")
-
-    lat = result["latency_ms"]
-    st.caption(
-        f"semantic {lat['semantic_search']}ms · keyword {lat['keyword_search']}ms · "
-        f"rerank {lat['rerank']}ms · total {lat['total']}ms"
-    )
+        lat = result["latency_ms"]
+        st.caption(
+            f"semantic {lat['semantic_search']}ms · keyword {lat['keyword_search']}ms · "
+            f"rerank {lat['rerank']}ms · total {lat['total']}ms"
+        )

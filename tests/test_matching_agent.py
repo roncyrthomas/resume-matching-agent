@@ -162,3 +162,43 @@ def test_invariant_llm_cannot_reorder(tmp_path, monkeypatch):
                           thread_id="inv")
     state = agent.start(ML_JD, k=5)
     assert [r["name"] for r in state["shortlist"]] == baseline
+
+
+# --- Task 11: CLI render helper -------------------------------------------------
+
+from agent_cli import render_state
+
+
+def test_render_state_includes_report():
+    out = render_state({"report": "# Hi\nbody", "shortlist": [{"name": "A", "score": 90}]})
+    assert "# Hi" in out and "A" in out
+
+
+# --- Task 12: Streamlit tab exposes a renderer ----------------------------------
+
+
+def test_app_exposes_agent_renderer():
+    import app  # noqa: F401 — import must succeed with the new tab wired in
+    assert hasattr(app, "render_agent_tab")
+
+
+# --- Task 13: fairness / auditability helpers -----------------------------------
+
+import json
+
+from matching_agent import anonymize_jd_or_resume, write_decision_log
+
+
+def test_anonymize_drops_contact_preamble():
+    out = anonymize_jd_or_resume("Jane Doe\njane@x.com\n\nSKILLS\nPython")
+    assert "jane@x.com" not in out and "Python" in out
+
+
+def test_write_decision_log_roundtrips(tmp_path, monkeypatch):
+    monkeypatch.setenv("FS_TOOLS_BASE_DIR", str(tmp_path))
+    state = {"requirements": {"title": "ML"}, "shortlist": [{"name": "A", "score": 90,
+             "breakdown": {}, "reasoning": "r"}]}
+    res = write_decision_log(state, "logs/run.json")
+    assert res["success"]
+    data = json.loads((tmp_path / "logs" / "run.json").read_text(encoding="utf-8"))
+    assert data["title"] == "ML" and data["candidates"][0]["name"] == "A"
