@@ -1,6 +1,13 @@
 from __future__ import annotations
 
-from agent_tools import DEFAULT_WEIGHTS, compare_candidates, extract_requirements, rag_search
+from agent_llm import StubLLM
+from agent_tools import (
+    DEFAULT_WEIGHTS,
+    compare_candidates,
+    extract_requirements,
+    generate_interview_questions,
+    rag_search,
+)
 from tests.rag_test_utils import make_corpus
 
 ML_JD = """Job Title: Machine Learning Engineer
@@ -56,3 +63,23 @@ def test_compare_candidates_reports_unknown_ids():
     out = compare_candidates(["Nobody"], _SHORTLIST)
     assert out["errors"] == ["Nobody"]
     assert out["candidates"] == []
+
+
+_REQ = {"title": "ML Engineer", "required_skills": ["Python", "PyTorch", "Docker"]}
+
+
+def test_interview_questions_grounded_in_gaps():
+    llm = StubLLM(["1. How have you used Docker?\n2. Describe a PyTorch project."])
+    out = generate_interview_questions("Jordan Blake", _REQ, _SHORTLIST, llm)
+    assert out["error"] is None
+    assert "Docker" in out["gaps"] and "PyTorch" in out["gaps"]
+    assert len(out["questions"]) == 2
+    # The candidate's gaps must appear in the prompt sent to the LLM.
+    assert "Docker" in llm.calls[0][1]
+
+
+def test_interview_questions_unknown_candidate_no_llm_call():
+    llm = StubLLM([])
+    out = generate_interview_questions("Nobody", _REQ, _SHORTLIST, llm)
+    assert out["error"] is not None
+    assert out["questions"] == [] and llm.calls == []
