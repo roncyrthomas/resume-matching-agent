@@ -369,6 +369,7 @@ class JobMatcher:
         self, jd: JobDescription, signals: _CandidateSignals,
         bm25_norm: float, profile: Dict[str, object], semantic_only: bool,
         rerank_score: float = 0.0, use_rerank: bool = False,
+        weights: Optional[Dict[str, float]] = None,
     ) -> Tuple[int, Dict[str, float], List[str]]:
         semantic = self._semantic_strength(signals)
         if semantic_only:
@@ -393,8 +394,15 @@ class JobMatcher:
         req_years = max((mh.years for mh in jd.must_haves if mh.years), default=0)
         exp_fit = _clamp(years / req_years) if req_years else 1.0
 
-        blend = (W_RETRIEVAL * retrieval + W_SKILLS * skill_cov
-                 + W_EXPERIENCE * exp_fit + W_NICE * nice_cov)
+        # Top-level utility weights default to the module constants; callers
+        # (e.g. the M3 agent's refine loop) may override per factor.
+        w = weights or {}
+        w_ret = w.get("retrieval", W_RETRIEVAL)
+        w_skills = w.get("skills", W_SKILLS)
+        w_exp = w.get("experience", W_EXPERIENCE)
+        w_nice = w.get("nice", W_NICE)
+        blend = (w_ret * retrieval + w_skills * skill_cov
+                 + w_exp * exp_fit + w_nice * nice_cov)
         score = int(round(100 * _clamp(blend)))
         breakdown = {
             "semantic": round(semantic, 3),
@@ -437,8 +445,14 @@ class JobMatcher:
     # -- public API -----------------------------------------------------------------
 
     def match(self, jd_text: str, k: int = TOP_K, *, apply_filters: bool = True,
-              semantic_only: bool = False, rerank: Optional[bool] = None) -> Dict[str, object]:
-        """Match resumes to *jd_text* and return the assignment's JSON shape."""
+              semantic_only: bool = False, rerank: Optional[bool] = None,
+              weights: Optional[Dict[str, float]] = None) -> Dict[str, object]:
+        """Match resumes to *jd_text* and return the assignment's JSON shape.
+
+        *weights* optionally overrides the top-level utility weights
+        (keys: ``retrieval``/``skills``/``experience``/``nice``); when omitted the
+        module constants are used, so default behaviour is unchanged.
+        """
         if k <= 0:
             raise ValueError("k must be positive")
         use_rerank = self._rerank_default if rerank is None else rerank
@@ -476,7 +490,7 @@ class JobMatcher:
             score, breakdown, matched = self._score_candidate(
                 jd, sig, bm25.get(file, 0.0), profile, semantic_only,
                 rerank_score=rerank_by_file.get(file, 0.0),
-                use_rerank=use_rerank,
+                use_rerank=use_rerank, weights=weights,
             )
             entry: Dict[str, object] = {
                 "candidate_name": profile.get("candidate", file),

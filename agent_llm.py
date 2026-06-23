@@ -8,6 +8,7 @@ dependency); `StubLLM` makes every node testable offline with no API key.
 from __future__ import annotations
 
 import os
+import re
 from typing import Callable, List, Optional, Protocol, Sequence, Tuple, Union
 
 
@@ -96,7 +97,8 @@ def classify_intent(
     )
     raw = llm.complete(_INTENT_SYSTEM, prompt).strip().lower()
     for label in allowed:
-        if label.lower() in raw:
+        # Word-boundary match so 'redefine' doesn't match 'refine', etc.
+        if re.search(rf"\b{re.escape(label.lower())}\b", raw):
             return label
     return default
 

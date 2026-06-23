@@ -18,7 +18,7 @@ from langgraph.types import Command, interrupt, Send
 
 import fs_tools
 from agent_llm import LLMClient, classify_intent, narrate
-from agent_tools import DEFAULT_WEIGHTS, compare_candidates, generate_interview_questions
+from agent_tools import compare_candidates, generate_interview_questions
 from agent_tools import extract_requirements as _extract_requirements
 from job_matcher import JobMatcher
 
@@ -198,15 +198,13 @@ def make_nodes(engine: Engine) -> Dict[str, Callable[[dict], dict]]:
         return {"messages": []}
 
     def rank_candidates(state: dict) -> dict:
-        weights = (state.get("requirements") or {}).get("weights") or {}
-        sem = weights.get("retrieval")
-        matcher = engine.matcher
-        # Only override the matcher when the user adjusted the retrieval weight
-        # away from the default; the first pass must use the configured matcher
-        # unchanged so the deterministic ranking is reproducible.
-        if sem is not None and abs(float(sem) - DEFAULT_WEIGHTS["retrieval"]) > 1e-9:
-            matcher = JobMatcher(rag=engine.matcher.rag, semantic_weight=float(sem))
-        result = matcher.match(state["jd_text"], k=int(state.get("k", 10)))
+        # Pass the (possibly user-adjusted) top-level utility weights straight
+        # into the matcher. Defaults equal the module constants, so the first
+        # pass is byte-identical to a plain match() — the ordering invariant
+        # holds — while a refine loop genuinely reweights the factors.
+        weights = (state.get("requirements") or {}).get("weights") or None
+        result = engine.matcher.match(
+            state["jd_text"], k=int(state.get("k", 10)), weights=weights)
         records = _records_from_match(result)
         out: dict = {"shortlist": records}
         if state.get("shortlist"):

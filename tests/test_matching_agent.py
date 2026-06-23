@@ -148,9 +148,12 @@ def test_refine_reranks_and_explains_delta(tmp_path, monkeypatch):
     agent = MatchingAgent(JobMatcher(rag=rag), StubLLM(handler), thread_id="r")
     first = agent.start(ML_JD, k=5)
     assert first["shortlist"]
+    exp_before = first["requirements"]["weights"]["experience"]
     after = agent.send("weight experience higher please")
     assert after.get("last_intent") == "refine"
     assert after["shortlist"]  # re-ranked, still present
+    # The refine hint must actually raise the experience factor (not just re-run).
+    assert after["requirements"]["weights"]["experience"] > exp_before
 
 
 def test_invariant_llm_cannot_reorder(tmp_path, monkeypatch):
