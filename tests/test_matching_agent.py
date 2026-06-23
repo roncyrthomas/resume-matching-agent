@@ -83,3 +83,52 @@ def test_done_intent_ends_graph(tmp_path, monkeypatch):
     graph, cfg, _ = _run_first_pass(engine)
     final = graph.invoke(Command(resume="thanks, that's all"), cfg)
     assert final.get("last_intent") == "done"
+
+
+# --- Task 8: compare + interview nodes ------------------------------------------
+
+
+def test_compare_intent_produces_comparison_report(tmp_path, monkeypatch):
+    engine = _engine(tmp_path, monkeypatch,
+                     StubLLM(lambda s, p: "compare" if "allowed labels" in p.lower() else "ok"))
+    graph = build_agent(engine)
+    cfg = {"configurable": {"thread_id": "c"}}
+    graph.invoke({"jd_text": ML_JD, "k": 5, "messages": []}, cfg)
+    state = graph.invoke(Command(resume="compare the top 3"), cfg)
+    assert "comparison" in state["report"].lower() or "ranking" in state["report"].lower()
+    assert "__interrupt__" in state  # looped back for more input
+
+
+def test_interview_intent_lists_questions(tmp_path, monkeypatch):
+    def handler(system, prompt):
+        if "allowed labels" in prompt.lower():
+            return "interview"
+        return "1. Tell me about PyTorch.\n2. Describe a Docker setup."
+    engine = _engine(tmp_path, monkeypatch, StubLLM(handler))
+    graph = build_agent(engine)
+    cfg = {"configurable": {"thread_id": "i"}}
+    first = graph.invoke({"jd_text": ML_JD, "k": 5, "messages": []}, cfg)
+    top = first["shortlist"][0]["name"]
+    state = graph.invoke(Command(resume=f"interview questions for {top}"), cfg)
+    assert "?" in state["report"] or "1." in state["report"]
+
+
+# --- Task 9: multi-round screening (Send fan-out) -------------------------------
+
+
+def test_screen_intent_runs_rounds_and_recommends(tmp_path, monkeypatch):
+    def handler(system, prompt):
+        if "allowed labels" in prompt.lower():
+            return "screen"
+        if "recommendation" in prompt.lower():
+            return "Recommendation: hire. Strong Python and PyTorch depth."
+        return "ok"
+    engine = _engine(tmp_path, monkeypatch, StubLLM(handler))
+    graph = build_agent(engine)
+    cfg = {"configurable": {"thread_id": "s"}}
+    graph.invoke({"jd_text": ML_JD, "k": 5, "messages": []}, cfg)
+    state = graph.invoke(Command(resume="deep-screen the top candidates"), cfg)
+    report = state["report"].lower()
+    assert "recommend" in report or "hire" in report
+    analyses = state.get("screening", {}).get("analyses", [])
+    assert analyses and all("recommendation" in a for a in analyses)

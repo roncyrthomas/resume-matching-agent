@@ -14,10 +14,11 @@ from typing_extensions import TypedDict
 from langgraph.graph import START, END, StateGraph
 from langgraph.graph.message import add_messages
 from langgraph.checkpoint.memory import MemorySaver
-from langgraph.types import interrupt
+from langgraph.types import interrupt, Send
 
+import fs_tools
 from agent_llm import LLMClient, classify_intent, narrate
-from agent_tools import DEFAULT_WEIGHTS
+from agent_tools import DEFAULT_WEIGHTS, compare_candidates, generate_interview_questions
 from agent_tools import extract_requirements as _extract_requirements
 from job_matcher import JobMatcher
 
@@ -84,6 +85,51 @@ def _summary_prompt(record: dict, requirements: dict, suggest: bool) -> str:
 
 
 # ---------------------------------------------------------------------------
+# Conversation + screening helpers
+# ---------------------------------------------------------------------------
+
+
+def _latest_user_message(state: dict) -> str:
+    """Return the most recent user/human message content from the history."""
+    for msg in reversed(state.get("messages") or []):
+        role = msg.get("role") if isinstance(msg, dict) else getattr(msg, "type", "")
+        if role in ("user", "human"):
+            return msg.get("content") if isinstance(msg, dict) else getattr(msg, "content", "")
+    return ""
+
+
+def _mentioned_names(message: str, shortlist: list) -> list:
+    """Names from *shortlist* that appear (case-insensitively) in *message*."""
+    msg = (message or "").lower()
+    return [r["name"] for r in shortlist if str(r["name"]).lower() in msg]
+
+
+_SCREEN_SYSTEM = (
+    "You are a senior hiring manager doing a deep screen. Given a role and a "
+    "candidate's resume text, give 2-3 strengths, 2-3 gaps, and end with exactly "
+    "one line 'Recommendation: hire|no_hire|borderline' plus a short rationale."
+)
+
+
+def _merge_screening(left: dict, right: dict) -> dict:
+    """Reducer: concatenate analyses lists, shallow-merge other keys."""
+    left = left or {}
+    right = right or {}
+    merged = {**left, **{k: v for k, v in right.items() if k != "analyses"}}
+    merged["analyses"] = (left.get("analyses") or []) + (right.get("analyses") or [])
+    return merged
+
+
+def _parse_recommendation(text: str) -> str:
+    """Pull a hire/no_hire/borderline verdict from free-text analysis."""
+    low = (text or "").lower()
+    for token in ("no_hire", "no-hire", "borderline", "hire"):
+        if token in low:
+            return "no_hire" if token in ("no_hire", "no-hire") else token
+    return "borderline"
+
+
+# ---------------------------------------------------------------------------
 # Graph state + routing
 # ---------------------------------------------------------------------------
 
@@ -96,7 +142,7 @@ class AgentState(TypedDict, total=False):
     requirements: dict
     shortlist: list
     prev_shortlist: list
-    screening: dict
+    screening: Annotated[dict, _merge_screening]
     last_intent: str
     report: str
     k: int
@@ -106,6 +152,17 @@ def route_after_feedback(state: dict) -> str:
     """Map the classified follow-up intent to the next node (or END)."""
     intent = state.get("last_intent", "done")
     return END if intent == "done" else intent
+
+
+def fan_out_candidates(state: dict) -> list:
+    """Conditional-edge fan-out: one ``deep_analyze`` worker per shortlisted
+    candidate. Returning Send objects from an edge (not a node) is the LangGraph
+    pattern for a runtime-sized parallel map."""
+    title = (state.get("requirements") or {}).get("title", "the role")
+    return [
+        Send("deep_analyze", {"_cand": rec, "_title": title})
+        for rec in state.get("shortlist", [])
+    ]
 
 
 # ---------------------------------------------------------------------------
@@ -187,6 +244,57 @@ def make_nodes(engine: Engine) -> Dict[str, Callable[[dict], dict]]:
         return {"last_intent": intent,
                 "messages": [{"role": "user", "content": str(user_message)}]}
 
+    def compare_node(state: dict) -> dict:
+        shortlist = state.get("shortlist", [])
+        names = _mentioned_names(_latest_user_message(state), shortlist) \
+            or [r["name"] for r in shortlist[:3]]
+        result = compare_candidates(names, shortlist)
+        lines = ["# Candidate comparison", "",
+                 f"Ranking: {', '.join(result['ranking'])}"]
+        for dim, winner in result["dimensions"].items():
+            lines.append(f"- Best {dim}: {winner}")
+        if result["errors"]:
+            lines.append(f"- (unknown: {', '.join(result['errors'])})")
+        return {"report": "\n".join(lines)}
+
+    def interview_node(state: dict) -> dict:
+        shortlist = state.get("shortlist", [])
+        names = _mentioned_names(_latest_user_message(state), shortlist)
+        target = names[0] if names else (shortlist[0]["name"] if shortlist else "")
+        out = generate_interview_questions(target, state.get("requirements") or {},
+                                           shortlist, engine.llm)
+        if out["error"]:
+            return {"report": f"Could not generate questions: {out['error']}"}
+        lines = [f"# Interview questions — {out['candidate']}", ""]
+        lines += [f"{i}. {q}" for i, q in enumerate(out["questions"], 1)]
+        return {"report": "\n".join(lines)}
+
+    def screen_node(state: dict) -> dict:
+        # Pass-through marker node; the per-candidate fan-out happens on the
+        # conditional edge `fan_out_candidates` (a node may not return Sends).
+        return {}
+
+    def deep_analyze(payload: dict) -> dict:
+        rec = payload["_cand"]
+        read = fs_tools.read_file(rec["resume_path"])
+        text = str(read.get("content", ""))[:6000] if read.get("success") else ""
+        prompt = (f"Role: {payload['_title']}\nCandidate: {rec['name']} "
+                  f"(prior score {rec['score']}/100)\nResume:\n{text}")
+        analysis = narrate(engine.llm, _SCREEN_SYSTEM, prompt)
+        return {"screening": {"analyses": [{
+            "name": rec["name"], "score": rec["score"],
+            "analysis": analysis, "recommendation": _parse_recommendation(analysis),
+        }]}}
+
+    def screen_collect(state: dict) -> dict:
+        analyses = (state.get("screening") or {}).get("analyses", [])
+        lines = ["# Multi-round screening — recommendations", ""]
+        for a in sorted(analyses, key=lambda x: -int(x["score"])):
+            lines.append(f"## {a['name']} — {a['recommendation'].upper()}")
+            lines.append(a["analysis"])
+            lines.append("")
+        return {"report": "\n".join(lines)}
+
     return {
         "parse_jd": parse_jd,
         "extract_requirements": extract_requirements_node,
@@ -195,6 +303,11 @@ def make_nodes(engine: Engine) -> Dict[str, Callable[[dict], dict]]:
         "summarize_shortlist": summarize_shortlist,
         "generate_report": generate_report,
         "human_feedback": human_feedback,
+        "compare_node": compare_node,
+        "interview_node": interview_node,
+        "screen_node": screen_node,
+        "deep_analyze": deep_analyze,
+        "screen_collect": screen_collect,
     }
 
 
@@ -215,6 +328,11 @@ def build_agent(engine: Engine, checkpointer: Optional[object] = None):
                  "rank_candidates", "summarize_shortlist", "generate_report",
                  "human_feedback"):
         g.add_node(name, nodes[name])
+    g.add_node("compare", nodes["compare_node"])
+    g.add_node("interview", nodes["interview_node"])
+    g.add_node("screen", nodes["screen_node"])
+    g.add_node("deep_analyze", nodes["deep_analyze"])
+    g.add_node("screen_collect", nodes["screen_collect"])
 
     g.add_edge(START, "parse_jd")
     g.add_edge("parse_jd", "extract_requirements")
@@ -225,9 +343,16 @@ def build_agent(engine: Engine, checkpointer: Optional[object] = None):
     g.add_edge("generate_report", "human_feedback")
     g.add_conditional_edges("human_feedback", route_after_feedback, {
         "refine": "extract_requirements",
-        "compare": "human_feedback",     # replaced in a later task
-        "interview": "human_feedback",   # replaced in a later task
-        "screen": "human_feedback",      # replaced in a later task
+        "compare": "compare",
+        "interview": "interview",
+        "screen": "screen",
         END: END,
     })
+    # compare / interview loop back for more input; screen fans out per candidate
+    # (Send) into deep_analyze, then collects before looping back.
+    g.add_edge("compare", "human_feedback")
+    g.add_edge("interview", "human_feedback")
+    g.add_conditional_edges("screen", fan_out_candidates, ["deep_analyze"])
+    g.add_edge("deep_analyze", "screen_collect")
+    g.add_edge("screen_collect", "human_feedback")
     return g.compile(checkpointer=checkpointer or MemorySaver())
