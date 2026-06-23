@@ -14,7 +14,7 @@ from typing_extensions import TypedDict
 from langgraph.graph import START, END, StateGraph
 from langgraph.graph.message import add_messages
 from langgraph.checkpoint.memory import MemorySaver
-from langgraph.types import interrupt, Send
+from langgraph.types import Command, interrupt, Send
 
 import fs_tools
 from agent_llm import LLMClient, classify_intent, narrate
@@ -181,10 +181,15 @@ def make_nodes(engine: Engine) -> Dict[str, Callable[[dict], dict]]:
 
     def extract_requirements_node(state: dict) -> dict:
         req = _extract_requirements(state["jd_text"])
-        # Preserve user-adjusted weights across a refine loop.
+        # Preserve user-adjusted weights across a refine loop, and apply a simple
+        # NL weight hint ("weight experience higher") from the latest message.
         existing = state.get("requirements") or {}
-        if existing.get("weights"):
-            req["weights"] = existing["weights"]
+        weights = dict(existing.get("weights") or req["weights"])
+        msg = _latest_user_message(state).lower()
+        if "experience" in msg and ("higher" in msg or "more" in msg):
+            weights["experience"] = min(0.30, weights["experience"] + 0.15)
+            weights["retrieval"] = max(0.30, weights["retrieval"] - 0.15)
+        req["weights"] = weights
         return {"requirements": req}
 
     def search_resumes(state: dict) -> dict:
@@ -356,3 +361,26 @@ def build_agent(engine: Engine, checkpointer: Optional[object] = None):
     g.add_edge("deep_analyze", "screen_collect")
     g.add_edge("screen_collect", "human_feedback")
     return g.compile(checkpointer=checkpointer or MemorySaver())
+
+
+# ---------------------------------------------------------------------------
+# Convenience wrapper
+# ---------------------------------------------------------------------------
+
+
+class MatchingAgent:
+    """One compiled graph bound to a stable conversation thread."""
+
+    def __init__(self, matcher: JobMatcher, llm: LLMClient,
+                 thread_id: str = "default") -> None:
+        self._graph = build_agent(Engine(matcher=matcher, llm=llm))
+        self._cfg = {"configurable": {"thread_id": thread_id}}
+
+    def start(self, jd_text: str, k: int = 10) -> dict:
+        """Run the first pass; returns state paused at the human-feedback gate."""
+        return self._graph.invoke(
+            {"jd_text": jd_text, "k": k, "messages": []}, self._cfg)
+
+    def send(self, message: str) -> dict:
+        """Resume the graph with a natural-language follow-up."""
+        return self._graph.invoke(Command(resume=message), self._cfg)
