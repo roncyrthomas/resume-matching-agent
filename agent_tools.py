@@ -7,9 +7,12 @@ functions reorder or invent match scores — numbers come from JobMatcher.
 
 from __future__ import annotations
 
-from typing import Dict, List, Optional, Sequence
+from typing import TYPE_CHECKING, Dict, List, Optional, Sequence
 
 from job_matcher import parse_job_description
+
+if TYPE_CHECKING:
+    from agent_llm import LLMClient
 
 DEFAULT_WEIGHTS: Dict[str, float] = {
     "retrieval": 0.45,
@@ -97,7 +100,7 @@ def generate_interview_questions(
     candidate_id: str,
     requirements: Dict[str, object],
     shortlist: Sequence[Dict[str, object]],
-    llm: "object",
+    llm: "LLMClient",
 ) -> Dict[str, object]:
     """Generate gap-grounded screening questions for one candidate."""
     from agent_llm import narrate  # local import keeps agent_tools import-light
