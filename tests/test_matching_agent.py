@@ -182,6 +182,80 @@ def test_route_intent_is_deterministic():
     assert route_intent("that's all, thanks") == "done"
 
 
+def test_classify_turn_guardrails_skip_llm():
+    from agent_llm import classify_turn
+    spy = StubLLM(lambda s, p: "screen")  # would mislabel if ever consulted
+    # Greetings and done phrases resolve deterministically — no LLM call.
+    assert classify_turn(spy, "hi") == "chat"
+    assert classify_turn(spy, "thanks!") == "chat"
+    assert classify_turn(spy, "that's all, thank you") == "done"
+    assert spy.calls == []  # guardrails never hit the model
+
+
+def test_classify_turn_respects_llm_label_and_context():
+    from agent_llm import classify_turn
+    # A realistic LLM: returns JSON; understands negation + meta.
+    def model(system, prompt):
+        msg = prompt.lower()
+        if "first message" in msg or "what can you" in msg:
+            return '{"intent": "chat"}'
+        if "why" in msg and "rank" in msg:
+            return '{"intent": "explain"}'
+        if "web developer" in msg:            # even with 'not deep screen' present
+            return '{"intent": "search"}'
+        return '{"intent": "refine"}'
+    llm = StubLLM(model)
+    # The exact phrases that were misrouted before:
+    assert classify_turn(llm, "not deep screen i want a web developer") == "refine"
+    assert classify_turn(llm, "what was my first message") == "chat"
+    assert classify_turn(llm, "why did Grace rank above Daniel") == "explain"
+
+
+def test_classify_turn_guards_commands_without_shortlist():
+    from agent_llm import classify_turn
+    llm = StubLLM(lambda s, p: '{"intent": "compare"}')
+    # No shortlist yet → a compare command degrades to a conversational reply.
+    assert classify_turn(llm, "compare them", has_shortlist=False) == "chat"
+    assert classify_turn(llm, "compare them", has_shortlist=True) == "compare"
+
+
+def test_chat_intent_answers_without_touching_shortlist(tmp_path, monkeypatch):
+    # 'what was my first message' must recall history, not run a new search.
+    def handler(system, prompt):
+        if "first message" in prompt.lower():
+            return '{"intent": "chat"}' if "allowed labels" in prompt.lower() \
+                else "Your first message was the ML Engineer role."
+        return "ok"
+    engine = _engine(tmp_path, monkeypatch, StubLLM(handler))
+    graph = build_agent(engine)
+    cfg = {"configurable": {"thread_id": "chat"}}
+    first = graph.invoke({"jd_text": ML_JD, "k": 5,
+                          "messages": [{"role": "user", "content": ML_JD}]}, cfg)
+    order_before = [r["name"] for r in first["shortlist"]]
+    state = graph.invoke(Command(resume="what was my first message?"), cfg)
+    assert state.get("last_intent") == "chat"
+    assert [r["name"] for r in state["shortlist"]] == order_before  # unchanged
+    assert "__interrupt__" in state  # looped back, not ended
+
+
+def test_explain_intent_cites_scores(tmp_path, monkeypatch):
+    captured = {}
+    def handler(system, prompt):
+        if "allowed labels" in prompt.lower():
+            return '{"intent": "explain"}'
+        captured["prompt"] = prompt
+        return "Higher experience fit drove the gap."
+    engine = _engine(tmp_path, monkeypatch, StubLLM(handler))
+    graph = build_agent(engine)
+    cfg = {"configurable": {"thread_id": "exp"}}
+    graph.invoke({"jd_text": ML_JD, "k": 5,
+                  "messages": [{"role": "user", "content": ML_JD}]}, cfg)
+    state = graph.invoke(Command(resume="why is the top candidate ranked first?"), cfg)
+    assert state.get("last_intent") == "explain"
+    assert "why this ranking" in state["report"].lower()
+    assert "/100" in captured.get("prompt", "")  # the LLM saw real scores
+
+
 def test_invariant_llm_cannot_reorder(tmp_path, monkeypatch):
     # Hostile LLM tries to inject a different order; shortlist order must hold.
     rag = make_corpus(tmp_path, monkeypatch); rag.build_index()

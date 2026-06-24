@@ -18,7 +18,8 @@ from langgraph.checkpoint.memory import MemorySaver
 from langgraph.types import Command, interrupt, Send
 
 import fs_tools
-from agent_llm import LLMClient, narrate
+from agent_llm import LLMClient, classify_turn, narrate
+from agent_llm import _history_text as _history_text
 from agent_tools import compare_candidates, generate_interview_questions
 from agent_tools import extract_requirements as _extract_requirements
 from job_matcher import JobMatcher
@@ -28,7 +29,22 @@ from job_matcher import JobMatcher
 # ---------------------------------------------------------------------------
 
 BORDERLINE = (45, 60)
-INTENTS = ("refine", "compare", "interview", "screen", "done")
+INTENTS = ("refine", "compare", "interview", "screen", "explain", "chat", "done")
+
+_CHAT_SYSTEM = (
+    "You are a friendly, concise recruiting assistant. Answer the user's message "
+    "conversationally using the conversation so far and the current shortlist. "
+    "If they ask what you can do, list: search candidates from a role description, "
+    "refine / re-weight the ranking, compare candidates, generate interview "
+    "questions, deep-screen for hire/no-hire, and explain rankings. Never invent "
+    "candidate facts or scores; keep it to a few sentences."
+)
+
+_EXPLAIN_SYSTEM = (
+    "You explain candidate rankings using ONLY the provided computed scores and "
+    "breakdowns. Never change a number or invent facts. Be concrete: name the "
+    "score components (retrieval, skills, experience) that drove the difference."
+)
 
 _SUMMARY_SYSTEM = (
     "You summarize a candidate's fit from PRE-COMPUTED evidence only. You are "
@@ -154,7 +170,11 @@ class AgentState(TypedDict, total=False):
 def route_after_feedback(state: dict) -> str:
     """Map the classified follow-up intent to the next node (or END)."""
     intent = state.get("last_intent", "done")
-    return END if intent == "done" else intent
+    if intent == "done":
+        return END
+    if intent in ("refine", "compare", "interview", "screen", "explain", "chat"):
+        return intent
+    return "chat"  # unknown label never dead-ends the conversation
 
 
 def route_intent(message: str) -> str:
@@ -173,9 +193,11 @@ def route_intent(message: str) -> str:
                                "i'm done", "im done", "we're done", "goodbye",
                                "nothing else", "that is all")):
         return "done"
-    if any(p in low for p in ("deep-screen", "deep screen", "screen the", "screening round",
-                              "deep analysis", "deep-dive", "deep dive", "hire/no",
-                              "hire or no", "final round", "shortlist deep")):
+    negated = any(n in low for n in ("not ", "no ", "instead", "rather than", "don't"))
+    if not negated and any(p in low for p in (
+            "deep-screen", "deep screen", "screen the", "screening round",
+            "deep analysis", "deep-dive", "deep dive", "hire/no",
+            "hire or no", "final round", "shortlist deep")):
         return "screen"
     if any(p in low for p in ("compare", "side by side", "side-by-side", " vs ",
                               "versus", "head to head", "head-to-head")):
@@ -324,7 +346,14 @@ def make_nodes(engine: Engine) -> Dict[str, Callable[[dict], dict]]:
         # and `interrupt` returns the value passed via Command(resume=...).
         user_message = interrupt({"report": state.get("report", ""),
                                   "prompt": "What would you like to do next?"})
-        intent = route_intent(str(user_message))
+        # Classify the turn IN CONTEXT (history excludes the new message, which is
+        # passed separately). The LLM is primary; deterministic guardrails inside
+        # classify_turn catch greetings/done and a keyword fallback covers misses.
+        intent = classify_turn(
+            engine.llm, str(user_message),
+            has_shortlist=bool(state.get("shortlist")),
+            history=state.get("messages") or [],
+        )
         return {"last_intent": intent,
                 "messages": [{"role": "user", "content": str(user_message)}]}
 
@@ -383,6 +412,39 @@ def make_nodes(engine: Engine) -> Dict[str, Callable[[dict], dict]]:
             lines.append("")
         return {"report": "\n".join(lines)}
 
+    def chat_node(state: dict) -> dict:
+        # Conversational / meta turn: greetings, "what can you do", and questions
+        # about the conversation itself ("what was my first message"). Reads the
+        # persisted history — never touches the deterministic shortlist.
+        msg = _latest_user_message(state)
+        sl = state.get("shortlist") or []
+        names = ", ".join(str(r["name"]) for r in sl[:10]) or "none yet"
+        convo = _history_text(state.get("messages") or [])
+        prompt = (f"Conversation so far:\n{convo}\n\n"
+                  f"Current shortlist: {names}\n\n"
+                  f"User: {msg}\nReply:")
+        reply = narrate(engine.llm, _CHAT_SYSTEM, prompt)
+        return {"report": reply, "note": "",
+                "messages": [{"role": "assistant", "content": reply}]}
+
+    def explain_node(state: dict) -> dict:
+        sl = state.get("shortlist") or []
+        if not sl:
+            return {"report": "There's no ranked shortlist yet — describe a role "
+                              "and I'll rank candidates, then I can explain why."}
+        msg = _latest_user_message(state)
+        named = _mentioned_names(msg, sl)
+        targets = [r for r in sl if r["name"] in named] or sl[:3]
+        facts = "\n".join(
+            f"- {r['name']}: score {r['score']}/100, breakdown {r.get('breakdown', {})}, "
+            f"matched skills {', '.join(r.get('matched_skills') or []) or 'none'}"
+            for r in targets)
+        prompt = (f"Question: {msg}\nComputed results (authoritative — do not "
+                  f"change):\n{facts}\n\nExplain the ranking difference factually.")
+        reply = narrate(engine.llm, _EXPLAIN_SYSTEM, prompt)
+        return {"report": f"# Why this ranking\n\n{reply}", "note": "",
+                "messages": [{"role": "assistant", "content": reply}]}
+
     return {
         "parse_jd": parse_jd,
         "extract_requirements": extract_requirements_node,
@@ -396,6 +458,8 @@ def make_nodes(engine: Engine) -> Dict[str, Callable[[dict], dict]]:
         "screen_node": screen_node,
         "deep_analyze": deep_analyze,
         "screen_collect": screen_collect,
+        "chat_node": chat_node,
+        "explain_node": explain_node,
     }
 
 
@@ -421,6 +485,8 @@ def build_agent(engine: Engine, checkpointer: Optional[object] = None):
     g.add_node("screen", nodes["screen_node"])
     g.add_node("deep_analyze", nodes["deep_analyze"])
     g.add_node("screen_collect", nodes["screen_collect"])
+    g.add_node("chat", nodes["chat_node"])
+    g.add_node("explain", nodes["explain_node"])
 
     g.add_edge(START, "parse_jd")
     g.add_edge("parse_jd", "extract_requirements")
@@ -434,12 +500,16 @@ def build_agent(engine: Engine, checkpointer: Optional[object] = None):
         "compare": "compare",
         "interview": "interview",
         "screen": "screen",
+        "explain": "explain",
+        "chat": "chat",
         END: END,
     })
-    # compare / interview loop back for more input; screen fans out per candidate
-    # (Send) into deep_analyze, then collects before looping back.
+    # compare / interview / explain / chat loop back for more input; screen fans
+    # out per candidate (Send) into deep_analyze, then collects before looping.
     g.add_edge("compare", "human_feedback")
     g.add_edge("interview", "human_feedback")
+    g.add_edge("explain", "human_feedback")
+    g.add_edge("chat", "human_feedback")
     g.add_conditional_edges("screen", fan_out_candidates, ["deep_analyze"])
     g.add_edge("deep_analyze", "screen_collect")
     g.add_edge("screen_collect", "human_feedback")
@@ -460,9 +530,14 @@ class MatchingAgent:
         self._cfg = {"configurable": {"thread_id": thread_id}}
 
     def start(self, jd_text: str, k: int = 10) -> dict:
-        """Run the first pass; returns state paused at the human-feedback gate."""
+        """Run the first pass; returns state paused at the human-feedback gate.
+
+        The opening JD/query is recorded as the first user message so later
+        conversational questions ('what was my first message') can recall it.
+        """
         return self._graph.invoke(
-            {"jd_text": jd_text, "k": k, "messages": []}, self._cfg)
+            {"jd_text": jd_text, "k": k,
+             "messages": [{"role": "user", "content": jd_text}]}, self._cfg)
 
     def send(self, message: str) -> dict:
         """Resume the graph with a natural-language follow-up."""

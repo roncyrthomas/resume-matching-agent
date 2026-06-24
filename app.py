@@ -123,11 +123,15 @@ def clamp01(value: object) -> float:
 AGENT_TRACE = {
     "start": "parse_jd → extract_requirements → search_resumes → rank_candidates "
              "→ summarize_shortlist → generate_report → ⏸ human_feedback",
+    "new_search": "human_feedback → extract_requirements (new search) → search_resumes "
+                  "→ rank_candidates → summarize_shortlist → generate_report",
     "refine": "human_feedback → extract_requirements (re-weight) → rank_candidates "
               "→ summarize_shortlist → generate_report",
     "compare": "human_feedback → compare_candidates",
     "interview": "human_feedback → generate_interview_questions",
     "screen": "human_feedback → screen → deep_analyze ×N (Send fan-out) → screen_collect",
+    "explain": "human_feedback → explain (cites score breakdowns)",
+    "chat": "human_feedback → chat (conversational, shortlist untouched)",
     "done": "human_feedback → END",
 }
 
@@ -165,25 +169,36 @@ def _looks_like_jd(text: str) -> bool:
 def _agent_turn(text: str, k: int = 10) -> None:
     """Run one conversational turn: start the agent on the first real JD, or send a
     follow-up. A greeting before any JD just gets a friendly prompt back."""
-    from agent_llm import AnthropicLLM
+    from agent_llm import AnthropicLLM, classify_turn
     from matching_agent import MatchingAgent
 
     msgs = st.session_state.setdefault("agent_msgs", [])
     msgs.append({"role": "user", "content": text})
 
     if "agent" not in st.session_state:
-        if not _looks_like_jd(text):
-            msgs.append({"role": "assistant", "content": _AGENT_GREETING,
-                         "shortlist": [], "trace": "", "ended": False})
+        # No conversation yet: classify the opening message so a greeting or a
+        # meta question gets a conversational reply, and only a real role/query
+        # starts a search. has_shortlist=False folds commands into 'chat'.
+        llm = AnthropicLLM()
+        intent = classify_turn(llm, text, has_shortlist=False)
+        if intent in ("chat", "done"):
+            reply = (_AGENT_GREETING if intent == "chat"
+                     else "👋 Sure — whenever you're ready, describe a role or paste a JD.")
+            msgs.append({"role": "assistant", "content": reply,
+                         "shortlist": [], "trace": AGENT_TRACE.get("chat", ""),
+                         "ended": False})
             return
         thread = f"streamlit-{st.session_state.get('agent_thread_n', 0)}"
-        st.session_state["agent"] = MatchingAgent(
-            JobMatcher(), AnthropicLLM(), thread_id=thread)
+        st.session_state["agent"] = MatchingAgent(JobMatcher(), llm, thread_id=thread)
         state = st.session_state["agent"].start(text, k=k)
         trace = AGENT_TRACE["start"]
     else:
         state = st.session_state["agent"].send(text)
-        trace = AGENT_TRACE.get(state.get("last_intent", ""), "")
+        intent = state.get("last_intent", "")
+        # A 'refine' that replaced the query is really a new search — show that.
+        if intent == "refine" and state.get("new_search"):
+            intent = "new_search"
+        trace = AGENT_TRACE.get(intent, "")
 
     st.session_state["agent_state"] = state
     msgs.append({
@@ -195,8 +210,56 @@ def _agent_turn(text: str, k: int = 10) -> None:
     })
 
 
+def _jd_box(started: bool) -> None:
+    """Optional JD input — a full job description feeds the Parse-JD node directly.
+
+    Plain chat is enough for a quick query ('i need ai developers'); this box is
+    for when you have a full, formatted JD to paste/upload or a sample to load.
+    Available before AND during a conversation (submitting starts a new search)."""
+    label = ("📄 Job description (optional) — paste one to begin"
+             if not started else "📄 Search with a full job description")
+    with st.expander(label, expanded=not started):
+        jd_text = st.text_area(
+            "Paste a job description", key="agent_jd_box", height=180,
+            placeholder="Paste a full JD here, or just type a query in the chat box below…",
+        )
+        cols = st.columns([1, 1, 2])
+        if cols[0].button("Search with this JD", key="agent_jd_go",
+                          disabled=not (jd_text and jd_text.strip())):
+            with st.spinner("Agent running the search..."):
+                _agent_turn(jd_text)
+            st.rerun()
+        upload = cols[1].file_uploader("…or upload", type=["txt", "pdf", "docx"],
+                                       key="agent_jd_upload", label_visibility="collapsed")
+        if upload is not None and cols[1].button("Use upload", key="agent_jd_upload_go"):
+            ok, info = save_upload(upload, str(JD_UPLOAD_DIR))
+            if not ok:
+                st.error(info)
+            else:
+                ok, text = read_text(info)
+                if ok:
+                    with st.spinner("Agent running the search..."):
+                        _agent_turn(text)
+                    st.rerun()
+                else:
+                    st.error(text)
+        samples = jd_file_options()
+        if samples:
+            cols[2].caption("…or a sample:")
+            scols = cols[2].columns(min(len(samples), 3))
+            for i, name in enumerate(samples[:3]):
+                if scols[i].button(name.replace(".txt", ""), key=f"jd_sample_{i}"):
+                    ok, text = read_text(str(JD_DIR / name))
+                    if ok:
+                        with st.spinner("Agent running the search..."):
+                            _agent_turn(text)
+                        st.rerun()
+                    else:
+                        st.error(text)
+
+
 def render_agent_tab() -> None:
-    """A real chat over the LangGraph agent: type a JD to begin, then converse."""
+    """A real chat over the LangGraph agent: type a query or paste a JD, then converse."""
     head = st.columns([4, 1])
     with head[0]:
         st.subheader("Agent Chat")
@@ -210,23 +273,13 @@ def render_agent_tab() -> None:
     started = "agent" in st.session_state
     if not started:
         st.caption(
-            "Paste a job description below to begin — then just chat: "
-            "*“weight experience higher”*, *“compare the top 3”*, "
+            "Type a query in the chat box (*“i need AI developers”*) **or** paste a "
+            "full job description in the box below. Then converse: *“weight "
+            "experience higher”*, *“compare the top 3”*, *“why did X rank above Y”*, "
             "*“interview questions for <name>”*, *“deep-screen the top candidates”*, *“done”*."
         )
-        samples = jd_file_options()
-        if samples:
-            st.write("Or start from a sample JD:")
-            cols = st.columns(min(len(samples), 3))
-            for i, name in enumerate(samples[:3]):
-                if cols[i].button(name.replace(".txt", ""), key=f"jd_sample_{i}"):
-                    ok, text = read_text(str(JD_DIR / name))
-                    if ok:
-                        with st.spinner("Agent running the first pass..."):
-                            _agent_turn(text)
-                        st.rerun()
-                    else:
-                        st.error(text)
+
+    _jd_box(started)
 
     # Render the conversation thread.
     for msg in st.session_state.get("agent_msgs", []):
