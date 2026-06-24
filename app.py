@@ -118,37 +118,108 @@ def clamp01(value: object) -> float:
 # --- Agent Chat tab (Milestone 3) --------------------------------------------------
 
 
-def render_agent_tab() -> None:
-    """Conversational LangGraph agent over the default resume corpus."""
+# Which graph nodes ran for each turn — shown as a trace so the LangGraph flow
+# is visible, not just the chat text.
+AGENT_TRACE = {
+    "start": "parse_jd → extract_requirements → search_resumes → rank_candidates "
+             "→ summarize_shortlist → generate_report → ⏸ human_feedback",
+    "refine": "human_feedback → extract_requirements (re-weight) → rank_candidates "
+              "→ summarize_shortlist → generate_report",
+    "compare": "human_feedback → compare_candidates",
+    "interview": "human_feedback → generate_interview_questions",
+    "screen": "human_feedback → screen → deep_analyze ×N (Send fan-out) → screen_collect",
+    "done": "human_feedback → END",
+}
+
+
+def _agent_turn(text: str, k: int = 10) -> None:
+    """Run one conversational turn: start the agent on the first message (the JD),
+    or send a follow-up. Appends user + assistant bubbles to the thread."""
     from agent_llm import AnthropicLLM
     from matching_agent import MatchingAgent
 
-    st.subheader("Agent Chat")
-    st.caption(
-        "LangGraph agent: parse JD → extract requirements → search → rank → "
-        "report → human feedback. Then chat: refine, compare, interview, screen."
-    )
-    jd = st.text_area("Job description", height=180, key="agent_jd")
-    cols = st.columns([1, 3])
-    with cols[0]:
-        start = st.button("Start matching", key="agent_start")
-    if start and jd.strip():
-        st.session_state["agent"] = MatchingAgent(
-            JobMatcher(), AnthropicLLM(), thread_id="streamlit")
-        st.session_state["agent_state"] = st.session_state["agent"].start(jd, k=10)
+    msgs = st.session_state.setdefault("agent_msgs", [])
+    msgs.append({"role": "user", "content": text})
 
-    state = st.session_state.get("agent_state")
-    if state:
-        if state.get("shortlist"):
-            st.dataframe(
-                [{"name": r["name"], "score": r["score"]} for r in state["shortlist"]],
-                use_container_width=True, hide_index=True,
-            )
-        st.markdown(state.get("report", ""))
-        follow = st.chat_input("Refine, compare, interview <name>, screen, or done")
-        if follow:
-            st.session_state["agent_state"] = st.session_state["agent"].send(follow)
+    if "agent" not in st.session_state:
+        thread = f"streamlit-{st.session_state.get('agent_thread_n', 0)}"
+        st.session_state["agent"] = MatchingAgent(
+            JobMatcher(), AnthropicLLM(), thread_id=thread)
+        state = st.session_state["agent"].start(text, k=k)
+        trace = AGENT_TRACE["start"]
+    else:
+        state = st.session_state["agent"].send(text)
+        trace = AGENT_TRACE.get(state.get("last_intent", ""), "")
+
+    st.session_state["agent_state"] = state
+    msgs.append({
+        "role": "assistant",
+        "content": state.get("report", "(no report)"),
+        "shortlist": list(state.get("shortlist", [])),
+        "trace": trace,
+        "ended": "__interrupt__" not in state,
+    })
+
+
+def render_agent_tab() -> None:
+    """A real chat over the LangGraph agent: type a JD to begin, then converse."""
+    head = st.columns([4, 1])
+    with head[0]:
+        st.subheader("Agent Chat")
+    with head[1]:
+        if st.button("🔄 New chat", key="agent_reset"):
+            st.session_state["agent_thread_n"] = st.session_state.get("agent_thread_n", 0) + 1
+            for key in ("agent", "agent_state", "agent_msgs"):
+                st.session_state.pop(key, None)
             st.rerun()
+
+    started = "agent" in st.session_state
+    if not started:
+        st.caption(
+            "Paste a job description below to begin — then just chat: "
+            "*“weight experience higher”*, *“compare the top 3”*, "
+            "*“interview questions for <name>”*, *“deep-screen the top candidates”*, *“done”*."
+        )
+        samples = jd_file_options()
+        if samples:
+            st.write("Or start from a sample JD:")
+            cols = st.columns(min(len(samples), 3))
+            for i, name in enumerate(samples[:3]):
+                if cols[i].button(name.replace(".txt", ""), key=f"jd_sample_{i}"):
+                    ok, text = read_text(str(JD_DIR / name))
+                    if ok:
+                        with st.spinner("Agent running the first pass..."):
+                            _agent_turn(text)
+                        st.rerun()
+                    else:
+                        st.error(text)
+
+    # Render the conversation thread.
+    for msg in st.session_state.get("agent_msgs", []):
+        with st.chat_message(msg["role"]):
+            if msg["role"] == "assistant":
+                if msg.get("trace"):
+                    st.caption(f"🧭 {msg['trace']}")
+                if msg.get("shortlist"):
+                    st.dataframe(
+                        [{"rank": i + 1, "name": r["name"], "score": r["score"]}
+                         for i, r in enumerate(msg["shortlist"])],
+                        use_container_width=True, hide_index=True,
+                    )
+                st.markdown(msg["content"])
+                if msg.get("ended"):
+                    st.caption("✅ Conversation ended — click **New chat** to start over.")
+            else:
+                content = msg["content"]
+                st.markdown(content if len(content) < 400 else content[:400] + " …")
+
+    placeholder = ("Paste a job description to begin..." if not started
+                   else "refine / compare / interview <name> / screen / done")
+    prompt = st.chat_input(placeholder)
+    if prompt and prompt.strip():
+        with st.spinner("Agent thinking..."):
+            _agent_turn(prompt)
+        st.rerun()
 
 
 # --- page scaffold -----------------------------------------------------------------
