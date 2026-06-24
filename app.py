@@ -132,9 +132,33 @@ AGENT_TRACE = {
 }
 
 
+_AGENT_GREETING = (
+    "👋 Hi! I'm the matching agent. Paste a **job description** (or pick a sample "
+    "above) and I'll extract the requirements and rank candidates. After that you "
+    "can say things like *“weight experience higher”*, *“compare the top 3”*, "
+    "*“interview questions for <name>”*, or *“deep-screen the top candidates”*."
+)
+
+_JD_KEYWORDS = (
+    "engineer", "developer", "experience", "requirement", "skill", "year", "role",
+    "designer", "analyst", "manager", "scientist", "architect", "responsib",
+    "react", "python", "java", "ml", "data", "backend", "frontend", "devops",
+)
+
+
+def _looks_like_jd(text: str) -> bool:
+    """Heuristic: a JD is long/multi-line or mentions a role/skill — so a plain
+    'hi' is treated as chit-chat, not parsed as a job description."""
+    t = (text or "").strip()
+    if len(t) >= 80 or "\n" in t:
+        return True
+    low = t.lower()
+    return any(kw in low for kw in _JD_KEYWORDS)
+
+
 def _agent_turn(text: str, k: int = 10) -> None:
-    """Run one conversational turn: start the agent on the first message (the JD),
-    or send a follow-up. Appends user + assistant bubbles to the thread."""
+    """Run one conversational turn: start the agent on the first real JD, or send a
+    follow-up. A greeting before any JD just gets a friendly prompt back."""
     from agent_llm import AnthropicLLM
     from matching_agent import MatchingAgent
 
@@ -142,6 +166,10 @@ def _agent_turn(text: str, k: int = 10) -> None:
     msgs.append({"role": "user", "content": text})
 
     if "agent" not in st.session_state:
+        if not _looks_like_jd(text):
+            msgs.append({"role": "assistant", "content": _AGENT_GREETING,
+                         "shortlist": [], "trace": "", "ended": False})
+            return
         thread = f"streamlit-{st.session_state.get('agent_thread_n', 0)}"
         st.session_state["agent"] = MatchingAgent(
             JobMatcher(), AnthropicLLM(), thread_id=thread)
