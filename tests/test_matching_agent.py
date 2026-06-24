@@ -170,6 +170,18 @@ def test_refine_new_criteria_replaces_query(tmp_path, monkeypatch):
     assert "New search" in after["report"]
 
 
+def test_route_intent_is_deterministic():
+    from matching_agent import route_intent
+    # The exact message that was mis-routed to deep-screen must be a refine.
+    assert route_intent("i want a web developer with react preferably") == "refine"
+    assert route_intent("find me a frontend React developer") == "refine"
+    assert route_intent("compare the top 3") == "compare"
+    assert route_intent("interview questions for Grace") == "interview"
+    assert route_intent("deep-screen the top candidates") == "screen"
+    assert route_intent("weight experience higher") == "refine"
+    assert route_intent("that's all, thanks") == "done"
+
+
 def test_invariant_llm_cannot_reorder(tmp_path, monkeypatch):
     # Hostile LLM tries to inject a different order; shortlist order must hold.
     rag = make_corpus(tmp_path, monkeypatch); rag.build_index()

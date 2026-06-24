@@ -6,6 +6,7 @@ ranks: deterministic nodes own `shortlist` ordering; LLM nodes add prose only.
 
 from __future__ import annotations
 
+import time
 from dataclasses import dataclass
 from typing import Annotated, Callable, Dict, List, Optional
 
@@ -17,7 +18,7 @@ from langgraph.checkpoint.memory import MemorySaver
 from langgraph.types import Command, interrupt, Send
 
 import fs_tools
-from agent_llm import LLMClient, classify_intent, narrate
+from agent_llm import LLMClient, narrate
 from agent_tools import compare_candidates, generate_interview_questions
 from agent_tools import extract_requirements as _extract_requirements
 from job_matcher import JobMatcher
@@ -154,6 +155,35 @@ def route_after_feedback(state: dict) -> str:
     """Map the classified follow-up intent to the next node (or END)."""
     intent = state.get("last_intent", "done")
     return END if intent == "done" else intent
+
+
+def route_intent(message: str) -> str:
+    """Deterministic intent routing from keyword rules.
+
+    Routing the small command set with rules (not an LLM) keeps it predictable:
+    an LLM router mis-labeled "find me a web developer" as a deep-screen. The LLM
+    is still used for narration/summaries/interview questions — just not routing.
+    Anything that isn't a recognised command is treated as a new search/refine.
+    """
+    low = (message or "").lower().strip()
+    if not low:
+        return "done"
+    if low in ("done", "stop", "end", "no", "bye", "quit", "exit") or any(
+            p in low for p in ("that's all", "thats all", "no thanks", "no, thanks",
+                               "i'm done", "im done", "we're done", "goodbye",
+                               "nothing else", "that is all")):
+        return "done"
+    if any(p in low for p in ("deep-screen", "deep screen", "screen the", "screening round",
+                              "deep analysis", "deep-dive", "deep dive", "hire/no",
+                              "hire or no", "final round", "shortlist deep")):
+        return "screen"
+    if any(p in low for p in ("compare", "side by side", "side-by-side", " vs ",
+                              "versus", "head to head", "head-to-head")):
+        return "compare"
+    if any(p in low for p in ("interview", "screening question", "questions for")):
+        return "interview"
+    # Everything else — weight tweaks and brand-new role queries — is a refine.
+    return "refine"
 
 
 def _weight_adjustment(message: str):
@@ -294,7 +324,7 @@ def make_nodes(engine: Engine) -> Dict[str, Callable[[dict], dict]]:
         # and `interrupt` returns the value passed via Command(resume=...).
         user_message = interrupt({"report": state.get("report", ""),
                                   "prompt": "What would you like to do next?"})
-        intent = classify_intent(engine.llm, str(user_message), INTENTS, default="done")
+        intent = route_intent(str(user_message))
         return {"last_intent": intent,
                 "messages": [{"role": "user", "content": str(user_message)}]}
 
@@ -332,7 +362,11 @@ def make_nodes(engine: Engine) -> Dict[str, Callable[[dict], dict]]:
         rec = payload["_cand"]
         read = fs_tools.read_file(rec["resume_path"])
         text = str(read.get("content", ""))[:6000] if read.get("success") else ""
-        prompt = (f"Role: {payload['_title']}\nCandidate: {rec['name']} "
+        lt = time.localtime()
+        today = f"{lt.tm_year}-{lt.tm_mon:02d}"
+        prompt = (f"Today's date is {today}. Any date on or before today is in the "
+                  f"PAST — never describe a past date as 'in the future'.\n"
+                  f"Role: {payload['_title']}\nCandidate: {rec['name']} "
                   f"(prior score {rec['score']}/100)\nResume:\n{text}")
         analysis = narrate(engine.llm, _SCREEN_SYSTEM, prompt)
         return {"screening": {"analyses": [{
