@@ -156,6 +156,20 @@ def test_refine_reranks_and_explains_delta(tmp_path, monkeypatch):
     assert after["requirements"]["weights"]["experience"] > exp_before
 
 
+def test_refine_new_criteria_replaces_query(tmp_path, monkeypatch):
+    # A substantive follow-up (not a weight tweak) must re-search, not reweight.
+    def handler(system, prompt):
+        return "refine" if "allowed labels" in prompt.lower() else "ok"
+    rag = make_corpus(tmp_path, monkeypatch); rag.build_index()
+    agent = MatchingAgent(JobMatcher(rag=rag), StubLLM(handler), thread_id="nq")
+    agent.start(ML_JD, k=5)
+    after = agent.send("find me a frontend React developer instead")
+    assert after.get("new_search") is True
+    assert after["jd_text"] == "find me a frontend React developer instead"
+    assert "React" in after["requirements"]["required_skills"]
+    assert "New search" in after["report"]
+
+
 def test_invariant_llm_cannot_reorder(tmp_path, monkeypatch):
     # Hostile LLM tries to inject a different order; shortlist order must hold.
     rag = make_corpus(tmp_path, monkeypatch); rag.build_index()

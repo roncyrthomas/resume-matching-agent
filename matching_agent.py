@@ -145,6 +145,8 @@ class AgentState(TypedDict, total=False):
     screening: Annotated[dict, _merge_screening]
     last_intent: str
     report: str
+    note: str
+    new_search: bool
     k: int
 
 
@@ -152,6 +154,28 @@ def route_after_feedback(state: dict) -> str:
     """Map the classified follow-up intent to the next node (or END)."""
     intent = state.get("last_intent", "done")
     return END if intent == "done" else intent
+
+
+def _weight_adjustment(message: str):
+    """Detect a weight-tweak instruction → (factor, delta) or None.
+
+    Distinguishes 'weight experience higher' (a re-rank) from a brand-new search
+    query so the refine path knows whether to reweight or re-search."""
+    low = (message or "").lower()
+    up = any(w in low for w in ("higher", "more", "prioriti", "emphasi",
+                                "increase", "important", "weight up"))
+    down = any(w in low for w in ("less", "lower", "decrease", "down",
+                                  "deprioriti", "de-prioriti"))
+    delta = 0.15 if up else (-0.15 if down else None)
+    if delta is None:
+        return None
+    if "experience" in low or "seniority" in low:
+        return ("experience", delta)
+    if "skill" in low:
+        return ("skills", delta)
+    if "retrieval" in low or "semantic" in low or "relevance" in low:
+        return ("retrieval", delta)
+    return None
 
 
 def fan_out_candidates(state: dict) -> list:
@@ -180,17 +204,37 @@ def make_nodes(engine: Engine) -> Dict[str, Callable[[dict], dict]]:
         return {"jd_text": jd}
 
     def extract_requirements_node(state: dict) -> dict:
-        req = _extract_requirements(state["jd_text"])
-        # Preserve user-adjusted weights across a refine loop, and apply a simple
-        # NL weight hint ("weight experience higher") from the latest message.
+        msg = _latest_user_message(state).strip()
+        adj = _weight_adjustment(msg)
         existing = state.get("requirements") or {}
+
+        # A substantive follow-up that is NOT a weight tweak is a NEW search:
+        # replace the query, reset weights, and re-rank from scratch. This is the
+        # difference between "weight experience higher" (re-rank) and "find me a
+        # web developer" (re-search).
+        if msg and adj is None and len(msg.split()) >= 2:
+            req = _extract_requirements(msg)
+            title = req.get("title") or msg
+            return {
+                "jd_text": msg,
+                "requirements": req,
+                "new_search": True,
+                "note": f"🔄 New search: **{title}** — weights reset to default.",
+            }
+
+        # Same query: first pass, or a weight tweak on the current query.
+        req = _extract_requirements(state["jd_text"])
         weights = dict(existing.get("weights") or req["weights"])
-        msg = _latest_user_message(state).lower()
-        if "experience" in msg and ("higher" in msg or "more" in msg):
-            weights["experience"] = min(0.30, weights["experience"] + 0.15)
-            weights["retrieval"] = max(0.30, weights["retrieval"] - 0.15)
+        note = ""
+        if adj is not None:
+            factor, delta = adj
+            weights[factor] = round(max(0.05, min(0.60, weights[factor] + delta)), 2)
+            if factor != "retrieval":  # keep the blend balanced
+                weights["retrieval"] = round(max(0.10, weights["retrieval"] - delta), 2)
+            note = (f"⚖️ Re-ranked: **{factor}** weight "
+                    f"{'increased' if delta > 0 else 'decreased'} to {weights[factor]:.2f}.")
         req["weights"] = weights
-        return {"requirements": req}
+        return {"requirements": req, "new_search": False, "note": note}
 
     def search_resumes(state: dict) -> dict:
         # Retrieval is handled inside JobMatcher.match; this node records intent
@@ -223,19 +267,26 @@ def make_nodes(engine: Engine) -> Dict[str, Callable[[dict], dict]]:
 
     def generate_report(state: dict) -> dict:
         req = state.get("requirements") or {}
-        lines = [f"# Match report — {req.get('title', 'role')}", ""]
+        lines: List[str] = []
+        if state.get("note"):
+            lines += [state["note"], ""]
+        lines += [f"# Match report — {req.get('title', 'role')}", ""]
         for i, rec in enumerate(state.get("shortlist", []), 1):
             lines.append(f"## {i}. {rec['name']} — {rec['score']}/100")
             lines.append(rec.get("summary", rec.get("reasoning", "")))
             lines.append("")
+        # A ranking delta only makes sense when the SAME query was re-ranked.
         prev = {r["name"]: r["score"] for r in state.get("prev_shortlist") or []}
-        if prev:
-            lines.append("## Ranking changes")
+        if prev and not state.get("new_search"):
+            deltas = []
             for rec in state.get("shortlist", []):
                 old = prev.get(rec["name"])
                 if old is not None and old != rec["score"]:
                     arrow = "▲" if rec["score"] > old else "▼"
-                    lines.append(f"- {rec['name']}: {old} → {rec['score']} {arrow}")
+                    deltas.append(f"- {rec['name']}: {old} → {rec['score']} {arrow}")
+            if deltas:
+                lines.append("## Ranking changes")
+                lines += deltas
         return {"report": "\n".join(lines)}
 
     def human_feedback(state: dict) -> dict:
