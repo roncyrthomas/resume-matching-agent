@@ -139,21 +139,27 @@ _AGENT_GREETING = (
     "*“interview questions for <name>”*, or *“deep-screen the top candidates”*."
 )
 
-_JD_KEYWORDS = (
-    "engineer", "developer", "experience", "requirement", "skill", "year", "role",
-    "designer", "analyst", "manager", "scientist", "architect", "responsib",
-    "react", "python", "java", "ml", "data", "backend", "frontend", "devops",
-)
+_GREETINGS = {
+    "hi", "hello", "hey", "yo", "sup", "hiya", "heya", "hi there", "hello there",
+    "thanks", "thank you", "ty", "ok", "okay", "cool", "nice", "test", "ping",
+    "help", "?", "start", "begin",
+}
 
 
 def _looks_like_jd(text: str) -> bool:
-    """Heuristic: a JD is long/multi-line or mentions a role/skill — so a plain
-    'hi' is treated as chit-chat, not parsed as a job description."""
+    """Treat any substantive message as a job description / search query (the
+    assignment wants natural-language queries like 'someone with a masters in
+    AI'). Only bounce pure greetings / one-word filler so 'hi' doesn't match."""
     t = (text or "").strip()
-    if len(t) >= 80 or "\n" in t:
-        return True
-    low = t.lower()
-    return any(kw in low for kw in _JD_KEYWORDS)
+    if not t:
+        return False
+    normalized = t.lower().strip(" .!?,")
+    if normalized in _GREETINGS:
+        return False
+    # A single bare word with no digits is almost certainly chit-chat, not a query.
+    if len(normalized.split()) < 2 and not any(c.isdigit() for c in normalized):
+        return False
+    return True
 
 
 def _agent_turn(text: str, k: int = 10) -> None:
